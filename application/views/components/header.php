@@ -7,25 +7,26 @@
 	<link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
 	<link rel="icon" type="image/png" href="../assets/img/favicon.png">
 	<title>
-		Material Dashboard 2 by Creative Tim
+		<?= $title ?>
 	</title>
 
 	<!--     Fonts and icons     -->
 	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
-	
+
 	<!-- Nucleo Icons -->
 	<link href="<?= base_url() ?>public/css/nucleo-icons.css" rel="stylesheet" />
 	<link href="<?= base_url() ?>public/css/nucleo-svg.css" rel="stylesheet" />
 
 	<!-- Font Awesome Icons -->
 	<script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 	<!-- Material Icons -->
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
 	<!-- CSS Files -->
-	<!-- <link id="pagestyle" href="public/css/material-dashboard.css?v=3.1.0" rel="stylesheet" /> -->
-	<link id="pagestyle" href="<?= base_url() ?>/public/css_vpro/material-dashboard.min.css" rel="stylesheet" />
+	<link id="pagestyle" href="public/css/material-dashboard.css?v=3.1.0" rel="stylesheet" />
+	<link id="pagestyle" href="<?= base_url() ?>public/css_vpro/material-dashboard.min.css" rel="stylesheet" />
 </head>
 
 <body class="g-sidenav-show  bg-gray-200">
@@ -45,7 +46,7 @@
 		<div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
 			<ul class="navbar-nav">
 				<li class="nav-item">
-					<a class="nav-link text-white <?= ($this->uri->segment(1) == '') ? 'active bg-info' : ''; ?>" href="../pages/dashboard.html">
+					<a class="nav-link text-white <?= ($this->uri->segment(1) == '') ? 'active bg-info' : ''; ?>" href="<?= site_url() ?>">
 						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
 							<i class="material-icons opacity-10">dashboard</i>
 						</div>
@@ -54,7 +55,7 @@
 				</li>
 
 				<li class="nav-item">
-					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'printerbackup') ? 'active bg-info' : ''; ?>" href="../pages/dashboard.html">
+					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'printer') ? 'active bg-info' : ''; ?>" href="<?= site_url('printer') ?>">
 						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
 							<i class="material-icons">format_list_bulleted</i>
 						</div>
