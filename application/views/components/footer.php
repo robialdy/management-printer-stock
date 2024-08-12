@@ -16,7 +16,7 @@
 	const dataTableSearch = new simpleDatatables.DataTable("#datatable-search", {
 		searchable: true,
 		fixedHeight: true,
-		sortable: true,
+		sortable: false,
 	});
 </script>
 

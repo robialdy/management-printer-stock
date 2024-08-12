@@ -7,3 +7,4 @@ $route['translate_uri_dashes'] = FALSE;
 
 // custom url
 $route['printer'] = 'PrinterBackup';
+$route['replacement'] = 'PrinterReplacement';
