@@ -7,6 +7,9 @@ class Agen extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
+		if (!$this->session->userdata('data_user')) {
+			redirect('auth');
+		};
 		$this->load->model('Agen_Model');
 	}
 
