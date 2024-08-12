@@ -25,7 +25,7 @@
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
 	<!-- CSS Files -->
-	<link id="pagestyle" href="public/css/material-dashboard.css?v=3.1.0" rel="stylesheet" />
+	<link id="pagestyle" href="<?= base_url() ?>public/css/material-dashboard.css" rel="stylesheet" />
 	<link id="pagestyle" href="<?= base_url() ?>public/css_vpro/material-dashboard.min.css" rel="stylesheet" />
 </head>
 
@@ -60,6 +60,24 @@
 							<i class="material-icons">format_list_bulleted</i>
 						</div>
 						<span class="nav-link-text ms-1">Printer List</span>
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'replacement') ? 'active bg-info' : ''; ?>" href="<?= site_url('replacement') ?>">
+						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+							<i class="material-icons">format_list_bulleted</i>
+						</div>
+						<span class="nav-link-text ms-1">Printer Replacement</span>
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'agen') ? 'active bg-info' : ''; ?>" href="<?= site_url('agen') ?>">
+						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+							<i class="material-icons">business</i>
+						</div>
+						<span class="nav-link-text ms-1">Master Data Customer</span>
 					</a>
 				</li>
 
