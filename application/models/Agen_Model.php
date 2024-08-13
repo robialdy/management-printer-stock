@@ -16,4 +16,9 @@ class Agen_Model extends CI_Model
 		];
 		$this->db->insert('agen', $form_data);
 	}
+
+	public function jumlahData()
+	{
+		return $this->db->count_all_results('agen');
+	}
 }

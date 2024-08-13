@@ -72,7 +72,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="enter type printer" aria-describedby="basic-addon1" id="typep" name="printertype" required>
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter type printer" aria-describedby="basic-addon1" id="typep" name="printertype" required>
 							</div>
 						</div>
 					</div>
@@ -86,6 +86,13 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	/* css di file sistem material-dashboard.css */
+	.dataTable-wrapper .dataTable-container .table tbody tr td {
+		padding: .75rem 1.5rem
+	}
+</style>
 
 <div class="row">
 	<div class="col-12">

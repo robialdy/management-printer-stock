@@ -11,7 +11,7 @@
 				</div>
 				<div class="text-end pt-1">
 					<p class="text-sm mb-0 text-capitalize">Total</p>
-					<h4 class="mb-0">1760</h4>
+					<h4 class="mb-0"><?= $jumPrinter ?></h4>
 				</div>
 			</div>
 			<hr class="dark horizontal">
@@ -22,11 +22,11 @@
 		<div class="card border-radius-lg">
 			<div class="card-header p-3 pt-2">
 				<div class="icon icon-xl icon-shape bg-gradient-primary shadow-primary text-right border-radius-sm mt-n4 position-absolute">
-					<p class="text-white p-3">Total Printer</p>
+					<p class="text-white p-3">Total Backup</p>
 				</div>
 				<div class="text-end pt-1">
 					<p class="text-sm mb-0 text-capitalize">Total</p>
-					<h4 class="mb-0">1760</h4>
+					<h4 class="mb-0"><?= $jumBackup ?></h4>
 				</div>
 			</div>
 			<hr class="dark horizontal">
@@ -37,7 +37,7 @@
 		<div class="card border-radius-lg">
 			<div class="card-header p-3 pt-2">
 				<div class="icon icon-xl icon-shape bg-gradient-success shadow-success text-right border-radius-sm mt-n4 position-absolute">
-					<p class="text-white p-3">Total Printer</p>
+					<p class="text-white p-3">Total Printer Damage</p>
 				</div>
 				<div class="text-end pt-1">
 					<p class="text-sm mb-0 text-capitalize">Total</p>
@@ -52,11 +52,11 @@
 		<div class="card border-radius-lg">
 			<div class="card-header p-3 pt-2">
 				<div class="icon icon-xl icon-shape bg-gradient-info shadow-info text-right border-radius-sm mt-n4 position-absolute">
-					<p class="text-white p-3">Total Printer</p>
+					<p class="text-white p-3">Pembelian Printer</p>
 				</div>
 				<div class="text-end pt-1">
 					<p class="text-sm mb-0 text-capitalize">Total</p>
-					<h4 class="mb-0">1760</h4>
+					<h4 class="mb-0"><?= $jumPembelian ?></h4>
 				</div>
 			</div>
 			<hr class="dark horizontal">

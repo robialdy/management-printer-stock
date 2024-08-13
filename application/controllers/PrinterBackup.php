@@ -17,7 +17,7 @@ class PrinterBackup extends CI_Controller
 	public function index()
 	{
 		$data = [
-			'title' 		=> 'PRINTER BACKUP',
+			'title' 		=> 'Printer Backup',
 			'printerList'	=> $this->PrinterBackup_Model->readData(),
 			'totalPrinter'	=> $this->PrinterBackup_Model->jumlahData(),
 		];
@@ -27,7 +27,7 @@ class PrinterBackup extends CI_Controller
 
 	public function insert()
 	{
-		$this->form_validation->set_rules('printersn', 'PRINTER SN', 'required|trim');
+		$this->form_validation->set_rules('printersn', 'PRINTER SN', 'required|is_unique[printer_backup.printer_sn]|trim');
 		$this->form_validation->set_rules('printertype', 'PRINTER SN', 'required|trim');
 		if ($this->form_validation->run() == FALSE) {
 			redirect('printer');

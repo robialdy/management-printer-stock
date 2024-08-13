@@ -18,7 +18,7 @@
 		<div class="card border-radius-md z-index-2" style="height: 200px;">
 			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
 				<div class="bg-gradient-info shadow-info border-radius-sm py-3 pe-1 text-center">
-					<span class="text-white fs-1 fw-light">10</span>
+					<span class="text-white fs-1 fw-light"><?= $jumAgen ?></span>
 				</div>
 			</div>
 			<div class="card-body text-center">
@@ -99,6 +99,13 @@
 		</div>
 	</div>
 </div>
+
+<style>
+	/* css di file sistem material-dashboard.css */
+	.dataTable-wrapper .dataTable-container .table tbody tr td {
+		padding: .75rem 1.5rem
+	}
+</style>
 
 <div class="row">
 	<div class="col-12">

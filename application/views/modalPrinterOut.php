@@ -19,7 +19,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-static mb-2">
-								<select class="form-control" id="exampleFormControlSelect1" name="printersn">
+								<select class="choices form-select" id="exampleFormControlSelect1" name="printersn">
 									<option value="" selected disabled>Enter Printer S/N</option>
 									<?php foreach ($printer as $pr) : ?>
 										<option value="<?= $pr['id_printer']; ?>"><?= $pr['printer_sn']; ?></option>
@@ -35,8 +35,8 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-static mb-2">
-								<select class="form-control" id="exampleFormControlSelect1" name="agenname">
-									<option value="" selected disabled>Enter agen name</option>
+								<select class="choices form-select" id="exampleFormControlSelect1" name="agenname">
+									<option value="" selected disabled>Enter Agen Name</option>
 									<?php foreach ($agen as $ag) : ?>
 										<option value="<?= $ag['id_agen']; ?>"><?= $ag['agen_name']; ?></option>
 									<?php endforeach; ?>

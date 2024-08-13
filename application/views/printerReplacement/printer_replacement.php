@@ -134,6 +134,7 @@
 
 <!-- style td lebih lebar -->
 <style>
+
 	.table-sm td {
 		padding-top: 15px !important;
 		padding-bottom: 15px !important;
@@ -152,7 +153,7 @@
 			</div>
 			<div class="card-body px-0 pb-2">
 				<div class="table-responsive p-0">
-					<table class="table table-sm align-items-center" id="datatable-search">
+					<table class="table table-sm align-items-center custom-table-padding" id="datatable-search">
 						<thead>
 							<tr>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">No</th>
@@ -167,7 +168,7 @@
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">pic user</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">no ref</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">date out</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">Kelengkapan</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">Detail</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -211,7 +212,7 @@
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->date_out ?></h6>
 									</td>
 									<td class="text-center">
-										<h6 class="mb-0 text-sm fw-normal">Kelengkapan...</h6>
+										<h6 class="mb-0 text-sm fw-normal">DET.</h6>
 									</td>
 								</tr>
 								<?php $i++; ?>

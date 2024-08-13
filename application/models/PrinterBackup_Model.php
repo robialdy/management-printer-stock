@@ -25,4 +25,9 @@ class PrinterBackup_Model extends CI_Model
 		$this->db->where('status', 'READY');
 		return $this->db->count_all_results('printer_backup');
 	}
+
+	public function jumlah()
+	{
+		return $this->db->count_all_results('printer_backup');
+	}
 }

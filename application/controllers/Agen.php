@@ -16,8 +16,9 @@ class Agen extends CI_Controller
 	public function index()
 	{
 		$data = [
-			'title'		=> 'AGEN',
+			'title'		=> 'Master Data Customer',
 			'agenList'	=> $this->Agen_Model->readData(),
+			'jumAgen'	=> $this->Agen_Model->jumlahData(),
 		];
 
 		$this->load->view('agen/agen', $data);

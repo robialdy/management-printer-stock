@@ -26,7 +26,7 @@
 
 	<!-- CSS Files -->
 	<link id="pagestyle" href="<?= base_url() ?>public/css/material-dashboard.css" rel="stylesheet" />
-	<link id="pagestyle" href="<?= base_url() ?>public/css_vpro/material-dashboard.min.css" rel="stylesheet" />
+
 </head>
 
 <body class="g-sidenav-show  bg-gray-200">
