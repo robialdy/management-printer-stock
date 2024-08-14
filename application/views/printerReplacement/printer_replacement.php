@@ -25,7 +25,13 @@
 				<hr class="dark horizontal">
 				<div class="d-flex ">
 					<i class="material-icons text-sm my-auto me-1">schedule</i>
-					<p class="mb-0 text-sm"> 08 Agustus 2024 / 02:59.38</p>
+					<p class="mb-0 text-sm">
+						<?php if (!empty($dateTimeB->created_at)): ?>
+							<?= $dateTimeB->created_at ?>
+						<?php else: ?>
+							null
+						<?php endif; ?>
+					</p>
 				</div>
 			</div>
 		</div>
@@ -38,11 +44,17 @@
 				</div>
 			</div>
 			<div class="card-body text-center">
-				<p class="text-md fw-normal">Total Printer Dipinjam</p>
+				<p class="text-md fw-normal">Total Pembelian Printer</p>
 				<hr class="dark horizontal">
 				<div class="d-flex ">
 					<i class="material-icons text-sm my-auto me-1">schedule</i>
-					<p class="mb-0 text-sm"> 08 Agustus 2024 / 02:59.38</p>
+					<p class="mb-0 text-sm">
+						<?php if (!empty($dateTimeP->created_at)): ?>
+							<?= $dateTimeP->created_at ?>
+						<?php else: ?>
+							null
+						<?php endif; ?>
+					</p>
 				</div>
 			</div>
 		</div>
@@ -134,7 +146,6 @@
 
 <!-- style td lebih lebar -->
 <style>
-
 	.table-sm td {
 		padding-top: 15px !important;
 		padding-bottom: 15px !important;
@@ -175,44 +186,46 @@
 							<?php $i = 1; ?>
 							<?php foreach ($replacement as $rp) : ?>
 								<tr>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-bold"><?= $i; ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->origin ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->date_in ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->type_printer ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->printer_sn ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->cust_id ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->agen_name ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->type_cust ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->pic_it ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->pic_user ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->no_ref ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->date_out ?></h6>
 									</td>
 									<td class="text-center">
-										<h6 class="mb-0 text-sm fw-normal">DET.</h6>
+										<button type="button" class="btn btn-link mb-0 text-sm fw-normal text-info text-decoration-underline" data-bs-toggle="modal" data-bs-target="#modalDetail<?= $rp->id_replacement ?>">
+											DET.
+										</button>
 									</td>
 								</tr>
 								<?php $i++; ?>
@@ -224,5 +237,38 @@
 		</div>
 	</div>
 </div>
+
+
+<!-- Modal detail -->
+<?php foreach ($replacement as $rp) : ?>
+	<div class="modal fade" id="modalDetail<?= $rp->id_replacement ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="text-end me-1">
+					<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<div class="text-center">
+						<h5 class="modal-title font-weight-normal" id="exampleModalLabel">Detail Kelengkapan Printer</h5>
+					</div>
+				</div>
+				<div class="modal-body">
+
+					<div class="mx-3 mt-2">
+						<h5 class="font-weight-normal text-info text-gradient">Printer SN <?= $rp->printer_sn ?></h5>
+						<blockquote class="blockquote text-white mb-0">
+							<p class="text-dark ms-3"><?= $rp->kelengkapan ?></p>
+						</blockquote>
+					</div>
+
+
+					<div class="text-end mt-3">
+						<button type="button" class="btn bg-white shadow" data-bs-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<?php endforeach ?>
 
 <?php $this->load->view('components/footer') ?>

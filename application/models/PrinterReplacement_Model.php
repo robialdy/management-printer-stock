@@ -47,6 +47,7 @@ class PrinterReplacement_Model extends CI_Model
 			'no_ref'		=> $this->autoInvoice(),
 			'date_out'		=> date('d/m/Y'),
 			'kelengkapan'	=> $kelengkapan,
+			'created_at' => date('d M Y / H:i:s'),
 		];
 		$this->db->insert('printer_replacement', $form_data);
 	}
@@ -117,5 +118,13 @@ class PrinterReplacement_Model extends CI_Model
 	public function jumlahData()
 	{
 		return $this->db->count_all_results('printer_replacement');
+	}
+
+	public function dateTime()
+	{
+		$this->db->order_by('created_at', 'DESC');
+		$this->db->limit(1);
+		$query = $this->db->get('printer_replacement');
+		return $query->row();
 	}
 }

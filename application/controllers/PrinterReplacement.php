@@ -4,7 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class PrinterReplacement extends CI_Controller
 {
 	//dibawah ini hmm ngubah tanda aja biar ga merah hehe
-	public $PrinterReplacement_Model, $PrinterBackup_Model, $Agen_Model, $form_validation, $session;
+	public $PrinterReplacement_Model, $PrinterBackup_Model, $Agen_Model, $form_validation, $session, $data_user;
 	public function __construct()
 	{
 		parent::__construct();
@@ -14,6 +14,7 @@ class PrinterReplacement extends CI_Controller
 		$this->load->model('PrinterReplacement_Model');
 		$this->load->model('PrinterBackup_Model');
 		$this->load->model('Agen_Model');
+		$this->data_user = $this->db->get_where('auth', ['username' => $this->session->userdata('data_user')])->row_array();
 	}
 
 	public function index()
@@ -25,6 +26,9 @@ class PrinterReplacement extends CI_Controller
 			'agen'			=> $this->Agen_Model->readData(),
 			'jumPrinter'	=> $this->PrinterBackup_Model->jumlahData(),
 			'jumReplacement'=> $this->PrinterReplacement_Model->jumlahData(),
+			'data_user'		=> $this->data_user,
+			'dateTimeP'		=> $this->PrinterReplacement_Model->dateTime(),
+			'dateTimeB'		=> $this->PrinterBackup_Model->dateTime(),
 		];
 
 		$this->load->view('printerReplacement/printer_replacement', $data);

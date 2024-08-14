@@ -15,6 +15,7 @@ class PrinterBackup_Model extends CI_Model
 			'origin'		=> 'BANDUNG',
 			'date_in'		=> date('d/m/Y'),
 			'status'		=> 'READY',
+			'created_at' 	=> date('d M Y / H:i:s'),
 		];
 		$this->db->insert('printer_backup', $form_data);
 	}
@@ -29,5 +30,13 @@ class PrinterBackup_Model extends CI_Model
 	public function jumlah()
 	{
 		return $this->db->count_all_results('printer_backup');
+	}
+
+	public function dateTime()
+	{
+		$this->db->order_by('created_at', 'DESC');
+		$this->db->limit(1);
+		$query = $this->db->get('printer_backup');
+		return $query->row();
 	}
 }

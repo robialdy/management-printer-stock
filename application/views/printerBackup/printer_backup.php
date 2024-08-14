@@ -14,7 +14,13 @@
 				<hr class="dark horizontal">
 				<div class="d-flex ">
 					<i class="material-icons text-sm my-auto me-1">schedule</i>
-					<p class="mb-0 text-sm"> 08 Agustus 2024 / 02:59.38</p>
+					<p class="mb-0 text-sm">
+						<?php if (!empty($dateTime->created_at)): ?>
+							<?= $dateTime->created_at ?>
+						<?php else: ?>
+							null
+						<?php endif; ?>
+					</p>
 				</div>
 			</div>
 		</div>
@@ -119,22 +125,22 @@
 							<?php $i = 1; ?>
 							<?php foreach ($printerList as $pl) : ?>
 								<tr>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-bold"><?= $i; ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $pl['origin']; ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $pl['date_in']; ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $pl['type_printer']; ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $pl['printer_sn']; ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $pl['note']; ?></h6>
 									</td>
 								</tr>

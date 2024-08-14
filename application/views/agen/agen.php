@@ -26,7 +26,13 @@
 				<hr class="dark horizontal">
 				<div class="d-flex ">
 					<i class="material-icons text-sm my-auto me-1">schedule</i>
-					<p class="mb-0 text-sm"> 08 Agustus 2024 / 02:59.38</p>
+					<p class="mb-0 text-sm">
+						<?php if (!empty($dateTime->created_at)): ?>
+							<?= $dateTime->created_at ?>
+						<?php else: ?>
+							null
+						<?php endif; ?>
+					</p>
 				</div>
 			</div>
 		</div>
@@ -85,7 +91,12 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter type cust" aria-describedby="basic-addon1" id="sn" name="typecust">
+								<select class="choices form-select" id="exampleFormControlSelect1" name="typecust">
+									<option value="" selected disabled>Enter Type Cust</option>
+									<option value="AGEN">AGEN</option>
+									<option value="KP">KP</option>
+
+								</select>
 							</div>
 						</div>
 					</div>
@@ -130,16 +141,16 @@
 							<?php $i = 1; ?>
 							<?php foreach ($agenList as $al) : ?>
 								<tr>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-bold"><?= $i; ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $al['cust_id']; ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $al['agen_name']; ?></h6>
 									</td>
-									<td class="text-center">
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $al['type_cust']; ?></h6>
 									</td>
 								</tr>

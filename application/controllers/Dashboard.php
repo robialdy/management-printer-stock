@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dashboard extends CI_Controller
 {
-	public $PrinterBackup_Model, $PrinterReplacement_Model;
+	public $PrinterBackup_Model, $PrinterReplacement_Model, $data_user;
 	public function __construct()
 	{
 		parent::__construct();
@@ -12,6 +12,7 @@ class Dashboard extends CI_Controller
 		};
 		$this->load->model('PrinterBackup_Model');
 		$this->load->model('PrinterReplacement_Model');
+		$this->data_user = $this->db->get_where('auth', ['username' => $this->session->userdata('data_user')])->row_array();
 	}
 
 	public function index()
@@ -22,6 +23,7 @@ class Dashboard extends CI_Controller
 			'jumBackup'		=> $this->PrinterBackup_Model->jumlahData(),
 			'jumDamage'		=> '',
 			'jumPembelian'	=> $this->PrinterReplacement_Model->jumlahData(),
+			'data_user'		=> $this->data_user,
 
 		];
 

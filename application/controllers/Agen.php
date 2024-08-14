@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Agen extends CI_Controller
 {
-	public $Agen_Model;
+	public $Agen_Model, $data_user;
 	public function __construct()
 	{
 		parent::__construct();
@@ -11,6 +11,7 @@ class Agen extends CI_Controller
 			redirect('auth');
 		};
 		$this->load->model('Agen_Model');
+		$this->data_user = $this->db->get_where('auth', ['username' => $this->session->userdata('data_user')])->row_array();
 	}
 
 	public function index()
@@ -19,6 +20,8 @@ class Agen extends CI_Controller
 			'title'		=> 'Master Data Customer',
 			'agenList'	=> $this->Agen_Model->readData(),
 			'jumAgen'	=> $this->Agen_Model->jumlahData(),
+			'data_user'	=> $this->data_user,
+			'dateTime'	=> $this->Agen_Model->dateTime(),
 		];
 
 		$this->load->view('agen/agen', $data);
