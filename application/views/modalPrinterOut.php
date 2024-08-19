@@ -19,7 +19,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-static mb-2">
-								<select class="choices form-select" id="exampleFormControlSelect1" name="printersn">
+								<select class="choices form-select" id="exampleFormControlSelect1" name="printersn" required>
 									<option value="" selected disabled>Enter Printer S/N</option>
 									<?php foreach ($printer as $pr) : ?>
 										<option value="<?= $pr['id_printer']; ?>"><?= $pr['printer_sn']; ?></option>
@@ -35,7 +35,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-static mb-2">
-								<select class="choices form-select" id="exampleFormControlSelect1" name="agenname">
+								<select class="choices form-select" id="exampleFormControlSelect1" name="agenname" required>
 									<option value="" selected disabled>Enter Agen Name</option>
 									<?php foreach ($agen as $ag) : ?>
 										<option value="<?= $ag['id_agen']; ?>"><?= $ag['agen_name']; ?></option>
@@ -51,7 +51,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter pic it" aria-describedby="basic-addon1" id="typep" name="picit">
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter pic it" aria-describedby="basic-addon1" id="typep" name="picit" style="text-transform: uppercase;" required>
 							</div>
 						</div>
 					</div>
@@ -62,7 +62,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter pic user" aria-describedby="basic-addon1" id="typep" name="picuser">
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter pic user" aria-describedby="basic-addon1" id="typep" name="picuser" style="text-transform: uppercase;" required>
 							</div>
 						</div>
 					</div>

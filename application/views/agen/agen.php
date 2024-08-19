@@ -57,49 +57,70 @@
 					<span aria-hidden="true">&times;</span>
 				</button>
 				<div class="text-center">
-					<h5 class="modal-title font-weight-normal" id="exampleModalLabel">ADD Master Data</h5>
+					<h5 class="modal-title font-weight-normal" id="exampleModalLabel">ADD Customer</h5>
 				</div>
 			</div>
 			<div class="modal-body">
-				<form method="POST" action="<?= site_url() ?>agen/insert">
-
-					<div class="row">
-						<div class="col-4 mt-2">
-							<label for="sn">CUST ID</label>
-						</div>
-						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter cust id" aria-describedby="basic-addon1" id="sn" name="custid">
-							</div>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-4 mt-2">
-							<label for="sn">NAME</label>
-						</div>
-						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter agen name" aria-describedby="basic-addon1" id="sn" name="name">
-							</div>
-						</div>
-					</div>
+				<form method="POST" action="<?= site_url() ?>agen">
 
 					<div class="row">
 						<div class="col-4 mt-2">
 							<label for="sn">TYPE CUST</label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
-								<select class="choices form-select" id="exampleFormControlSelect1" name="typecust">
-									<option value="" selected disabled>Enter Type Cust</option>
+							<div class="input-group input-group-dynamic">
+								<select class="choices form-select" id="typecust" name="typecust" required onchange="custIdAuto()">
+									<option value="" selected disabled>ENTER TYPE CUST</option>
 									<option value="AGEN">AGEN</option>
 									<option value="KP">KP</option>
-
+									<option value="CORPORATE">CORPORATE</option>
+									<!-- DI BAWAH CUST ID NYA BUAT SENDIRI OTOMATIS -->
+									<option value="OPS">OPS</option>
 								</select>
 							</div>
 						</div>
 					</div>
+
+					<script>
+						function custIdAuto() {
+							const typecust = document.getElementById('typecust');
+							const custid = document.getElementById('custid');
+							const randomNum = Math.floor(10000 + Math.random() * 90000); //ada kemungkinan bertemu angka sama 
+							const selectedValue = typecust.value;
+							const selectedNameValue = typecust.value;
+
+							if (selectedValue == 'OPS') {
+								custid.readOnly = true;
+								custid.value = 'OPS' + randomNum;
+							} else {
+								custid.readOnly = false;
+								custid.value = '';
+							}
+						}
+					</script>
+
+					<div class="row">
+						<div class="col-4 mt-2">
+							<label for="custid">CUST ID</label>
+						</div>
+						<div class="col">
+							<div class="input-group input-group-dynamic mb-2">
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter cust id" aria-describedby="basic-addon1" id="custid" name="custid" style="text-transform: uppercase;" required>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-4 mt-2">
+							<label for="name">NAME</label>
+						</div>
+						<div class="col">
+							<div class="input-group input-group-dynamic mb-2">
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter customer name" aria-describedby="basic-addon1" id="name" name="name" style="text-transform: uppercase;" required>
+							</div>
+						</div>
+					</div>
+
 
 					<div class="text-end mt-3">
 						<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
@@ -131,27 +152,27 @@
 					<table class="table align-items-center" id="datatable-search">
 						<thead>
 							<tr>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7">No</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7">cust id</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7">name</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7">type cust</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">No</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">cust id</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">name</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">type cust</th>
 							</tr>
 						</thead>
 						<tbody>
 							<?php $i = 1; ?>
 							<?php foreach ($agenList as $al) : ?>
 								<tr>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-bold"><?= $i; ?></h6>
+									<td class="text-center text-uppercase py-3">
+										<h6 class="mb-0 text-md fw-bold"><?= $i; ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $al['cust_id']; ?></h6>
+										<h6 class="mb-0 text-md fw-normal"><?= $al['cust_id']; ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $al['agen_name']; ?></h6>
+										<h6 class="mb-0 text-md fw-normal"><?= $al['agen_name']; ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $al['type_cust']; ?></h6>
+										<h6 class="mb-0 text-md fw-normal"><?= $al['type_cust']; ?></h6>
 									</td>
 								</tr>
 								<?php $i++; ?>

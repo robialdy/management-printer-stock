@@ -8,6 +8,7 @@ class PrinterReplacement_Model extends CI_Model
 		$this->db->from('printer_replacement');
 		$this->db->join('printer_backup', 'printer_replacement.id_printer = printer_backup.id_printer');
 		$this->db->join('agen', 'printer_replacement.id_agen = agen.id_agen');
+		$this->db->order_by('printer_replacement.date_out', 'DESC');
 		$query = $this->db->get();
 		return $query->result();
 	}
@@ -40,14 +41,14 @@ class PrinterReplacement_Model extends CI_Model
 		$kelengkapan = implode(', ', $take_kelengkapan);
 
 		$form_data = [
-			'id_printer'	=> $this->input->post('printersn'),
-			'id_agen'		=> $this->input->post('agenname'), // id isinya
-			'pic_it'		=> $this->input->post('picit'),
-			'pic_user'		=> $this->input->post('picuser'),
+			'id_printer'	=> $this->input->post('printersn', true),
+			'id_agen'		=> $this->input->post('agenname', true), // id isinya
+			'pic_it'		=> $this->input->post('picit', true),
+			'pic_user'		=> $this->input->post('picuser', true),
 			'no_ref'		=> $this->autoInvoice(),
-			'date_out'		=> date('d/m/Y'),
+			'date_out'		=> date('d/m/Y / H:i:s'),
 			'kelengkapan'	=> $kelengkapan,
-			'created_at' => date('d M Y / H:i:s'),
+			'created_at'	=> date('d M Y / H:i:s'),
 		];
 		$this->db->insert('printer_replacement', $form_data);
 	}

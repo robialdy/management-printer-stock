@@ -4,7 +4,7 @@ class PrinterBackup_Model extends CI_Model
 {
 	public function readData()
 	{
-		return $this->db->get_where('printer_backup', ['status' => 'READY'])->result_array();
+		return $this->db->order_by('date_in', 'DESC')->get_where('printer_backup', ['status' => 'READY'])->result_array();
 	}
 
 	public function insertData()
@@ -13,7 +13,7 @@ class PrinterBackup_Model extends CI_Model
 			'printer_sn'	=> $this->input->post('printersn', true),
 			'type_printer'	=> $this->input->post('printertype', true),
 			'origin'		=> 'BANDUNG',
-			'date_in'		=> date('d/m/Y'),
+			'date_in'		=> date('d/m/Y / H:i:s'),
 			'status'		=> 'READY',
 			'created_at' 	=> date('d M Y / H:i:s'),
 		];

@@ -37,14 +37,14 @@ class PrinterReplacement extends CI_Controller
 	public function insert()
 	{
 		// tangkap inputnya
-		$printer_sn = $this->input->post('printersn');
-		$agen_name = $this->input->post('agenname');
-		$pic_it = $this->input->post('picit');
-		$pic_user = $this->input->post('picuser');
+		$printer_sn = $this->input->post('printersn', true);
+		$agen_name = $this->input->post('agenname', true);
+		$pic_it = $this->input->post('picit', true);
+		$pic_user = $this->input->post('picuser', true);
 		$no_ref = $this->PrinterReplacement_Model->autoInvoice();
 		$date_out = date('d/m/Y');
 
-		$take_kelengkapan = $this->input->post('kelengkapan');
+		$take_kelengkapan = $this->input->post('kelengkapan', true);
 		$kelengkapan = implode(', ', $take_kelengkapan);
 
 		//simpan data si session

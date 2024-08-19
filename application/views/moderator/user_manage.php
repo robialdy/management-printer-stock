@@ -18,20 +18,16 @@
 		<div class="card border-radius-md z-index-2" style="height: 200px;">
 			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
 				<div class="bg-gradient-info shadow-info border-radius-sm py-3 pe-1 text-center">
-					<span class="text-white fs-1 fw-light"><?= $totalPrinter ?></span>
+					<span class="text-white fs-1 fw-light">10</span>
 				</div>
 			</div>
 			<div class="card-body text-center">
-				<p class="text-md fw-normal">Total Printer Backup</p>
+				<p class="text-md fw-normal">Total Users</p>
 				<hr class="dark horizontal">
 				<div class="d-flex ">
 					<i class="material-icons text-sm my-auto me-1">schedule</i>
 					<p class="mb-0 text-sm">
-						<?php if (!empty($dateTime->created_at)): ?>
-							<?= $dateTime->created_at ?>
-						<?php else: ?>
-							null
-						<?php endif; ?>
+
 					</p>
 				</div>
 			</div>
@@ -42,7 +38,7 @@
 <!-- Button trigger modal -->
 <div class="text-end me-5">
 	<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modalInsert">
-		<i class="bi bi-printer-fill me-2"></i>Printer IN
+		<i class="bi bi-people me-2"></i>ADD USER
 	</button>
 </div>
 
@@ -55,30 +51,57 @@
 					<span aria-hidden="true">&times;</span>
 				</button>
 				<div class="text-center">
-					<h5 class="modal-title font-weight-normal" id="exampleModalLabel">Printer In</h5>
+					<h5 class="modal-title font-weight-normal" id="exampleModalLabel">ADD USER</h5>
 				</div>
 			</div>
 			<div class="modal-body">
-				<form method="POST" action="<?= site_url() ?>printerbackup/insert">
+				<form method="POST" action="<?= site_url() ?>users">
 
 					<div class="row">
 						<div class="col-4 mt-2">
-							<label for="sn">PRINTER S/N*</label>
+							<label for="sn">USERNAME <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter printer s/n" aria-describedby="basic-addon1" id="sn" name="printersn" style="text-transform: uppercase;" required>
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter username" aria-describedby="basic-addon1" id="sn" name="username" style="text-transform: uppercase;" required>
 							</div>
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="col-4 mt-2">
-							<label for="typep">TYPE PRINTER</label>
+							<label for="sn">ROLE <span class="text-danger">*</span></label>
+						</div>
+						<div class="col">
+							<div class="input-group input-group-static mb-2">
+								<select class="choices form-select" id="exampleFormControlSelect1" name="role" required>
+									<option value="" selected disabled>SELECT ROLE ACCOUNT</option>
+									<option value="ADMIN"></option>ADMIN</option>
+									<option value="MODERATOR"></option>MODERATOR</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="row">
+						<div class="col-4 mt-2">
+							<label for="sn" class="text-danger">PASSWORD *</label>
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter type printer" aria-describedby="basic-addon1" id="typep" name="printertype" style="text-transform: uppercase;" required>
+								<input type="password" class="form-control" aria-label="Username" placeholder="Enter Password" aria-describedby="basic-addon1" id="sn" name="password1" style="text-transform: uppercase;" required>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-4 mt-2">
+							<label for="sn" class="text-danger">RE-PASSWORD *</label>
+						</div>
+						<div class="col">
+							<div class="input-group input-group-dynamic mb-2">
+								<input type="password" class="form-control" aria-label="Username" placeholder="Enter Re-Password" aria-describedby="basic-addon1" id="sn" name="password2" style="text-transform: uppercase;" required>
 							</div>
 						</div>
 					</div>
@@ -105,7 +128,7 @@
 		<div class="card my-4 border-radius-md">
 			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
 				<div class="bg-gradient-info shadow-info border-radius-md pt-4 pb-3">
-					<h6 class="text-white ps-3 fw-light">Printer IT</h6>
+					<h6 class="text-white ps-3 fw-light">User Account</h6>
 				</div>
 			</div>
 			<div class="card-body px-0 pb-2">
@@ -114,38 +137,23 @@
 						<thead>
 							<tr>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">No</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">Origin</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">date in</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">type printer</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">printer sn</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">note</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">Username</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">Role</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">Created At</th>
 							</tr>
 						</thead>
 						<tbody>
-							<?php $i = 1; ?>
-							<?php foreach ($printerList as $pl) : ?>
-								<tr>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-md fw-bold"><?= $i; ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-md fw-normal"><?= $pl['origin']; ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-md fw-normal"><?= $pl['date_in']; ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-md fw-normal"><?= $pl['type_printer']; ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-md fw-normal"><?= $pl['printer_sn']; ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-md fw-normal"><?= $pl['note']; ?></h6>
-									</td>
-								</tr>
-								<?php $i++; ?>
-							<?php endforeach; ?>
+							<tr>
+								<td class="text-center text-uppercase">
+									<h6 class="mb-0 text-md fw-bold"></h6>
+								</td>
+								<td class="text-center text-uppercase">
+									<h6 class="mb-0 text-md fw-normal"></h6>
+								</td>
+								<td class="text-center text-uppercase">
+									<h6 class="mb-0 text-md fw-normal"></h6>
+								</td>
+							</tr>
 						</tbody>
 					</table>
 				</div>

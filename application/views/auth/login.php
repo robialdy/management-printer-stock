@@ -17,7 +17,7 @@
 	<!-- Material Icons -->
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 	<!-- CSS Files -->
-	<link id="pagestyle" href="<?= site_url() ?>public/css_vpro/material-dashboard.min.css" rel="stylesheet" />
+	<link id="pagestyle" href="<?= site_url() ?>public/css/material-dashboard.css" rel="stylesheet" />
 </head>
 
 <body class="bg-gray-200">
@@ -30,7 +30,7 @@
 					<div class="col-lg-4 col-md-8 col-12 mx-auto">
 						<div class="card z-index-0 fadeIn1 fadeInBottom">
 							<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-								<div class="bg-gradient-primary shadow-primary border-radius-md py-3 pe-1">
+								<div class="bg-gradient-info shadow-info border-radius-md py-3 pe-1">
 									<h4 class="text-white fw-bold text-center mb-0">LOGIN</h4>
 								</div>
 							</div>
@@ -49,7 +49,7 @@
 									<?= $this->session->flashdata('message'); ?>
 
 									<div class="text-center">
-										<button type="submit" class="btn bg-gradient-primary w-100 my-4 mb-2">Sign in</button>
+										<button type="submit" class="btn bg-gradient-info w-100 my-4 mb-2">Sign in</button>
 									</div>
 								</form>
 
@@ -63,11 +63,12 @@
 					<div class="row align-items-center justify-content-lg-between">
 						<div class="col-12 col-md-6 my-auto">
 							<div class="copyright text-center text-sm text-white text-lg-start">
-								© <script>
-									document.write(new Date().getFullYear())
-								</script>,
-								made with <i class="material-icons md-18">favorite</i>
-								by IT - Project & PKL.
+								<p>
+									© <script>
+										document.write(new Date().getFullYear())
+									</script>,
+									Made with <span style="color: #e25555;">♥</span> by <strong>IT Project & PKL</strong>
+								</p>
 							</div>
 						</div>
 					</div>

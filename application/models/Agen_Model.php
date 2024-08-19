@@ -4,15 +4,15 @@ class Agen_Model extends CI_Model
 {
 	public function readData()
 	{
-		return $this->db->get('agen')->result_array();
+		return $this->db->order_by('created_at', 'DESC')->get('agen')->result_array();
 	}
 
 	public function insertData()
 	{
 		$form_data = [
-			'cust_id'	=> $this->input->post('custid'),
-			'agen_name'	=> $this->input->post('name'),
-			'type_cust'	=> $this->input->post('typecust'),
+			'cust_id'	=> $this->input->post('custid', true),
+			'agen_name'	=> $this->input->post('name', true),
+			'type_cust'	=> $this->input->post('typecust', true),
 			'created_at'=> date('d M Y / H:i:s'),
 		];
 		$this->db->insert('agen', $form_data);

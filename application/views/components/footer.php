@@ -1,3 +1,12 @@
+<footer class="position-fixed bottom-0 end-0 m-2">
+	<p class="mb-0">
+		© <script>
+			document.write(new Date().getFullYear())
+		</script>,
+		Made with <span style="color: #e25555;">♥</span> by <strong>IT Project & PKL</strong>
+	</p>
+</footer>
+
 </main>
 
 </div>

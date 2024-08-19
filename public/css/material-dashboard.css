@@ -5512,6 +5512,7 @@ fieldset:disabled .btn {
 	color: var(--bs-breadcrumb-item-active-color)
 }
 
+/* hover primary pagination */
 .pagination {
 	--bs-pagination-padding-x: 0.75rem;
 	--bs-pagination-padding-y: 0.375rem;
@@ -5521,7 +5522,7 @@ fieldset:disabled .btn {
 	--bs-pagination-border-width: 1px;
 	--bs-pagination-border-color: #dee2e6;
 	--bs-pagination-border-radius: 0.375rem;
-	--bs-pagination-hover-color: #e91e63;
+	--bs-pagination-hover-color: #1a73e8; 
 	--bs-pagination-hover-bg: #f0f2f5;
 	--bs-pagination-hover-border-color: #dee2e6;
 	--bs-pagination-focus-color: #e91e63;

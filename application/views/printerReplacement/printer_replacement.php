@@ -97,7 +97,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter printer s/n" aria-describedby="basic-addon1" id="sn" name="printersn" required>
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter printer s/n" aria-describedby="basic-addon1" id="sn" name="printersn" style="text-transform: uppercase;" required>
 							</div>
 						</div>
 					</div>
@@ -108,7 +108,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="enter type printer" aria-describedby="basic-addon1" id="typep" name="printertype" required>
+								<input type="text" class="form-control" aria-label="Username" placeholder="enter type printer" aria-describedby="basic-addon1" id="typep" name="printertype" style="text-transform: uppercase;" required>
 							</div>
 						</div>
 					</div>
@@ -205,7 +205,7 @@
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->cust_id ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $rp->agen_name ?></h6>
+										<h6 class="mb-0 text-sm fw-normal text-wrap"><?= $rp->agen_name ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->type_cust ?></h6>
@@ -223,9 +223,9 @@
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->date_out ?></h6>
 									</td>
 									<td class="text-center">
-										<button type="button" class="btn btn-link mb-0 text-sm fw-normal text-info text-decoration-underline" data-bs-toggle="modal" data-bs-target="#modalDetail<?= $rp->id_replacement ?>">
+										<a class="mb-0 text-sm fw-normal text-info text-decoration-underline" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDetail<?= $rp->id_replacement ?>">
 											DET.
-										</button>
+										</a>
 									</td>
 								</tr>
 								<?php $i++; ?>

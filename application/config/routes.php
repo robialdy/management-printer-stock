@@ -9,3 +9,4 @@ $route['translate_uri_dashes'] = FALSE;
 $route['printer'] = 'PrinterBackup';
 $route['replacement'] = 'PrinterReplacement';
 $route['registrasi'] = 'Auth/Regis';
+$route['users'] = 'moderator/users';

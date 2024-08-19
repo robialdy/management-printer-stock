@@ -16,27 +16,25 @@ class Agen extends CI_Controller
 
 	public function index()
 	{
-		$data = [
-			'title'		=> 'Master Data Customer',
-			'agenList'	=> $this->Agen_Model->readData(),
-			'jumAgen'	=> $this->Agen_Model->jumlahData(),
-			'data_user'	=> $this->data_user,
-			'dateTime'	=> $this->Agen_Model->dateTime(),
-		];
-
-		$this->load->view('agen/agen', $data);
-	}
-
-	public function insert()
-	{
-		$this->form_validation->set_rules('custid', 'CUST ID', 'required|trim');
+		$this->form_validation->set_rules('custid', 'CUST ID', 'required|is_unique[agen.cust_id]|trim');
 		$this->form_validation->set_rules('name', 'NAME', 'required|trim');
+		$this->form_validation->set_rules('typecust', 'NAME', 'required|trim');
 		if ($this->form_validation->run() == FALSE) {
-			redirect('agen');
+			$data = [
+				'title'		=> 'Master Data Customer',
+				'agenList'	=> $this->Agen_Model->readData(),
+				'jumAgen'	=> $this->Agen_Model->jumlahData(),
+				'data_user'	=> $this->data_user,
+				'dateTime'	=> $this->Agen_Model->dateTime(),
+			];
+
+			$this->load->view('agen/agen', $data);
 		}else {
 			$this->Agen_Model->insertData();
 			$this->session->set_flashdata('notifSuccess', 'baru berhasil ditambahkan!');
 			redirect('agen');
 		}
 	}
+
+
 }

@@ -20,7 +20,6 @@
 	<link href="<?= base_url() ?>public/css/nucleo-svg.css" rel="stylesheet" />
 
 	<!-- Font Awesome Icons -->
-	<script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 	<!-- Material Icons -->
@@ -57,12 +56,12 @@
 		<div class="sidenav-header">
 			<i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
 			<a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
-				<span class="ms-1 fw-light text-white">Printer Management Stock</span>
+				<h6 class="fw-light text-white">Printer Management Stock</h6>
 			</a>
 		</div>
 		<hr class="horizontal light mt-0 mb-1">
 		<div class="d-flex align-items-center py-3 ms-4">
-			<img src="<?= base_url() ?>/public/img/foto_fachri.jpg" class="rounded-circle mr-2 me-2" alt="Profile Image" width="34">
+			<img src="<?= site_url() ?>public/img/jne_profil.png" class="rounded-circle mr-2 me-2" alt="Profile Image" width="34">
 			<h5 class="mb-0 text-white fw-light fs-6"><?= $data_user['username']; ?></h5>
 		</div>
 		<hr class="horizontal light mt-0 mb-2">
@@ -104,6 +103,15 @@
 					</a>
 				</li>
 
+				<li class="nav-item">
+					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'users') ? 'active bg-info' : ''; ?>" href="<?= site_url('users') ?>">
+						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+							<i class="material-icons">business</i>
+						</div>
+						<span class="nav-link-text ms-1">User Manage</span>
+					</a>
+				</li>
+
 			</ul>
 		</div>
 	</aside>
@@ -124,7 +132,7 @@
 						<a href="" class="me-4">
 							<i class="material-icons">notifications</i>
 						</a>
-						<a href="">
+						<a href="<?= site_url() ?>p">
 							<i class="material-icons">person</i>
 						</a>
 					</div>

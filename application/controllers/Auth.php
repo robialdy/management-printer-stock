@@ -11,6 +11,10 @@ class Auth extends CI_Controller
 
 	public function index()
 	{
+		if ($this->session->userdata('data_user')) {
+			redirect($_SERVER['HTTP_REFERER']); // ke halaman sebelumnya
+		};
+
 		$this->form_validation->set_rules('username', 'Username', 'required|trim');
 		$this->form_validation->set_rules('password', 'Password', 'required|trim');
 
@@ -28,25 +32,14 @@ class Auth extends CI_Controller
 		$user = $this->db->get_where('auth', ['username' => $username])->row_array();
 
 		if($user != null && password_verify($password, $user['password'])) {
-			$data['data_user'] = $user["username"];
+			$data = [
+				'id_user'	=> $user['id_user'],
+				'data_user'	=> $user["username"],
+			];
 			$this->session->set_userdata($data);
 			redirect(base_url());
 		} else {
 			$this->session->set_flashdata('message', '<small class="text-danger">Username Atau Password Salah</small>');
-			redirect('auth');
-		}
-	}
-
-	public function regis()
-	{
-		$this->form_validation->set_rules('username', 'Username', 'required|trim');
-		$this->form_validation->set_rules('password1', 'Password', 'required|trim|matches[password2]');
-		$this->form_validation->set_rules('password2', 'Re Password', 'required|trim|matches[password1]');
-
-		if ($this->form_validation->run() == FALSE) {
-			$this->load->view('auth/regis');
-		} else {
-			$this->Auth_Model->insert();
 			redirect('auth');
 		}
 	}
