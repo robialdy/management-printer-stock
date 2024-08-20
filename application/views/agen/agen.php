@@ -1,16 +1,22 @@
 <?php $this->load->view('components/header') ?>
 
 <?php if ($this->session->flashdata('notifSuccess')) :  ?>
-	<div class="alert alert-success alert-dismissible text-white fade show" role="alert">
-		<span class="alert-icon align-middle">
-			<i class="bi bi-check"></i>
-		</span>
-		<span class="alert-text"><strong>Customer</strong> <?= $this->session->flashdata('notifSuccess') ?></span>
-		<button type="button" class="btn-close fs-4" data-bs-dismiss="alert" aria-label="Close" style="margin-top: -10px;">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
+	<script>
+		window.onload = function() {
+			showSuccessMessage();
+		};
+	</script>
 <?php endif; ?>
+<script>
+	function showSuccessMessage() {
+		Swal.fire({
+			icon: 'success',
+			title: 'Good job!',
+			text: 'Customer "<?= $this->session->flashdata('notifSuccess') ?>" berhasil ditambahkan!',
+			confirmButtonText: 'OK'
+		});
+	}
+</script>
 
 
 <div class="row">

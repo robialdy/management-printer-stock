@@ -15,7 +15,7 @@
 
 					<div class="row">
 						<div class="col-4 mt-2">
-							<label for="sn">PRINTER S/N*</label>
+							<label for="sn">PRINTER S/N <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
 							<div class="input-group input-group-static mb-2">
@@ -31,7 +31,7 @@
 
 					<div class="row">
 						<div class="col-4 mt-2">
-							<label for="sn">AGEN NAME</label>
+							<label for="sn">AGEN NAME <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
 							<div class="input-group input-group-static mb-2">
@@ -47,7 +47,7 @@
 
 					<div class="row">
 						<div class="col-4 mt-2">
-							<label for="typep">PIC IT</label>
+							<label for="typep">PIC IT <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
@@ -58,7 +58,7 @@
 
 					<div class="row">
 						<div class="col-4 mt-2">
-							<label for="typep">PIC USER</label>
+							<label for="typep">PIC USER <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">

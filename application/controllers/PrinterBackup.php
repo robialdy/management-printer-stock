@@ -12,7 +12,7 @@ class PrinterBackup extends CI_Controller
 			redirect('auth');
 		};
 		$this->load->model('PrinterBackup_Model');
-		$this->data_user = $this->db->get_where('auth', ['username' => $this->session->userdata('data_user')])->row_array();
+		$this->data_user = $this->db->get_where('users', ['username' => $this->session->userdata('data_user')])->row_array();
 	}
 
 	public function index()
@@ -36,7 +36,8 @@ class PrinterBackup extends CI_Controller
 			redirect('printer');
 		}else {
 			$this->PrinterBackup_Model->insertData();
-			$this->session->set_flashdata('notifSuccess', 'baru berhasil ditambahkan!');
+			$prin_sn = $this->input->post('printersn');
+			$this->session->set_flashdata('notifSuccess', $prin_sn);
 			redirect('printer');
 		}
 	}

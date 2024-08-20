@@ -1,16 +1,23 @@
 <?php $this->load->view('components/header') ?>
 
 <?php if ($this->session->flashdata('notifSuccess')) :  ?>
-	<div class="alert alert-success alert-dismissible text-white fade show" role="alert">
-		<span class="alert-icon align-middle">
-			<i class="bi bi-check"></i>
-		</span>
-		<span class="alert-text"><strong>Printer</strong> <?= $this->session->flashdata('notifSuccess') ?></span>
-		<button type="button" class="btn-close fs-4" data-bs-dismiss="alert" aria-label="Close" style="margin-top: -10px;">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
+	<script>
+		window.onload = function() {
+			showSuccessMessage();
+		};
+	</script>
 <?php endif; ?>
+
+<script>
+	function showSuccessMessage() {
+		Swal.fire({
+			icon: 'success',
+			title: 'Good job!',
+			text: 'Printer SN "<?= $this->session->flashdata('notifSuccess') ?>" berhasil ditambahkan!',
+			confirmButtonText: 'OK'
+		});
+	}
+</script>
 
 
 <div class="row">
@@ -27,10 +34,10 @@
 				<div class="d-flex ">
 					<i class="material-icons text-sm my-auto me-1">schedule</i>
 					<p class="mb-0 text-sm">
-						<?php if (!empty($dateTime->created_at)): ?>
-							<?= $dateTime->created_at ?>
-						<?php else: ?>
+						<?php if (empty($dateTime->created_at) || $totalPrinter == 0): ?>
 							null
+						<?php else: ?>
+							<?= $dateTime->created_at ?>
 						<?php endif; ?>
 					</p>
 				</div>
@@ -63,7 +70,7 @@
 
 					<div class="row">
 						<div class="col-4 mt-2">
-							<label for="sn">PRINTER S/N*</label>
+							<label for="sn">PRINTER S/N <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
@@ -74,7 +81,7 @@
 
 					<div class="row">
 						<div class="col-4 mt-2">
-							<label for="typep">TYPE PRINTER</label>
+							<label for="typep">TYPE PRINTER <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">

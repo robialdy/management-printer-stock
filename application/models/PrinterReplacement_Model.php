@@ -13,6 +13,19 @@ class PrinterReplacement_Model extends CI_Model
 		return $query->result();
 	}
 
+	public function printer_sn($printer_id)
+	{
+		$results = $this->readData(); // Mendapatkan data lengkap
+
+		// Mencari printer_sn dari hasil yang diperoleh
+		foreach ($results as $row) {
+			if ($row->id_printer == $printer_id) {
+				return $row->printer_sn; // Mengembalikan printer_sn jika ditemukan
+			}
+		}
+
+		return null; // Mengembalikan null jika tidak ditemukan
+	}
 	//auto invoice no ref
 	public function autoInvoice()
 	{
@@ -74,7 +87,6 @@ class PrinterReplacement_Model extends CI_Model
 
 	public function insertToDamage()
 	{
-		$this->db->delete('printer_replacement', ['id_replacement' => $this->input->post('idreplacement')]);
 
 		// update data printer
 		$status['status'] = 'DAMAGE';
@@ -123,7 +135,7 @@ class PrinterReplacement_Model extends CI_Model
 
 	public function dateTime()
 	{
-		$this->db->order_by('created_at', 'DESC');
+		$this->db->order_by('date_out', 'DESC');
 		$this->db->limit(1);
 		$query = $this->db->get('printer_replacement');
 		return $query->row();

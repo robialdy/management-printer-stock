@@ -11,7 +11,7 @@ class Agen extends CI_Controller
 			redirect('auth');
 		};
 		$this->load->model('Agen_Model');
-		$this->data_user = $this->db->get_where('auth', ['username' => $this->session->userdata('data_user')])->row_array();
+		$this->data_user = $this->db->get_where('users', ['username' => $this->session->userdata('data_user')])->row_array();
 	}
 
 	public function index()
@@ -31,7 +31,8 @@ class Agen extends CI_Controller
 			$this->load->view('agen/agen', $data);
 		}else {
 			$this->Agen_Model->insertData();
-			$this->session->set_flashdata('notifSuccess', 'baru berhasil ditambahkan!');
+			$cust_name = $this->input->post('name');
+			$this->session->set_flashdata('notifSuccess', $cust_name);
 			redirect('agen');
 		}
 	}

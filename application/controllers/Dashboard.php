@@ -12,7 +12,7 @@ class Dashboard extends CI_Controller
 		};
 		$this->load->model('PrinterBackup_Model');
 		$this->load->model('PrinterReplacement_Model');
-		$this->data_user = $this->db->get_where('auth', ['username' => $this->session->userdata('data_user')])->row_array();
+		$this->data_user = $this->db->get_where('users', ['username' => $this->session->userdata('data_user')])->row_array();
 	}
 
 	public function index()

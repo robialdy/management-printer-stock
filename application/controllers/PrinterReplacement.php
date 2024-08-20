@@ -14,7 +14,7 @@ class PrinterReplacement extends CI_Controller
 		$this->load->model('PrinterReplacement_Model');
 		$this->load->model('PrinterBackup_Model');
 		$this->load->model('Agen_Model');
-		$this->data_user = $this->db->get_where('auth', ['username' => $this->session->userdata('data_user')])->row_array();
+		$this->data_user = $this->db->get_where('users', ['username' => $this->session->userdata('data_user')])->row_array();
 	}
 
 	public function index()
@@ -42,13 +42,13 @@ class PrinterReplacement extends CI_Controller
 		$pic_it = $this->input->post('picit', true);
 		$pic_user = $this->input->post('picuser', true);
 		$no_ref = $this->PrinterReplacement_Model->autoInvoice();
-		$date_out = date('d/m/Y');
+		$date_out = date('d/m/Y / H:i:s');
 
 		$take_kelengkapan = $this->input->post('kelengkapan', true);
 		$kelengkapan = implode(', ', $take_kelengkapan);
 
 		//simpan data si session
-		$this->session->set_userdata('printersn', $printer_sn);
+		$this->session->set_userdata('printersn', $printer_sn); //id_printer
 		$this->session->set_userdata('agenname', $agen_name);
 		$this->session->set_userdata('picit', $pic_it);
 		$this->session->set_userdata('picuser', $pic_user);
@@ -75,7 +75,8 @@ class PrinterReplacement extends CI_Controller
 				redirect('replacement');
 			} else {
 				$this->PrinterReplacement_Model->insertData();
-				$this->session->set_flashdata('notifSuccess', 'Replacement Successfuly!');
+				$prin_sn = $this->PrinterReplacement_Model->printer_sn($printer_sn);
+				$this->session->set_flashdata('notifSuccess', $prin_sn);
 				redirect('replacement');
 			}
 		}
@@ -94,7 +95,8 @@ class PrinterReplacement extends CI_Controller
 
 		$this->PrinterReplacement_Model->insertNew($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $date_out, $kelengkapan);
 
-		$this->session->set_flashdata('notifSuccess', 'Replacement Successfuly!');
+		$prin_sn = $this->PrinterReplacement_Model->printer_sn($printer_sn);
+		$this->session->set_flashdata('notifSuccess', $prin_sn);
 		redirect('replacement');
 	}
 
@@ -109,14 +111,17 @@ class PrinterReplacement extends CI_Controller
 		$date_out = $this->session->userdata('dateout');
 		$kelengkapan = $this->session->userdata('kelengkapan');
 
-		//send to damage
+		$this->db->delete('printer_replacement', ['id_replacement' => $this->input->post('idreplacement')]);
+
+		//send to damage (!have bug)
 		$this->PrinterReplacement_Model->insertToDamage();
 
 
 		//send new replacement to replacement
 		$this->PrinterReplacement_Model->insertNeww($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $date_out, $kelengkapan);
 
-		$this->session->set_flashdata('notifSuccess', 'Replacement Successfuly!');
+		$prin_sn = $this->PrinterReplacement_Model->printer_sn($printer_sn);
+		$this->session->set_flashdata('notifSuccess', $prin_sn);
 		redirect('replacement');
 	}
 

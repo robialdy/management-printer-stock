@@ -10,3 +10,5 @@ $route['printer'] = 'PrinterBackup';
 $route['replacement'] = 'PrinterReplacement';
 $route['registrasi'] = 'Auth/Regis';
 $route['users'] = 'moderator/users';
+
+$route['delete/(:any)'] = 'moderator/users/delete/$1';
