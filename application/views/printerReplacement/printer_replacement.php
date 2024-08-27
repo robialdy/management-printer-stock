@@ -170,22 +170,22 @@
 			</div>
 			<div class="card-body px-0 pb-2">
 				<div class="table-responsive p-0">
-					<table class="table table-sm align-items-center custom-table-padding" id="datatable-search">
+					<table class="table table-sm align-items-center table-hover" id="datatable-search">
 						<thead>
 							<tr>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">No</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">origin</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">date in</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">type printer</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">printer sn</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">cust id</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">agen name</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">type cust</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">pic it</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">pic user</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">no ref</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">date out</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">Detail</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">No</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">origin</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">date in</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">type printer</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">printer sn</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">cust id</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">agen name</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">type cust</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">pic it</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">pic user</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">no ref</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">date out</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">Detail</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -211,7 +211,7 @@
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->cust_id ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal text-wrap"><?= $rp->agen_name ?></h6>
+										<h6 class="mb-0 text-sm fw-normal text-wrap"><?= $rp->cust_name ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->type_cust ?></h6>

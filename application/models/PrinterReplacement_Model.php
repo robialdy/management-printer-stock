@@ -4,10 +4,10 @@ class PrinterReplacement_Model extends CI_Model
 {
 	public function readData()
 	{
-		$this->db->select('printer_replacement.*, printer_backup.origin, printer_backup.date_in, printer_backup.type_printer, printer_backup.printer_sn, agen.cust_id, agen.agen_name, agen.type_cust');
+		$this->db->select('printer_replacement.*, printer_backup.origin, printer_backup.date_in, printer_backup.type_printer, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust');
 		$this->db->from('printer_replacement');
 		$this->db->join('printer_backup', 'printer_replacement.id_printer = printer_backup.id_printer');
-		$this->db->join('agen', 'printer_replacement.id_agen = agen.id_agen');
+		$this->db->join('customers', 'printer_replacement.id_cust = customers.id_cust');
 		$this->db->order_by('printer_replacement.date_out', 'DESC');
 		$query = $this->db->get();
 		return $query->result();
@@ -55,7 +55,7 @@ class PrinterReplacement_Model extends CI_Model
 
 		$form_data = [
 			'id_printer'	=> $this->input->post('printersn', true),
-			'id_agen'		=> $this->input->post('agenname', true), // id isinya
+			'id_cust'		=> $this->input->post('agenname', true), // id isinya
 			'pic_it'		=> $this->input->post('picit', true),
 			'pic_user'		=> $this->input->post('picuser', true),
 			'no_ref'		=> $this->autoInvoice(),
@@ -75,7 +75,7 @@ class PrinterReplacement_Model extends CI_Model
 
 		$form_data = [
 			'id_printer'	=> $printer_sn,
-			'id_agen'		=> $agen_name,
+			'id_cust'		=> $agen_name,
 			'pic_it'		=> $pic_it,
 			'pic_user'		=> $pic_user,
 			'no_ref'		=> $no_ref,
@@ -95,7 +95,7 @@ class PrinterReplacement_Model extends CI_Model
 
 		$form_dd = [
 			'id_printer'	=> 	$this->input->post('idprinter'),
-			'id_agen'		=> 	$this->input->post('idagen'),
+			'id_cust'		=> 	$this->input->post('idagen'),
 		];
 		$this->db->insert('printer_damage', $form_dd);
 	}
@@ -108,7 +108,7 @@ class PrinterReplacement_Model extends CI_Model
 
 		$form_data = [
 			'id_printer'	=> $printer_sn,
-			'id_agen'		=> $agen_name,
+			'id_cust'		=> $agen_name,
 			'pic_it'		=> $pic_it,
 			'pic_user'		=> $pic_user,
 			'no_ref'		=> $no_ref,
@@ -120,11 +120,11 @@ class PrinterReplacement_Model extends CI_Model
 
 	public function modalSelectJoin()
 	{
-		$id_agen = $this->input->post('agenname');
+		$id_cust = $this->input->post('agenname');
 		$this->db->select('printer_replacement.*, printer_backup.printer_sn, printer_backup.type_printer');
 		$this->db->from('printer_replacement');
 		$this->db->join('printer_backup', 'printer_backup.id_printer = printer_replacement.id_printer');
-		$this->db->where('printer_replacement.id_agen', $id_agen);
+		$this->db->where('printer_replacement.id_cust', $id_cust);
 		return $this->db->get();
 	}
 

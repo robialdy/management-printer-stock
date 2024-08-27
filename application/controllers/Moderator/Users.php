@@ -39,10 +39,53 @@ class Users extends CI_Controller
 		}
 	}
 
+	public function user_log()
+	{
+		$this->load->model('Activity_log_Model');
+		$data = [
+			'title'	=> 'User Log',
+			'data_user'	=> $this->data_user,
+		];
+
+		$this->load->view('moderator/user_log', $data);
+	}
+
+	//belum jalan
+	public function view_user_log()
+	{
+		$start_date = $this->input->post('from_date');
+		$end_date = $this->input->post('until_date');
+
+		// var_dump($start_date . '  /  '. $end_date);
+		// die();
+
+		$this->load->model('Activity_log_Model');
+		$logs = $this->Activity_log_Model->readData($start_date, $end_date);
+
+
+		// Mulai membangun HTML tabel
+		$output = '';
+		$no = 1;
+		foreach ($logs as $log) {
+			$output .= '<tr>';
+			$output .= '<td class="text-center text-uppercase"><h6 class="mb-0 text-md fw-normal">' . $no++ . '</h6></td>';
+			$output .= '<td class="text-center text-uppercase"><h6 class="mb-0 text-md fw-normal">' . $log->username . '</h6></td>';
+			$output .= '<td class="text-center text-uppercase"><h6 class="mb-0 text-md fw-normal">' . $log->role . '</h6></td>';
+			$output .= '<td class="text-center text-uppercase"><h6 class="mb-0 text-md fw-normal">' . $log->ip_address . '</h6></td>';
+			$output .= '<td class="text-center text-uppercase"><h6 class="mb-0 text-md fw-normal">' . $log->os . '</h6></td>';
+			$output .= '<td class="text-center text-uppercase"><h6 class="mb-0 text-md fw-normal">' . $log->browser . '</h6></td>';
+			$output .= '<td class="text-center text-uppercase"><h6 class="mb-0 text-md fw-normal">' . $log->login_at . '</h6></td>';
+			$output .= '</tr>';
+		}
+
+		echo $output; 
+	}
+
 	public function delete($username)
 	{
 		$this->Users_Model->delete($username);
 		$this->session->set_flashdata('notifSuccess', 'Delete Account Successfuly!');
 		redirect('users');
 	}
+
 }

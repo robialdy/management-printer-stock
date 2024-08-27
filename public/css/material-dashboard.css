@@ -2431,7 +2431,7 @@ progress {
 	--bs-table-bg: transparent;
 	--bs-table-border-color: #f0f2f5;
 	--bs-table-accent-bg: transparent;
-	--bs-table-striped-color: #7b809a;
+	--bs-table-striped-color: #F9F9F9;
 	--bs-table-striped-bg: rgba(0, 0, 0, .05);
 	--bs-table-active-color: #7b809a;
 	--bs-table-active-bg: rgba(0, 0, 0, .1);
@@ -21430,7 +21430,7 @@ body.dark-version {
 	.dropend .dropdown-toggle:after,
 	.dropstart .dropdown-toggle:after,
 	.dropup .dropdown-toggle:after {
-		content: "\f107";
+		/* content: "\f107"; */
 		font: normal normal normal 14px/1 FontAwesome;
 		border: none;
 		vertical-align: middle;
@@ -24088,7 +24088,7 @@ body:not(.dark-version) .sidenav.bg-white .collapse .nav-item .nav-link.active.t
 	-webkit-font-smoothing: antialiased;
 	font-family: Font Awesome\ 5 Free;
 	font-weight: 700;
-	content: "\f107";
+	/* content: "\f107"; */
 	margin-left: auto;
 	color: rgba(206, 212, 218, .7);
 	transition: all .2s ease-in-out
@@ -24301,7 +24301,7 @@ body:not(.dark-version) .sidenav.bg-white .collapse .nav-item .nav-link.active.t
 	}
 
 	.g-sidenav-hidden .navbar-vertical:hover .nav-item .nav-link[data-bs-toggle=collapse]:after {
-		content: "\f107";
+		/* content: "\f107"; */
 		opacity: 1
 	}
 
@@ -33140,7 +33140,7 @@ body.swal2-toast-shown .swal2-container.swal2-bottom-right {
 }
 
 .choices[data-type*=select-one]:after {
-	content: "\f107";
+	/* content: "\f107"; */
 	font: normal normal normal 14px/1 FontAwesome;
 	position: absolute;
 	right: 13.5px;

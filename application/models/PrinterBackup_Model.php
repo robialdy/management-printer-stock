@@ -9,9 +9,12 @@ class PrinterBackup_Model extends CI_Model
 
 	public function insertData()
 	{
+		$printer_sn = strtoupper($this->input->post('printersn', true));
+		$type = strtoupper($this->input->post('printertype', true));
+
 		$form_data = [
-			'printer_sn'	=> $this->input->post('printersn', true),
-			'type_printer'	=> $this->input->post('printertype', true),
+			'printer_sn'	=> $printer_sn,
+			'type_printer'	=> $type,
 			'origin'		=> 'BANDUNG',
 			'date_in'		=> date('d/m/Y / H:i:s'),
 			'status'		=> 'READY',

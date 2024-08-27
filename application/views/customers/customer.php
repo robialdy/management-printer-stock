@@ -67,7 +67,7 @@
 				</div>
 			</div>
 			<div class="modal-body">
-				<form method="POST" action="<?= site_url() ?>agen">
+				<form method="POST" action="<?= site_url() ?>customers">
 
 					<div class="row">
 						<div class="col-4 mt-2">
@@ -155,13 +155,13 @@
 			</div>
 			<div class="card-body px-0 pb-2">
 				<div class="table-responsive p-0">
-					<table class="table align-items-center" id="datatable-search">
+					<table class="table align-items-center table-hover" id="datatable-search">
 						<thead>
 							<tr>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">No</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">cust id</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">name</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">type cust</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">No</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">cust id</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">name</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">type cust</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -175,7 +175,7 @@
 										<h6 class="mb-0 text-md fw-normal"><?= $al['cust_id']; ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-md fw-normal"><?= $al['agen_name']; ?></h6>
+										<h6 class="mb-0 text-md fw-normal"><?= $al['cust_name']; ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-md fw-normal"><?= $al['type_cust']; ?></h6>

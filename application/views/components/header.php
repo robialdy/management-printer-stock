@@ -35,7 +35,7 @@
 	<!-- seting background sidebar -->
 	<style>
 		.bg-sidebar {
-			background-image: url('public/img/nature.jpeg');
+			background-image: url(<?= base_url('public/img/nature.jpeg') ?>);
 			background-size: cover;
 			background-position: center;
 			position: relative;
@@ -67,7 +67,7 @@
 			</a>
 		</div>
 		<hr class="horizontal light mt-0 mb-2">
-		<div class="collapse navbar-collapse  w-auto" id="sidenav-collapse-main">
+		<div class="" id="sidenav-collapse-main">
 			<ul class="navbar-nav">
 				<li class="nav-item">
 					<a class="nav-link text-white <?= ($this->uri->segment(1) == '') ? 'active bg-info' : ''; ?>" href="<?= site_url() ?>">
@@ -78,26 +78,41 @@
 					</a>
 				</li>
 
-				<li class="nav-item">
-					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'printer') ? 'active bg-info' : ''; ?>" href="<?= site_url('printer') ?>">
+
+				<li class="nav-item ">
+					<a class="nav-link text-white " data-bs-toggle="collapse" aria-expanded="false" href="#usersExample">
 						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
 							<i class="material-icons">format_list_bulleted</i>
 						</div>
-						<span class="nav-link-text ms-1">Printer Backup List</span>
+						<span class="sidenav-normal  ms-2  ps-1"> Printer <b class="caret"></b></span>
 					</a>
+					<div class="collapse <?= ($this->uri->segment(1) == 'printer' || $this->uri->segment(1) == 'replacement') ? 'show' : ''; ?>" id="usersExample">
+						<ul class="nav nav-sm flex-column">
+
+							<li class="nav-item">
+								<a class="nav-link text-white <?= ($this->uri->segment(1) == 'printer') ? 'active bg-info' : ''; ?>" href="<?= site_url('printer') ?>">
+									<div class="text-white text-center me-2 ms-3 d-flex align-items-center justify-content-center">
+										<i class="bi bi-printer-fill"></i>
+									</div>
+									<span class="nav-link-text ms-1">Printer Backup List</span>
+								</a>
+							</li>
+
+							<li class="nav-item">
+								<a class="nav-link text-white <?= ($this->uri->segment(1) == 'replacement') ? 'active bg-info' : ''; ?>" href="<?= site_url('replacement') ?>">
+									<div class="text-white text-center me-2 ms-3 d-flex align-items-center justify-content-center">
+										<i class="material-icons">autorenew</i>
+									</div>
+									<span class="nav-link-text ms-1">Printer Replacement</span>
+								</a>
+							</li>
+
+						</ul>
+					</div>
 				</li>
 
 				<li class="nav-item">
-					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'replacement') ? 'active bg-info' : ''; ?>" href="<?= site_url('replacement') ?>">
-						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-							<i class="material-icons">format_list_bulleted</i>
-						</div>
-						<span class="nav-link-text ms-1">Printer Replacement</span>
-					</a>
-				</li>
-
-				<li class="nav-item">
-					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'agen') ? 'active bg-info' : ''; ?>" href="<?= site_url('agen') ?>">
+					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'customers') ? 'active bg-info' : ''; ?>" href="<?= site_url('customers') ?>">
 						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
 							<i class="material-icons">business</i>
 						</div>
@@ -112,6 +127,15 @@
 								<i class="material-icons">people</i>
 							</div>
 							<span class="nav-link-text ms-1">User Manage</span>
+						</a>
+					</li>
+
+					<li class="nav-item">
+						<a class="nav-link text-white <?= ($this->uri->segment(1) == 'log') ? 'active bg-info' : ''; ?>" href="<?= site_url('log') ?>">
+							<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+								<i class="material-icons">assignment</i>
+							</div>
+							<span class="nav-link-text ms-1">User Log</span>
 						</a>
 					</li>
 				<?php endif ?>

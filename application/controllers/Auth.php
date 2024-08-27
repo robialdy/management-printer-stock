@@ -36,6 +36,11 @@ class Auth extends CI_Controller
 				'id_user'	=> $user['id_user'],
 				'data_user'	=> $user["username"],
 			];
+			// seting activity login
+			$this->load->library('user_agent');
+			$this->load->model('Activity_log_Model');
+			$this->Activity_log_Model->sendUserLog($user['id_user'], $this->input->ip_address(), $this->agent->platform(), $this->agent->browser());
+
 			$this->session->set_userdata($data);
 			redirect(base_url());
 		} else {

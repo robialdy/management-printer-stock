@@ -117,15 +117,15 @@
 			</div>
 			<div class="card-body px-0 pb-2">
 				<div class="table-responsive p-0">
-					<table class="table align-items-center" id="datatable-search">
+					<table class="table align-items-center table-hover" id="datatable-search">
 						<thead>
 							<tr>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">No</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">Origin</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">date in</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">type printer</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">printer sn</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">note</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">No</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">Origin</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">date in</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">type printer</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">printer sn</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">note</th>
 							</tr>
 						</thead>
 						<tbody>

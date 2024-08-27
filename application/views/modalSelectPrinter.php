@@ -18,8 +18,8 @@
 			</div>
 			<div class="modal-body">
 
+				<?php foreach ($printerselect as $sp) : ?>
 				<form method="POST" action="<?= site_url() ?>printerreplacement/insertWithDamage">
-					<?php foreach ($printerselect as $sp) : ?>
 						<div class="card mb-3">
 							<div class="d-flex align-items-center p-3 border-radius-md">
 								<span class="avatar text-bg-info avatar-lg fs-5">
@@ -36,9 +36,9 @@
 						</div>
 						<input type="text" value="<?= $sp->id_replacement ?>" name="idreplacement">
 						<input type="text" value="<?= $sp->id_printer ?>" name="idprinter">
-						<input type="text" value="<?= $sp->id_agen ?>" name="idagen">
+						<input type="text" value="<?= $sp->id_cust ?>" name="idagen">
+					</form>
 					<?php endforeach; ?>
-				</form>
 
 				<hr class="dark horizontal">
 

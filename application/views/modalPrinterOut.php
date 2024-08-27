@@ -31,14 +31,14 @@
 
 					<div class="row">
 						<div class="col-4 mt-2">
-							<label for="sn">AGEN NAME <span class="text-danger">*</span></label>
+							<label for="sn">CUST NAME <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
 							<div class="input-group input-group-static mb-2">
 								<select class="choices form-select" id="exampleFormControlSelect1" name="agenname" required>
 									<option value="" selected disabled>Enter Agen Name</option>
 									<?php foreach ($agen as $ag) : ?>
-										<option value="<?= $ag['id_agen']; ?>"><?= $ag['agen_name']; ?></option>
+										<option value="<?= $ag['id_cust']; ?>"><?= $ag['cust_name']; ?></option>
 									<?php endforeach; ?>
 								</select>
 							</div>

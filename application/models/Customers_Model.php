@@ -1,33 +1,34 @@
 <?php
 
-class Agen_Model extends CI_Model
+class Customers_Model extends CI_Model
 {
 	public function readData()
 	{
-		return $this->db->order_by('created_at', 'DESC')->get('agen')->result_array();
+		return $this->db->order_by('created_at', 'DESC')->get('customers')->result_array();
 	}
 
 	public function insertData()
 	{
+		$cust_name = strtoupper($this->input->post('name', true));
 		$form_data = [
 			'cust_id'	=> $this->input->post('custid', true),
-			'agen_name'	=> $this->input->post('name', true),
+			'cust_name'	=> $cust_name,
 			'type_cust'	=> $this->input->post('typecust', true),
 			'created_at'=> date('d M Y / H:i:s'),
 		];
-		$this->db->insert('agen', $form_data);
+		$this->db->insert('customers', $form_data);
 	}
 
 	public function jumlahData()
 	{
-		return $this->db->count_all_results('agen');
+		return $this->db->count_all_results('customers');
 	}
 
 	public function dateTime()
 	{
 		$this->db->order_by('created_at', 'DESC');
 		$this->db->limit(1);
-		$query = $this->db->get('agen');
+		$query = $this->db->get('customers');
 		return $query->row();
 	}
 }
