@@ -95,6 +95,15 @@
 				</li>
 
 				<li class="nav-item">
+					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'damage') ? 'active bg-info' : ''; ?>" href="<?= site_url('damage') ?>">
+						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+							<i class="material-icons">format_list_bulleted</i>
+						</div>
+						<span class="nav-link-text ms-1">Printer Damage</span>
+					</a>
+				</li>
+
+				<li class="nav-item">
 					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'agen') ? 'active bg-info' : ''; ?>" href="<?= site_url('agen') ?>">
 						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
 							<i class="material-icons">business</i>
@@ -111,6 +120,8 @@
 						<span class="nav-link-text ms-1">User Manage</span>
 					</a>
 				</li>
+
+				
 
 			</ul>
 		</div>
