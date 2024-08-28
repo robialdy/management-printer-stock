@@ -34,9 +34,9 @@
 								</button>
 							</div>
 						</div>
-						<input type="text" value="<?= $sp->id_replacement ?>" name="idreplacement">
-						<input type="text" value="<?= $sp->id_printer ?>" name="idprinter">
-						<input type="text" value="<?= $sp->id_cust ?>" name="idagen">
+						<input type="hidden" value="<?= $sp->id_replacement ?>" name="idreplacement">
+						<input type="hidden" value="<?= $sp->id_printer ?>" name="idprinter">
+						<input type="hidden" value="<?= $sp->id_cust ?>" name="idagen">
 					</form>
 					<?php endforeach; ?>
 

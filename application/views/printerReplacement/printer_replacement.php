@@ -55,7 +55,7 @@
 				<div class="d-flex ">
 					<i class="material-icons text-sm my-auto me-1">schedule</i>
 					<p class="mb-0 text-sm">
-						<?php if (!empty($dateTimeP->date_out)): ?>
+						<?php if (!empty($dateTimeP->date_out) || $jumReplacement == 0): ?>
 							<?= $dateTimeP->date_out ?>
 						<?php else: ?>
 							null
