@@ -48,6 +48,7 @@ class PrinterDamage extends CI_Controller
             $data = [
                 'biaya_perbaikan' => $this->input->post('biayaper', true),
                 'status_pembayaran' => $this->input->post('status_pembayaran', true),
+				'date_perbaikan'	=> date('d/m/Y / H:i:s'),
                 
             ];
             $id = $this->input->post('id');

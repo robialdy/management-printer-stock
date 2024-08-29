@@ -109,8 +109,8 @@
 
 							<li class="nav-item">
 								<a class="nav-link text-white <?= ($this->uri->segment(1) == 'damage') ? 'active bg-info' : ''; ?>" href="<?= site_url('damage') ?>">
-									<div class="text-white text-center me-2 ms-3 d-flex align-items-center justify-content-center">
-                                    <i class="material-icons" style="color: red;">warning</i>
+									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
+                                    <i class="material-icons">warning</i>
 									</div>
 									<span class="nav-link-text ms-1">Printer Damage</span>
 								</a>
@@ -123,7 +123,6 @@
 
 
 				<li class="nav-item">
-
 					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'customers') ? 'active bg-info' : ''; ?>" href="<?= site_url('customers') ?>">
 						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
 							<i class="material-icons">business</i>
