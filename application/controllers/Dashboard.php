@@ -12,6 +12,7 @@ class Dashboard extends CI_Controller
 		};
 		$this->load->model('PrinterBackup_Model');
 		$this->load->model('PrinterReplacement_Model');
+		$this->load->model('PrinterDamage_Model');
 		$this->data_user = $this->db->get_where('users', ['username' => $this->session->userdata('data_user')])->row_array();
 	}
 
@@ -21,7 +22,7 @@ class Dashboard extends CI_Controller
 			'title'			=> 'Dashboard',
 			'jumPrinter' 	=> $this->PrinterBackup_Model->jumlah(),
 			'jumBackup'		=> $this->PrinterBackup_Model->jumlahData(),
-			'jumDamage'		=> '',
+			'jumdamage'		=> $this->PrinterDamage_Model->jumlahData(),
 			'jumPembelian'	=> $this->PrinterReplacement_Model->jumlahData(),
 			'data_user'		=> $this->data_user,
 

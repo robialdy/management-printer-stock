@@ -86,7 +86,7 @@
 						</div>
 						<span class="sidenav-normal  ps-1"> Printer <b class="caret"></b></span>
 					</a>
-					<div class="collapse <?= ($this->uri->segment(1) == 'printer' || $this->uri->segment(1) == 'replacement') ? 'show' : ''; ?>" id="usersExample">
+					<div class="collapse <?= ($this->uri->segment(1) == 'printer' || $this->uri->segment(1) == 'replacement' ||  $this->uri->segment(1) == 'damage') ? 'show' : ''; ?>" id="usersExample">
 						<ul class="nav nav-sm flex-column">
 
 							<li class="nav-item">
@@ -107,11 +107,23 @@
 								</a>
 							</li>
 
+							<li class="nav-item">
+								<a class="nav-link text-white <?= ($this->uri->segment(1) == 'damage') ? 'active bg-info' : ''; ?>" href="<?= site_url('damage') ?>">
+									<div class="text-white text-center me-2 ms-3 d-flex align-items-center justify-content-center">
+                                    <i class="material-icons" style="color: red;">warning</i>
+									</div>
+									<span class="nav-link-text ms-1">Printer Damage</span>
+								</a>
+							</li>
+
+
 						</ul>
 					</div>
 				</li>
 
+
 				<li class="nav-item">
+
 					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'customers') ? 'active bg-info' : ''; ?>" href="<?= site_url('customers') ?>">
 						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
 							<i class="material-icons">business</i>
@@ -139,6 +151,8 @@
 						</a>
 					</li>
 				<?php endif ?>
+
+				
 
 			</ul>
 		</div>

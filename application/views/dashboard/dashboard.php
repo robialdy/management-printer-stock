@@ -37,11 +37,11 @@
 		<div class="card border-radius-lg">
 			<div class="card-header p-3 pt-2">
 				<div class="icon icon-xl icon-shape bg-gradient-success shadow-success text-right border-radius-sm mt-n4 position-absolute">
-					<p class="text-white p-3">Total Printer Damage</p>
+					<p class="text-white p-3">Total Damage</p>
 				</div>
 				<div class="text-end pt-1">
 					<p class="text-sm mb-0 text-capitalize">Total</p>
-					<h4 class="mb-0">1760</h4>
+					<h4 class="mb-0"><?= $jumdamage ?></h4>
 				</div>
 			</div>
 			<hr class="dark horizontal">
