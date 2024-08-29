@@ -76,7 +76,7 @@ class PrinterReplacement extends CI_Controller
 			} else {
 				$this->PrinterReplacement_Model->insertData();
 				$prin_sn = $this->PrinterReplacement_Model->printer_sn($printer_sn);
-				$this->session->set_flashdata('notifSuccess', $prin_sn);
+				$this->session->set_flashdata('notifSuccess', $prin_sn . 'Berhasil Ditambahkan');
 				redirect('replacement');
 			}
 		}
@@ -96,7 +96,7 @@ class PrinterReplacement extends CI_Controller
 		$this->PrinterReplacement_Model->insertNew($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $date_out, $kelengkapan);
 
 		$prin_sn = $this->PrinterReplacement_Model->printer_sn($printer_sn);
-		$this->session->set_flashdata('notifSuccess', $prin_sn);
+		$this->session->set_flashdata('notifSuccess', $prin_sn . 'Berhasil Ditambahkan');
 		redirect('replacement');
 	}
 
@@ -113,6 +113,11 @@ class PrinterReplacement extends CI_Controller
 
 		$this->db->delete('printer_replacement', ['id_replacement' => $this->input->post('idreplacement')]);
 
+		$idprinter = $this->input->post('idprinter');
+		$this->db->select('printer_sn');
+		$this->db->where('id_printer', $idprinter);
+		$prin_sn = $this->db->get('printer_backup');
+
 		//send to damage (!have bug)
 		$this->PrinterReplacement_Model->insertToDamage();
 
@@ -121,7 +126,7 @@ class PrinterReplacement extends CI_Controller
 		$this->PrinterReplacement_Model->insertNeww($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $date_out, $kelengkapan);
 
 		$prin_sn = $this->PrinterReplacement_Model->printer_sn($printer_sn);
-		$this->session->set_flashdata('notifSuccess', $prin_sn);
+		$this->session->set_flashdata('notifSuccess', $prin_sn . '" Berhasil Ditukar');
 		redirect('replacement');
 	}
 

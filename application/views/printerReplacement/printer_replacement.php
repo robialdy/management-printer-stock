@@ -12,7 +12,7 @@
 		Swal.fire({
 			icon: 'success',
 			title: 'Good job!',
-			text: 'Printer SN "<?= $this->session->flashdata('notifSuccess') ?>" Replacement Successfuly!',
+			text: 'Printer SN "<?= $this->session->flashdata('notifSuccess') ?>!',
 			confirmButtonText: 'OK'
 		});
 	}

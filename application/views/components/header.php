@@ -9,7 +9,7 @@
 	<title>
 		<?= $title ?>
 	</title>
-	<link rel="icon" href="https://www.jne.co.id/cfind/source/images/logo-white.svg" type="image/x-icon">
+	<link rel="icon" href="<?= base_url('public/img/printer.png') ?>" type="image/x-icon">
 
 
 	<!--     Fonts and icons     -->
@@ -84,14 +84,14 @@
 						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
 							<i class="material-icons">format_list_bulleted</i>
 						</div>
-						<span class="sidenav-normal  ms-2  ps-1"> Printer <b class="caret"></b></span>
+						<span class="sidenav-normal  ps-1"> Printer <b class="caret"></b></span>
 					</a>
 					<div class="collapse <?= ($this->uri->segment(1) == 'printer' || $this->uri->segment(1) == 'replacement') ? 'show' : ''; ?>" id="usersExample">
 						<ul class="nav nav-sm flex-column">
 
 							<li class="nav-item">
 								<a class="nav-link text-white <?= ($this->uri->segment(1) == 'printer') ? 'active bg-info' : ''; ?>" href="<?= site_url('printer') ?>">
-									<div class="text-white text-center me-2 ms-3 d-flex align-items-center justify-content-center">
+									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
 										<i class="bi bi-printer-fill"></i>
 									</div>
 									<span class="nav-link-text ms-1">Printer Backup List</span>
@@ -100,7 +100,7 @@
 
 							<li class="nav-item">
 								<a class="nav-link text-white <?= ($this->uri->segment(1) == 'replacement') ? 'active bg-info' : ''; ?>" href="<?= site_url('replacement') ?>">
-									<div class="text-white text-center me-2 ms-3 d-flex align-items-center justify-content-center">
+									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
 										<i class="material-icons">autorenew</i>
 									</div>
 									<span class="nav-link-text ms-1">Printer Replacement</span>

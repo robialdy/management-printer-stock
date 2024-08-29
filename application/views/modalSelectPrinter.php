@@ -17,33 +17,32 @@
 				</div>
 			</div>
 			<div class="modal-body">
-
-				<?php foreach ($printerselect as $sp) : ?>
-				<form method="POST" action="<?= site_url() ?>printerreplacement/insertWithDamage">
-						<div class="card mb-3">
-							<div class="d-flex align-items-center p-3 border-radius-md">
-								<span class="avatar text-bg-info avatar-lg fs-5">
-									<i class="bi bi-printer"></i>
-								</span>
-								<div class="ms-3">
-									<h6 class="mb-0 fs-sm">Printer SN <?= $sp->printer_sn ?></h6>
-									<span class="text-muted fs-sm">Type <?= $sp->type_printer ?></span>
+				<div class="overflow-auto" style="max-height: 400px">
+					<?php foreach ($printerselect as $sp) : ?>
+						<form method="POST" action="<?= site_url() ?>printerreplacement/insertWithDamage">
+							<div class="card mb-3">
+								<div class="d-flex align-items-center p-3 border-radius-md">
+									<span class="avatar text-bg-info avatar-lg fs-5">
+										<i class="bi bi-printer"></i>
+									</span>
+									<div class="ms-3">
+										<h6 class="mb-0 fs-sm">Printer SN <?= $sp->printer_sn ?></h6>
+										<span class="text-muted fs-sm">Type <?= $sp->type_printer ?></span>
+									</div>
+									<button type="submit" class="btn text-muted fs-3 ms-auto my-auto" type="button">
+										<i class="bi bi-plus-lg"></i>
+									</button>
 								</div>
-								<button type="submit" class="btn text-muted fs-3 ms-auto my-auto" type="button">
-									<i class="bi bi-plus-lg"></i>
-								</button>
 							</div>
-						</div>
-						<input type="hidden" value="<?= $sp->id_replacement ?>" name="idreplacement">
-						<input type="hidden" value="<?= $sp->id_printer ?>" name="idprinter">
-						<input type="hidden" value="<?= $sp->id_cust ?>" name="idagen">
-					</form>
+							<input type="hidden" value="<?= $sp->id_replacement ?>" name="idreplacement">
+							<input type="hidden" value="<?= $sp->id_printer ?>" name="idprinter">
+							<input type="hidden" value="<?= $sp->id_cust ?>" name="idagen">
+						</form>
 					<?php endforeach; ?>
-
-				<hr class="dark horizontal">
+				</div>
 
 				<form method="POST" action="<?= site_url() ?>printerreplacement/insertNew">
-					<div class="card mb-3">
+					<div class="card mb-3 mt-3 shadow-md">
 						<div class="d-flex align-items-center p-3 border-radius-md">
 							<span class="avatar text-bg-info avatar-lg fs-5">
 								<i class="bi bi-printer-fill"></i>

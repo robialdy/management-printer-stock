@@ -5,8 +5,9 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title>
-		Material Dashboard 2 by Creative Tim
+		Login
 	</title>
+	<link rel="icon" href="<?= base_url('public/img/printer.png') ?>" type="image/x-icon">
 	<!--     Fonts and icons     -->
 	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
 	<!-- Nucleo Icons -->
@@ -23,14 +24,14 @@
 <body class="bg-gray-200">
 
 	<main class="main-content  mt-0">
-		<div class="page-header align-items-start min-vh-100" style="background-image: url('https://images.unsplash.com/photo-1497294815431-9365093b7331?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1950&q=80');">
+		<div class="page-header align-items-start min-vh-100" style="background-image: url('<?= base_url('public/img/cover_w1296_h540_banner-web-jne_page-0001.jpg') ?>');">
 			<span class="mask bg-gradient-dark opacity-6"></span>
 			<div class="container my-auto">
 				<div class="row">
 					<div class="col-lg-4 col-md-8 col-12 mx-auto">
-						<div class="card z-index-0 fadeIn1 fadeInBottom">
+						<div class="card z-index-0 shadow-lg">
 							<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-								<div class="bg-gradient-info shadow-info border-radius-md py-3 pe-1">
+								<div class="bg-gradient-danger shadow-danger border-radius-md py-3 pe-1">
 									<h4 class="text-white fw-bold text-center mb-0">LOGIN</h4>
 								</div>
 							</div>
@@ -38,18 +39,17 @@
 
 								<form role="form" class="text-start" method="POST" action="<?= site_url() ?>auth">
 									<div class="input-group input-group-outline my-3">
-										<input type="text" class="form-control" placeholder="Username" name="username" autofocus>
+										<input type="text" class="form-control" placeholder="Username" name="username" required autofocus>
 									</div>
 									<div class="input-group input-group-outline mb-3">
-										<input type="password" class="form-control" placeholder="Password" name="password">
+										<input type="password" class="form-control" placeholder="Password" name="password" required>
 									</div>
 
-									<?= form_error('username', '<small class="text-danger">', '</small>') ?>
-									<?= form_error('password', '<small class="text-danger">', '</small>') ?>
+									<!-- yang berfungsi ini -->
 									<?= $this->session->flashdata('message'); ?>
 
 									<div class="text-center">
-										<button type="submit" class="btn bg-gradient-info w-100 my-4 mb-2">Sign in</button>
+										<button type="submit" class="btn shadow-lg w-100 my-4 mb-2 text-info">Login</button>
 									</div>
 								</form>
 
