@@ -10,4 +10,10 @@ $route['printer'] = 'PrinterBackup';
 $route['replacement'] = 'PrinterReplacement';
 $route['registrasi'] = 'Auth/Regis';
 $route['users'] = 'moderator/users';
+
 $route['damage'] = 'printerdamage';
+
+$route['log'] = 'moderator/users/user_log';
+
+$route['delete/(:any)'] = 'moderator/users/delete/$1';
+

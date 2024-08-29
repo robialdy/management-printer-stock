@@ -16,12 +16,12 @@
 				<div class="d-flex ">
 					<i class="material-icons text-sm my-auto me-1">schedule</i>
 					<p class="mb-0 text-sm">
-						<?php if (!empty($timedate->created_at)): ?>
-							<?= $timedate->created_at ?>
-						<?php else: ?>
-							null
-						<?php endif; ?>
-					</p>
+                        <?php if (!empty($timedate->created_at) || $jumdamage == 0): ?>
+                            null
+                        <?php else: ?>
+                            <?=$timedate->created_at?>
+                        <?php endif; ?>
+                    </p>
 				</div>
 			</div>
 		</div>
@@ -126,7 +126,7 @@
     </div>
     <div class="card-body px-0 pb-2">
       <div class="table-responsive p-0">
-        <table class="table table-sm table-striped align-items-center" id="datatable-search">
+        <table class="table table-sm table-hover align-items-center" id="datatable-search">
           <thead>
             <tr>
               <th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">No</th>
@@ -142,7 +142,6 @@
 			  <th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Biaya Perbaikan </th>
               <th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Note</th>
               <th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Status Pembayaran</th>
-			  <th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Kelengkapan</th>
 			  <th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Edit</th>
             </tr>
           </thead>
@@ -169,7 +168,7 @@
                 <h6 class="mb-0 text-sm fw-normal"><?=  $dm->cust_id ?></h6>
             </td>
             <td class="text-center">
-                <h6 class="mb-0 text-sm fw-normal"><?=  $dm->agen_name ?></h6>
+                <h6 class="mb-0 text-sm fw-normal"><?=  $dm->cust_name ?></h6>
             </td>
             <td class="text-center">
                 <h6 class="mb-0 text-sm fw-normal"><?=  $dm->type_cust ?></h6>
@@ -190,25 +189,114 @@
 				<h6 class="mb-0 text-sm fw-normal"><?=  $dm->status_pembayaran ?></h6>
 			</td>
 			<td class="text-center">
-				<h6 class="mb-0 text-sm fw-normal"><?=  $dm->kelengkapan ?></h6>
-			</td>
-			<td class="text-center">
-                <h6 class="mb-0 text-sm fw-normal">
-					<button class="btn btn-link">
-					<i class="material-icons">edit</i>
-					</button>
-				</h6>
+            <button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modalaja-<?=  $dm->id_damage ?>">
+             <i class="bi bi-pencil-square"></i> 
+            </button>
             </td>
-
-        </tr>
-		
         <?php $i++; ?>
     <?php endforeach; ?>  
-</tbody>
+            </tbody>
 
         </table>
       </div>
     </div>
   </div>
 </div>
+
+<!-- Modal -->
+ <?php foreach($damage as $dm) : ?>
+<div class="modal fade" id="modalaja-<?=  $dm->id_damage ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="text-end me-1">
+                <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="text-center">
+                <h5 class="modal-title font-weight-normal" id="exampleModalLabel">Edit Perbaikan</h5>
+            </div>
+            <div class="modal-body">
+                <?php echo form_open_multipart('PrinterDamage/edit');?>
+                    <input type="hidden" name="id_damage" value="<?= $dm->id_damage?>">
+
+                    
+                    <!-- Pic IT -->
+                    <div class="row mb-2">
+                        <div class="col-4 mt-2">
+                            <label for="">Pic IT</label>
+                        </div>
+                        <div class="col">
+                            <div class="input-group input-group-dynamic">
+                                <input type="text" class="form-control" placeholder="Enter Pic IT" id="picit" name="picit" value="<?= $dm->pic_it ?>">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Note -->
+                    <div class="row mb-2">
+                        <div class="col-4 mt-2">
+                            <label for="note">Note</label>
+                        </div>
+                        <div class="col">
+                            <div class="input-group input-group-dynamic">
+                                <input type="text" class="form-control" placeholder="Enter Note" id="note" name="note" value="<?= $dm->note ?>" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Biaya Perbaikan -->
+                    <div class="row mb-2">
+                        <div class="col-4 mt-2">
+                            <label for="biayaper">Biaya Perbaikan</label>
+                        </div>
+                        <div class="col">
+                            <div class="input-group input-group-dynamic">
+                                <input type="number" class="form-control" placeholder="Enter Biaya Perbaikan" id="biayaper" name="biayaper" value="<?= $dm->biaya_perbaikan ?>" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Status Pembayaran -->
+                    <div class="row mb-2">
+                        <div class="col-4 mt-2">
+                            <label>Status Pembayaran</label>
+                        </div>
+                        <div class="col">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="status_pembayaran" id="BelumBayar" value="Belum Bayar"
+                                <?= ($dm->status_pembayaran == 'Belum Bayar') ? 'checked' : ''; ?>>
+                                <label class="form-check-label" for="belumBayar">Belum Bayar</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="status_pembayaran" id="SudahBayar" value="Sudah Bayar"
+                                <?= ($dm->status_pembayaran == 'Sudah Bayar') ? 'checked' : ''; ?>>
+                                <label class="form-check-label" for="sudahBayar">Sudah Bayar</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-4 mt-2">
+                            <label for="biayaper">Upload File</label>
+                        </div>
+                        <div class="col">
+                            <div class="input-group input-group-dynamic">
+                                <input type="file" class="form-control" placeholder="Enter Biaya Perbaikan" id="file" name="file" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="text-end mt-3">
+                        <button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save Changes</button>
+                    </div>
+                <?php echo form_close();?>
+            </div>
+        </div>
+    </div>
+</div>
+<?php endforeach; ?>  
+
 <?php $this->load->view('components/footer') ?>

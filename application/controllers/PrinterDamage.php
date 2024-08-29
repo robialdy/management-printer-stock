@@ -16,12 +16,12 @@ class PrinterDamage extends CI_Controller
         $this->load->model('PrinterDamage_Model');
 
         // Fetch and store user data from the session
-        $this->data_user = $this->db->get_where('auth', [
+        $this->data_user = $this->db->get_where('users', [
             'username' => $this->session->userdata('data_user')
         ])->row_array();
     }
 
-    public function index()
+    public function index() 
     {
         $data = [
             'title' => 'Printer Damage',
@@ -61,6 +61,33 @@ class PrinterDamage extends CI_Controller
             // Redirect kembali ke halaman damage
             redirect('damage');
         }
+    }
+
+    public function edit()
+    {
+        $this->form_validation->set_rules('note', 'Note', 'required|trim');
+        $this->form_validation->set_rules('biayaper', 'Biaya Perbaikan', 'required|trim');
+       
+        if ($this->form_validation->run() == false) {
+            redirect('damage');
+        }else{
+            $data =[
+             'pic_it'=> $this->input->post('picit',true),
+             'note'=> $this->input->post('note',true),
+             'biaya_perbaikan'=> $this->input->post('biayaper',true),
+             'status_pembayaran'=> $this->input->post('status_pembayaran',true),
+            ];
+
+            $id = $this->input->post('id_damage');
+    
+        
+            $this->db->where('id_damage', $id);
+            $this->db->update('printer_damage', $data);
+
+            redirect('damage');
+        }
+
+
     }
     
 

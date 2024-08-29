@@ -1,16 +1,22 @@
 <?php $this->load->view('components/header') ?>
 
 <?php if ($this->session->flashdata('notifSuccess')) :  ?>
-	<div class="alert alert-success alert-dismissible text-white fade show" role="alert">
-		<span class="alert-icon align-middle">
-			<i class="bi bi-check"></i>
-		</span>
-		<span class="alert-text"><strong>Printer</strong> <?= $this->session->flashdata('notifSuccess') ?></span>
-		<button type="button" class="btn-close fs-4" data-bs-dismiss="alert" aria-label="Close" style="margin-top: -10px;">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
+	<script>
+		window.onload = function() {
+			showSuccessMessage();
+		};
+	</script>
 <?php endif; ?>
+<script>
+	function showSuccessMessage() {
+		Swal.fire({
+			icon: 'success',
+			title: 'Good job!',
+			text: 'Printer SN "<?= $this->session->flashdata('notifSuccess') ?>" Replacement Successfuly!',
+			confirmButtonText: 'OK'
+		});
+	}
+</script>
 
 <div class="row">
 	<div class="col-lg-6 col-md-6 mt-3 mb-3">
@@ -26,10 +32,10 @@
 				<div class="d-flex ">
 					<i class="material-icons text-sm my-auto me-1">schedule</i>
 					<p class="mb-0 text-sm">
-						<?php if (!empty($dateTimeB->created_at)): ?>
-							<?= $dateTimeB->created_at ?>
-						<?php else: ?>
+						<?php if (empty($dateTimeB->created_at) || $jumPrinter == 0): ?>
 							null
+						<?php else: ?>
+							<?= $dateTimeB->created_at ?>
 						<?php endif; ?>
 					</p>
 				</div>
@@ -49,8 +55,8 @@
 				<div class="d-flex ">
 					<i class="material-icons text-sm my-auto me-1">schedule</i>
 					<p class="mb-0 text-sm">
-						<?php if (!empty($dateTimeP->created_at)): ?>
-							<?= $dateTimeP->created_at ?>
+						<?php if (!empty($dateTimeP->date_out) || $jumReplacement == 0): ?>
+							<?= $dateTimeP->date_out ?>
 						<?php else: ?>
 							null
 						<?php endif; ?>
@@ -93,7 +99,7 @@
 
 					<div class="row">
 						<div class="col-4 mt-2">
-							<label for="sn">PRINTER S/N*</label>
+							<label for="sn">PRINTER S/N <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
@@ -104,7 +110,7 @@
 
 					<div class="row">
 						<div class="col-4 mt-2">
-							<label for="typep">TYPE PRINTER</label>
+							<label for="typep">TYPE PRINTER <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
@@ -164,22 +170,22 @@
 			</div>
 			<div class="card-body px-0 pb-2">
 				<div class="table-responsive p-0">
-					<table class="table table-sm align-items-center custom-table-padding" id="datatable-search">
+					<table class="table table-sm align-items-center table-hover" id="datatable-search">
 						<thead>
 							<tr>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">No</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">origin</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">date in</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">type printer</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">printer sn</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">cust id</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">agen name</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">type cust</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">pic it</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">pic user</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">no ref</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">date out</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0">Detail</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">No</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">origin</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">date in</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">type printer</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">printer sn</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">cust id</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">agen name</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">type cust</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">pic it</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">pic user</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">no ref</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">date out</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">Detail</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -205,7 +211,7 @@
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->cust_id ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal text-wrap"><?= $rp->agen_name ?></h6>
+										<h6 class="mb-0 text-sm fw-normal text-wrap"><?= $rp->cust_name ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->type_cust ?></h6>

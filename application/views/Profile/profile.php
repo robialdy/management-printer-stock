@@ -15,7 +15,7 @@
 						<?= $data_user['username'] ?>
 					</h5>
 					<p class="mb-0 font-weight-normal text-sm">
-						Admin
+						<?= $data_user['role'] ?>
 					</p>
 				</div>
 			</div>

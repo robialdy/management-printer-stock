@@ -10,8 +10,7 @@ class P extends CI_Controller
 		if (!$this->session->userdata('data_user')) {
 			redirect('auth');
 		};
-		$this->data_user = $this->db->get_where('auth', ['username' => $this->session->userdata('data_user')])->row_array();
-		$this->load->model('Auth_Model');
+		$this->data_user = $this->db->get_where('users', ['username' => $this->session->userdata('data_user')])->row_array();
 	}
 
 	public function index()
@@ -20,7 +19,7 @@ class P extends CI_Controller
 
 		if($form_type == 'change_username') {
 
-		$this->form_validation->set_rules('username', 'Username', 'required|trim|is_unique[auth.username]');
+		$this->form_validation->set_rules('username', 'Username', 'required|trim|is_unique[users.username]');
 		if ($this->form_validation->run() == FALSE) {
 			$data = [
 				'title' 		=> 'Profile',
@@ -34,7 +33,7 @@ class P extends CI_Controller
 				'username'	=> $this->input->post('username', true),
 			];
 			$this->db->where('id_user', $this->input->post('id', true));
-			$this->db->update('auth', $form_data);
+			$this->db->update('users', $form_data);
 			redirect('auth/logout');
 		}
 	} else {
@@ -63,7 +62,7 @@ class P extends CI_Controller
 
 						$this->db->set('password', $password_hash);
 						$this->db->where('username', $this->data_user['username']);
-						$this->db->Update('auth');
+						$this->db->Update('users');
 						$this->session->set_flashdata('notifSuccess', 'baru berhasil diupdate!');
 						redirect('p');
 					}

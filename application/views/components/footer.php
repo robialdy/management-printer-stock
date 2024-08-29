@@ -11,6 +11,7 @@
 
 </div>
 
+
 <script src="<?= base_url() ?>/public/datatables/datatables.js"></script>
 <!-- Github buttons -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
@@ -19,21 +20,32 @@
 <script src="<?= base_url() ?>public/js/material-dashboard.min.js?v=3.1.0"></script>
 <script src="<?= base_url() ?>public/js/material-dashboard.js"></script>
 
+
 <!-- modal -->
 <script src="<?= base_url() ?>public/js/core/bootstrap.min.js"></script>
 <script src="<?= base_url() ?>public/js/core/popper.min.js"></script>
+<script src="<?= base_url() ?>public/js/plugins/sweetalert.min.js"></script>
+<script src="<?= base_url() ?>public/js/plugins/perfect-scrollbar.min.js"></script>
+<script src="<?= base_url() ?>public/js/plugins/smooth-scrollbar.min.js"></script>
 
 <!-- select ssearch -->
 <script src="<?= base_url() ?>public/select_search/choices.js"></script>
 <script src="<?= base_url() ?>public/select_search/form-element-select.js"></script>
 
+
 <script>
+	// dataTable = new simpleDatatables.DataTable("#datatable-search");
+
 	const dataTableSearch = new simpleDatatables.DataTable("#datatable-search", {
-		searchable: true,
-		fixedHeight: true,
+		sortable: false,
+	});
+
+
+	const dataTableSearch2 = new simpleDatatables.DataTable("#datatable-search2", {
 		sortable: false,
 	});
 </script>
+
 
 </body>
 
