@@ -30,7 +30,7 @@
 
 <div class="text-end me-5">
 	<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modalInsert">
-		<i class="bi bi-pencil-square"></i> Damage
+		<i class="bi bi-pencil-square"></i> BIAYA PERBAIKAN
 	</button>
 </div>
 
@@ -121,7 +121,7 @@
 	<div class="card my-4">
 		<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
 			<div class="bg-gradient-info shadow-info border-radius-md pt-4 pb-3">
-				<h6 class="text-white text-capitalize ps-3">Printer IT</h6>
+				<h6 class="text-white text-capitalize ps-3">Printer Damage</h6>
 			</div>
 		</div>
 		<div class="card-body px-0 pb-2">
@@ -142,6 +142,7 @@
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Biaya Perbaikan </th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Note</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Status Pembayaran</th>
+							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">File Transaksi</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Edit</th>
 						</tr>
 					</thead>
@@ -189,13 +190,21 @@
 									<h6 class="mb-0 text-sm fw-normal"><?= $dm->status_pembayaran ?></h6>
 								</td>
 								<td>
-									<button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#modalaja-<?= $dm->id_damage ?>">
+									<h6 class="mb-0 text-sm fw-normal"> <button type="button" class="btn btn-link mb-0" data-bs-toggle="modal" data-bs-target="#modalfile-<?= $dm->id_damage ?>">
+											file
+										</button></h6>
+
+								</td>
+								<td>
+
+									<a class="mb-0 text-sm fw-normal text-info text-decoration-underline" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalaja-<?= $dm->id_damage ?>">
 										<i class="material-icons text-secondary">edit</i>
-									</button>
+									</a>
 								</td>
 								<?php $i++; ?>
 							<?php endforeach; ?>
 					</tbody>
+
 
 				</table>
 			</div>
@@ -203,7 +212,7 @@
 	</div>
 </div>
 
-<!-- Modal -->
+<!-- Modal edit-->
 <?php foreach ($damage as $dm) : ?>
 	<div class="modal fade" id="modalaja-<?= $dm->id_damage ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered" role="document">
@@ -240,7 +249,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic">
-								<input type="text" class="form-control" placeholder="Enter Note" id="note" name="note" value="<?= $dm->note ?>" required>
+								<input type="text" class="form-control" placeholder="Enter Note" id="note" name="note" value="<?= $dm->note ?>">
 							</div>
 						</div>
 					</div>
@@ -252,7 +261,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic">
-								<input type="number" class="form-control" placeholder="Enter Biaya Perbaikan" id="biayaper" name="biayaper" value="<?= $dm->biaya_perbaikan ?>" required>
+								<input type="number" class="form-control" placeholder="Enter Biaya Perbaikan" id="biayaper" name="biayaper" value="<?= $dm->biaya_perbaikan ?>">
 							</div>
 						</div>
 					</div>
@@ -282,7 +291,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic">
-								<input type="file" class="form-control" placeholder="Enter Biaya Perbaikan" id="file" name="file" required>
+								<input type="file" class="form-control" placeholder="Enter Biaya Perbaikan" id="file" name="file" accept=".png,.jpg,.jpeg,.pdf">
 							</div>
 						</div>
 					</div>
@@ -298,5 +307,30 @@
 		</div>
 	</div>
 <?php endforeach; ?>
+
+<!-- Modal file -->
+<?php foreach ($damage as $dm) : ?>
+	<div class="modal fade" id="modalfile-<?= $dm->id_damage ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="pdfModalLabel">Report Perbaikan</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<?php if (!empty($dm->file)): ?>
+					<iframe src="<?php echo base_url('public/img/file_uploaded/' . $dm->file); ?>" width="100%" height="730px"></iframe>
+				<?php else: ?>
+					<p class="ms-3 mt-3 fs-4">File tidak ditemukan atau data kosong.</p>
+				<?php endif; ?>
+
+			</div>
+		</div>
+	</div>
+	</div>
+<?php endforeach; ?>
+
 
 <?php $this->load->view('components/footer') ?>
