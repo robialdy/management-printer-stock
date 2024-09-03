@@ -125,7 +125,6 @@
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">date in</th>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">type printer</th>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">printer sn</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">note</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -146,9 +145,6 @@
 									</td>
 									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-md fw-normal"><?= $pl['printer_sn']; ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-md fw-normal"><?= $pl['note']; ?></h6>
 									</td>
 								</tr>
 								<?php $i++; ?>

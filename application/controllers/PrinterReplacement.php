@@ -25,6 +25,7 @@ class PrinterReplacement extends CI_Controller
 			'replacement'	=> $this->PrinterReplacement_Model->readData(),
 			'printer'		=> $this->PrinterBackup_Model->readData(),
 			'agen'			=> $this->Customers_Model->readData(),
+			'cust_name'		=> $this->PrinterReplacement_Model->custName(),
 			'jumPrinter'	=> $this->PrinterBackup_Model->jumlahData(),
 			'jumReplacement'=> $this->PrinterReplacement_Model->jumlahData(),
 			'data_user'		=> $this->data_user,
@@ -77,7 +78,7 @@ class PrinterReplacement extends CI_Controller
 			} else {
 				$this->PrinterReplacement_Model->insertData();
 				$prin_sn = $this->PrinterReplacement_Model->printer_sn($printer_sn);
-				$this->session->set_flashdata('notifSuccess', $prin_sn . 'Berhasil Ditambahkan');
+				$this->session->set_flashdata('notifSuccess', $prin_sn . '" Berhasil Ditambahkan');
 				redirect('replacement');
 			}
 		}
@@ -114,20 +115,48 @@ class PrinterReplacement extends CI_Controller
 
 		$this->db->delete('printer_replacement', ['id_replacement' => $this->input->post('idreplacement')]);
 
+		//ini apa eyy lupa 
 		$idprinter = $this->input->post('idprinter');
 		$this->db->select('printer_sn');
 		$this->db->where('id_printer', $idprinter);
 		$prin_sn = $this->db->get('printer_backup');
 
-		//send to damage (!have bug)
+		//send to damage
 		$this->PrinterReplacement_Model->insertToDamage();
 
-
-		//send new replacement to replacement
-		$this->PrinterReplacement_Model->insertNeww($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $date_out, $kelengkapan);
+		//send ke replacement
+		$sn_lama = $this->input->post('printersn');
+		$this->PrinterReplacement_Model->insertNeww($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $date_out, $kelengkapan, $sn_lama);
 
 		$prin_sn = $this->PrinterReplacement_Model->printer_sn($printer_sn);
 		$this->session->set_flashdata('notifSuccess', $prin_sn . '" Berhasil Ditukar');
+		redirect('replacement');
+	}
+
+	public function modal_edit_damage()
+	{
+		$query = $this->PrinterReplacement_Model->modalSelectJoin();
+		$result = $query->result();
+
+		$this->db->select('cust_name');
+		$get_namecust = $this->db->get_where('customers', ['id_cust' => $this->input->post('agenname')]);
+		$cust_name = $get_namecust->row();
+
+
+		$form_data = [
+			'printerdamageselect'	=> $result,
+			'cust_name'	=> $cust_name->cust_name,
+		];
+
+		$this->session->set_flashdata('printerdamageselect', $form_data);
+		redirect('replacement');
+	}
+
+	//kirim damage saja
+	public function insertDamage()
+	{
+		$this->PrinterReplacement_Model->insertToDamage();
+		$this->db->delete('printer_replacement', ['id_replacement' => $this->input->post('idreplacement')]);
 		redirect('replacement');
 	}
 

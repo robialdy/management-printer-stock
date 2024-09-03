@@ -17,6 +17,8 @@
 				</div>
 			</div>
 			<div class="modal-body">
+				<small class="ms-2 py-1">Pilih Printer Yang Ingin Ditukar<i class="ps-1 bi bi-arrow-down"></i>
+				</small>
 				<div class="overflow-auto" style="max-height: 400px">
 					<?php foreach ($printerselect as $sp) : ?>
 						<form method="POST" action="<?= site_url() ?>printerreplacement/insertWithDamage">
@@ -34,6 +36,7 @@
 									</button>
 								</div>
 							</div>
+							<input type="hidden" value="<?= $sp->printer_sn ?>" name="printersn">
 							<input type="hidden" value="<?= $sp->id_replacement ?>" name="idreplacement">
 							<input type="hidden" value="<?= $sp->id_printer ?>" name="idprinter">
 							<input type="hidden" value="<?= $sp->id_cust ?>" name="idagen">
@@ -41,6 +44,9 @@
 					<?php endforeach; ?>
 				</div>
 
+
+				<small class="ms-2">Pembelian Printer Baru<i class="ps-1 bi bi-arrow-down"></i>
+				</small>
 				<form method="POST" action="<?= site_url() ?>printerreplacement/insertNew">
 					<div class="card mb-3 mt-3 shadow-md">
 						<div class="d-flex align-items-center p-3 border-radius-md">

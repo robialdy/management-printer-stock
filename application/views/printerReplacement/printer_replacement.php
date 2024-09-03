@@ -55,8 +55,8 @@
 				<div class="d-flex ">
 					<i class="material-icons text-sm my-auto me-1">schedule</i>
 					<p class="mb-0 text-sm">
-						<?php if (!empty($dateTimeP->date_out) || $jumReplacement == 0): ?>
-							<?= $dateTimeP->date_out ?>
+						<?php if (!empty($dateTimeP->created_at)): ?>
+							<?= $dateTimeP->created_at ?>
 						<?php else: ?>
 							null
 						<?php endif; ?>
@@ -69,6 +69,11 @@
 
 <!-- Button trigger modal -->
 <div class="row justify-content-end">
+	<div class="col-auto">
+		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modaledit">
+			PRINTER DAMAGE
+		</button>
+	</div>
 	<div class="col-auto">
 		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modalInsert">
 			<i class="bi bi-printer-fill me-2"></i>Printer IN
@@ -131,6 +136,24 @@
 
 <?php $printerselect = $this->session->flashdata('printerselect'); ?>
 
+<?php $printerdamageselect = $this->session->flashdata('printerdamageselect'); ?>
+
+<!-- menampilan modal ketika buka page -->
+<?php if ($printerdamageselect) : ?>
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			var myModal = new bootstrap.Modal(document.getElementById('modaldamageselect'), {
+				keyboard: false
+			});
+			myModal.show();
+		});
+	</script>
+<?php endif; ?>
+
+<!-- modal select damage printer -->
+<?php $this->load->view('printerreplacement/modalSelectPrinterOut', ['damageselect' => $printerdamageselect]) ?>
+
+
 <!-- menampilan modal ketika buka page -->
 <?php if ($printerselect) : ?>
 	<script>
@@ -179,8 +202,9 @@
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">type printer</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">printer sn</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">cust id</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">agen name</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">cust name</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">type cust</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">sn damage</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">pic it</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">pic user</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">no ref</th>
@@ -217,6 +241,9 @@
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->type_cust ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-sm fw-normal"><?= $rp->sn_damage ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->pic_it ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
@@ -244,37 +271,12 @@
 	</div>
 </div>
 
+<!-- modal edit -->
+<?php $this->load->view('printerreplacement/modal_edit'); ?>
 
-<!-- Modal detail -->
-<?php foreach ($replacement as $rp) : ?>
-	<div class="modal fade" id="modalDetail<?= $rp->id_replacement ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="text-end me-1">
-					<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<div class="text-center">
-						<h5 class="modal-title font-weight-normal" id="exampleModalLabel">Detail Kelengkapan Printer</h5>
-					</div>
-				</div>
-				<div class="modal-body">
-
-					<div class="mx-3 mt-2">
-						<h5 class="font-weight-normal text-info text-gradient">Printer SN <?= $rp->printer_sn ?></h5>
-						<blockquote class="blockquote text-white mb-0">
-							<p class="text-dark ms-3"><?= $rp->kelengkapan ?></p>
-						</blockquote>
-					</div>
+<!-- modal detail -->
+<?php $this->load->view('printerreplacement/modal_detail'); ?>
 
 
-					<div class="text-end mt-3">
-						<button type="button" class="btn bg-white shadow" data-bs-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-<?php endforeach ?>
 
 <?php $this->load->view('components/footer') ?>
