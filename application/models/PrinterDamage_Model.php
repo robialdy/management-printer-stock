@@ -71,7 +71,7 @@ class PrinterDamage_Model extends CI_Model
 	}
 
 	
-	public function dateTime()
+	public function timedate()
 {
     $this->db->order_by('created_at', 'DESC');
     $this->db->limit(1);

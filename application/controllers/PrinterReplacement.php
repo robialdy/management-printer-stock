@@ -13,7 +13,6 @@ class PrinterReplacement extends CI_Controller
 		};
 		$this->load->model('PrinterReplacement_Model');
 		$this->load->model('PrinterBackup_Model');
-		
 		$this->load->model('Customers_Model');
 		$this->data_user = $this->db->get_where('users', ['username' => $this->session->userdata('data_user')])->row_array();
 	}

@@ -1,6 +1,22 @@
 <?php $this->load->view('components/header') ?>
 
-
+<?php if ($this->session->flashdata('notifSuccess')) :  ?>
+	<script>
+		window.onload = function() {
+			showSuccessMessage();
+		};
+	</script>
+<?php endif; ?>
+<script>
+	function showSuccessMessage() {
+		Swal.fire({
+			icon: 'success',
+			title: 'Good job!',
+			text: 'Data "<?= $this->session->flashdata('notifSuccess') ?>',
+			confirmButtonText: 'OK'
+		});
+	}
+</script>
 
 <div class="row">
 	<div class="col-lg-6 col-md-6 mt-3 mb-3">
@@ -12,14 +28,13 @@
 			</div>
 			<div class="card-body text-center">
 				<p class="text-md fw-normal">Total Printer Damage</p>
-				<hr class="dark horizontal">
 				<div class="d-flex ">
 					<i class="material-icons text-sm my-auto me-1">schedule</i>
 					<p class="mb-0 text-sm">
 						<?php if (!empty($timedate->created_at) || $jumdamage == 0): ?>
-							null
+							<?= date('d-m-Y H:i:s') ?>
 						<?php else: ?>
-							<?= $timedate->created_at ?>
+							<?= $timedate->created_at ?> 
 						<?php endif; ?>
 					</p>
 				</div>
@@ -33,19 +48,6 @@
 		<i class="bi bi-pencil-square"></i> BIAYA PERBAIKAN
 	</button>
 </div>
-
-<?php if ($this->session->flashdata('notifSuccess')) :  ?>
-	<div class="alert alert-success alert-dismissible text-white fade show" role="alert">
-		<span class="alert-icon align-middle">
-			<i class="bi bi-check"></i>
-		</span>
-		<span class="alert-text"><strong>Printer</strong> <?= $this->session->flashdata('notifSuccess') ?></span>
-		<button type="button" class="btn-close fs-4" data-bs-dismiss="alert" aria-label="Close" style="margin-top: -10px;">
-			<span aria-hidden="true">&times;</span>
-		</button>
-	</div>
-<?php endif; ?>
-
 <!-- Modal -->
 <div class="modal fade" id="modalInsert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
@@ -82,7 +84,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
-								<input type="number" class="form-control" aria-label="Biaya Perbaikan" placeholder="Enter biaya perbaikan" id="biayaper" name="biayaper" required>
+								<input type="number" class="form-control" aria-label="Biaya Perbaikan" placeholder="Enter biaya perbaikan" id="biayaper" name="biayaper" style="text-transform: uppercase;" required>
 							</div>
 						</div>
 					</div>
@@ -149,7 +151,7 @@
 					<tbody>
 						<?php $i = 1; ?>
 						<?php foreach ($damage as $dm) : ?>
-							<tr class="text-center">
+							<tr class="text-center text-uppercase">
 								<th>
 									<h6 class="mb-0 text-sm fw-normal"><?= $i; ?></h6>
 								</th>
@@ -237,7 +239,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic">
-								<input type="text" class="form-control" placeholder="Enter Pic IT" id="picit" name="picit" value="<?= $dm->pic_it ?>">
+								<input type="text" class="form-control" placeholder="Enter Pic IT" id="picit" name="picit" style="text-transform: uppercase;" value="<?= $dm->pic_it ?>">
 							</div>
 						</div>
 					</div>
@@ -249,7 +251,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic">
-								<input type="text" class="form-control" placeholder="Enter Note" id="note" name="note" value="<?= $dm->note ?>">
+								<input type="text" class="form-control" placeholder="Enter Note" id="note" name="note" style="text-transform: uppercase;" value="<?= $dm->note ?>">
 							</div>
 						</div>
 					</div>
@@ -261,7 +263,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic">
-								<input type="number" class="form-control" placeholder="Enter Biaya Perbaikan" id="biayaper" name="biayaper" value="<?= $dm->biaya_perbaikan ?>">
+								<input type="number" class="form-control" placeholder="Enter Biaya Perbaikan" id="biayaper" name="biayaper" style="text-transform: uppercase;" value="<?= $dm->biaya_perbaikan ?>">
 							</div>
 						</div>
 					</div>
@@ -310,25 +312,24 @@
 
 <!-- Modal file -->
 <?php foreach ($damage as $dm) : ?>
-	<div class="modal fade" id="modalfile-<?= $dm->id_damage ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal fade" id="modalfile-<?= htmlspecialchars($dm->id_damage) ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-xl" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="pdfModalLabel">Report Perbaikan</h5>
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
+					<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
 				</div>
 
 				<?php if (!empty($dm->file)): ?>
-					<iframe src="<?php echo base_url('public/img/file_uploaded/' . $dm->file); ?>" width="100%" height="730px"></iframe>
+					<iframe src="<?= base_url('public/img/file_uploaded/' . htmlspecialchars($dm->file)); ?>" width="100%" height="730px"></iframe>
 				<?php else: ?>
 					<p class="ms-3 mt-3 fs-4">File tidak ditemukan atau data kosong.</p>
 				<?php endif; ?>
 
 			</div>
 		</div>
-	</div>
 	</div>
 <?php endforeach; ?>
 
