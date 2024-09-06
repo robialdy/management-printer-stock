@@ -34,7 +34,7 @@
 
 
 <script>
-	// dataTable = new simpleDatatables.DataTable("#datatable-search");
+	//dataTable = new simpleDatatables.DataTable("#datatable-search");
 
 	const dataTableSearch = new simpleDatatables.DataTable("#datatable-search", {
 		sortable: false,

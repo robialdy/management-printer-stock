@@ -12,7 +12,7 @@
 		Swal.fire({
 			icon: 'success',
 			title: 'Good job!',
-			text: 'Printer SN "<?= $this->session->flashdata('notifSuccess') ?>!',
+			text: '<?= $this->session->flashdata('notifSuccess') ?>!',
 			confirmButtonText: 'OK'
 		});
 	}
@@ -69,16 +69,6 @@
 
 <!-- Button trigger modal -->
 <div class="row justify-content-end">
-	<div class="col-auto">
-		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modaledit">
-			PRINTER DAMAGE
-		</button>
-	</div>
-	<div class="col-auto">
-		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modalInsert">
-			<i class="bi bi-printer-fill me-2"></i>Printer IN
-		</button>
-	</div>
 	<div class="col-auto me-5">
 		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modalprinterout">
 			<i class="bi bi-printer me-2"></i>Printer Out
@@ -87,52 +77,6 @@
 </div>
 
 
-<!-- Modal printer in -->
-<div class="modal fade" id="modalInsert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content">
-			<div class="text-end me-1">
-				<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-				<div class="text-center">
-					<h5 class="modal-title font-weight-normal" id="exampleModalLabel">Printer In</h5>
-				</div>
-			</div>
-			<div class="modal-body">
-				<form method="POST" action="<?= site_url() ?>printerbackup/insert">
-
-					<div class="row">
-						<div class="col-4 mt-2">
-							<label for="sn">PRINTER S/N <span class="text-danger">*</span></label>
-						</div>
-						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter printer s/n" aria-describedby="basic-addon1" id="sn" name="printersn" style="text-transform: uppercase;" required>
-							</div>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-4 mt-2">
-							<label for="typep">TYPE PRINTER <span class="text-danger">*</span></label>
-						</div>
-						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="enter type printer" aria-describedby="basic-addon1" id="typep" name="printertype" style="text-transform: uppercase;" required>
-							</div>
-						</div>
-					</div>
-
-					<div class="text-end mt-3">
-						<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
-						<button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save changes</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
 
 <?php $printerselect = $this->session->flashdata('printerselect'); ?>
 
@@ -260,6 +204,16 @@
 											DET.
 										</a>
 									</td>
+									<td>
+										<a class="mb-0 text-sm fw-normal text-decoration-underline btn-edit" style="cursor: pointer;"
+											data-bs-toggle="modal"
+											data-bs-target="#modaldamageselect<?= $rp->id_replacement ?>"
+											data-id="<?= $rp->id_cust ?>"
+											data-idreplacement="<?= $rp->id_replacement ?>"
+											data-sndamage="<?= $rp->sn_damage ?>">
+											<i class="material-icons">edit</i>
+										</a>
+									</td>
 								</tr>
 								<?php $i++; ?>
 							<?php endforeach ?>
@@ -272,7 +226,68 @@
 </div>
 
 <!-- modal edit -->
-<?php $this->load->view('printerreplacement/modal_edit'); ?>
+<style>
+	.bi-plus-lg:hover {
+		text-decoration: underline;
+	}
+</style>
+
+<?php foreach ($replacement as $rp):  ?>
+	<!-- Modal Select Printer -->
+	<div class="modal fade" id="modaldamageselect<?= $rp->id_replacement ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="text-end me-1">
+					<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<div class="text-center">
+						<h5 class="modal-title font-weight-normal" id="exampleModalLabel">ADD SN DAMAGE</h5>
+					</div>
+				</div>
+				<div class="modal-body">
+
+					<small>Printer SN <?= $rp->printer_sn ?></small>
+					<div class="overflow-auto" style="max-height: 600px" id="printerContainer">
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<?php endforeach;  ?>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+	$(document).ready(function() {
+		$(document).on('click', '.btn-edit', function() {
+			var custID = $(this).data('id'); //milih berdasarkan custiomer
+			var modalID = $(this).data('bs-target');
+			var idReplacement = $(this).data('idreplacement'); // Ambil ID Replacement
+			var snDamage = $(this).data('sndamage'); //dipake untuk pengecekan jika udh punya sn = kosong
+
+			// AJAX request
+			$.ajax({
+				url: 'PrinterReplacement/show_row_printer',
+				type: 'POST',
+				data: {
+					custID: custID, //kirim ke serve
+					idRep: idReplacement,
+					snDamage: snDamage
+				},
+				success: function(response) {
+					$(modalID + ' #printerContainer').html(response);
+
+					// Setelah respons dimasukkan, set idreplacement2 dengan nilai idReplacement
+					$(modalID + ' input[name="idreplacement2"]').val(idReplacement);
+				}
+			});
+		});
+	});
+</script>
+
 
 <!-- modal detail -->
 <?php $this->load->view('printerreplacement/modal_detail'); ?>

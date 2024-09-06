@@ -50,7 +50,6 @@ class Users extends CI_Controller
 		$this->load->view('moderator/user_log', $data);
 	}
 
-	//belum jalan
 	public function view_user_log()
 	{
 		$start_date = $this->input->post('from_date');

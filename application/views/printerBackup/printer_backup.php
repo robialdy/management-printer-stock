@@ -85,7 +85,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter type printer" aria-describedby="basic-addon1" id="typep" name="printertype" style="text-transform: uppercase;" required>
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter type printer" aria-describedby="basic-addon1" id="typep" name="printertype" style="text-transform: uppercase;" required value="CP-11821">
 							</div>
 						</div>
 					</div>

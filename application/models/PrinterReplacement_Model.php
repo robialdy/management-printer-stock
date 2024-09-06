@@ -61,7 +61,7 @@ class PrinterReplacement_Model extends CI_Model
 			'no_ref'		=> $this->autoInvoice(),
 			'date_out'		=> date('d/m/Y H:i:s'),
 			'kelengkapan'	=> $kelengkapan,
-			'created_at'	=> date('d M Y H:i:s'),
+			'created_at'	=> date('d F Y H:i:s'),
 		];
 		$this->db->insert('printer_replacement', $form_data);
 	}
@@ -81,11 +81,12 @@ class PrinterReplacement_Model extends CI_Model
 			'no_ref'		=> $no_ref,
 			'date_out'		=> $date_out,
 			'kelengkapan'	=> $kelengkapan,
-			'created_at'	=> date('d M Y H:i:s'),
+			'created_at'	=> date('d F Y H:i:s'),
 		];
 		$this->db->insert('printer_replacement', $form_data);
 	}
 
+	//ngirim data ke damage
 	public function insertToDamage()
 	{
 
@@ -96,12 +97,14 @@ class PrinterReplacement_Model extends CI_Model
 
 		$form_dd = [
 			'id_printer'	=> 	$this->input->post('idprinter'),
-			'id_cust'		=> 	$this->input->post('idagen'),
+			'id_cust'		=> 	$this->input->post('idcust'),
+			'created_at'	=> date('d M Y / H:i:s'),
+			'update_at'	=> date('d M Y H:i:s'),
 		];
 		$this->db->insert('printer_damage', $form_dd);
 	}
 
-	public function insertNeww($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $date_out, $kelengkapan, $sn_lama)
+	public function insertWithDamage($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $date_out, $kelengkapan, $sn_lama)
 	{
 		$status['status'] = 'REPLACEMENT';
 		$this->db->where('id_printer', $printer_sn);
@@ -116,7 +119,7 @@ class PrinterReplacement_Model extends CI_Model
 			'date_out'		=> $date_out,
 			'kelengkapan'	=> $kelengkapan,
 			'sn_damage'		=> $sn_lama,
-			'created_at'	=> date('d M Y H:i:s'),
+			'created_at'	=> date('d F Y H:i:s'),
 		];
 		$this->db->insert('printer_replacement', $form_data);
 	}
@@ -133,9 +136,29 @@ class PrinterReplacement_Model extends CI_Model
 		return $this->db->get();
 	}
 
+	public function get_printer_by_id($cust_id, $idRep, $sn_damage)
+	{
+		if ($sn_damage == '-'){
+
+		$this->db->select('printer_replacement.*, printer_backup.printer_sn, printer_backup.type_printer, customers.cust_name');
+		$this->db->from('printer_replacement');
+		$this->db->join('printer_backup', 'printer_backup.id_printer = printer_replacement.id_printer');
+		$this->db->join('customers', 'customers.id_cust = printer_replacement.id_cust');
+		$this->db->where('printer_replacement.id_cust', $cust_id); //nyari berdasarkan cust
+		$this->db->where('printer_replacement.sn_damage', '-'); //nyari yang pake - doang
+		$this->db->where_not_in('printer_replacement.id_replacement', $idRep); //gak nampilin punya sendiri
+		$query = $this->db->get();
+		return $query->result();
+		} else {
+			return null;
+		}
+
+	}
+
 	//modal edit menampilkan nama agen di printer replacement
 	public function custName()
 	{
+		//menghindari duplikat nama yang sama
 		$this->db->distinct();
 		$this->db->select('customers.id_cust, customers.cust_name');
 		$this->db->from('printer_replacement');
@@ -157,5 +180,7 @@ class PrinterReplacement_Model extends CI_Model
 		$query = $this->db->get('printer_replacement');
 		return $query->row();
 	}
+
+
 
 }

@@ -44,7 +44,7 @@ class PrinterReplacement extends CI_Controller
 		$pic_it = $this->input->post('picit', true);
 		$pic_user = $this->input->post('picuser', true);
 		$no_ref = $this->PrinterReplacement_Model->autoInvoice();
-		$date_out = date('d/m/Y / H:i:s');
+		$date_out = date('d/m/Y H:i:s');
 
 		$take_kelengkapan = $this->input->post('kelengkapan', true);
 		$kelengkapan = implode(', ', $take_kelengkapan);
@@ -78,7 +78,7 @@ class PrinterReplacement extends CI_Controller
 			} else {
 				$this->PrinterReplacement_Model->insertData();
 				$prin_sn = $this->PrinterReplacement_Model->printer_sn($printer_sn);
-				$this->session->set_flashdata('notifSuccess', $prin_sn . '" Berhasil Ditambahkan');
+				$this->session->set_flashdata('notifSuccess', 'Printer SN "' . $prin_sn . '" Berhasil Ditambahkan');
 				redirect('replacement');
 			}
 		}
@@ -98,7 +98,7 @@ class PrinterReplacement extends CI_Controller
 		$this->PrinterReplacement_Model->insertNew($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $date_out, $kelengkapan);
 
 		$prin_sn = $this->PrinterReplacement_Model->printer_sn($printer_sn);
-		$this->session->set_flashdata('notifSuccess', $prin_sn . 'Berhasil Ditambahkan');
+		$this->session->set_flashdata('notifSuccess', 'Printer SN "' . $prin_sn . '" Berhasil Ditambahkan');
 		redirect('replacement');
 	}
 
@@ -115,49 +115,103 @@ class PrinterReplacement extends CI_Controller
 
 		$this->db->delete('printer_replacement', ['id_replacement' => $this->input->post('idreplacement')]);
 
-		//ini apa eyy lupa 
-		$idprinter = $this->input->post('idprinter');
-		$this->db->select('printer_sn');
-		$this->db->where('id_printer', $idprinter);
-		$prin_sn = $this->db->get('printer_backup');
+		// //ini apa eyy lupa 
+		// $idprinter = $this->input->post('idprinter');
+		// $this->db->select('printer_sn');
+		// $this->db->where('id_printer', $idprinter);
+		// $prin_sn = $this->db->get('printer_backup');
 
 		//send to damage
 		$this->PrinterReplacement_Model->insertToDamage();
-
+		
 		//send ke replacement
 		$sn_lama = $this->input->post('printersn');
-		$this->PrinterReplacement_Model->insertNeww($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $date_out, $kelengkapan, $sn_lama);
+		$this->PrinterReplacement_Model->insertWithDamage($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $date_out, $kelengkapan, $sn_lama);
 
 		$prin_sn = $this->PrinterReplacement_Model->printer_sn($printer_sn);
-		$this->session->set_flashdata('notifSuccess', $prin_sn . '" Berhasil Ditukar');
+		$this->session->set_flashdata('notifSuccess', 'Printer SN "' . $prin_sn . '" Berhasil Ditukar');
 		redirect('replacement');
 	}
 
-	public function modal_edit_damage()
-	{
-		$query = $this->PrinterReplacement_Model->modalSelectJoin();
-		$result = $query->result();
-
-		$this->db->select('cust_name');
-		$get_namecust = $this->db->get_where('customers', ['id_cust' => $this->input->post('agenname')]);
-		$cust_name = $get_namecust->row();
-
-
-		$form_data = [
-			'printerdamageselect'	=> $result,
-			'cust_name'	=> $cust_name->cust_name,
-		];
-
-		$this->session->set_flashdata('printerdamageselect', $form_data);
-		redirect('replacement');
-	}
 
 	//kirim damage saja
 	public function insertDamage()
 	{
-		$this->PrinterReplacement_Model->insertToDamage();
+		
+		// mengupdate status sn damage di replacement
+		$idreplacement = $this->input->post('idreplacement2');
+		$printersn = $this->input->post('printersn');
+
+
+		$form_data ['sn_damage'] = $printersn;
+		$this->db->where('id_replacement', $idreplacement);
+		$this->db->update('printer_replacement', $form_data);
+
+
+		//delete data sebelumnya
 		$this->db->delete('printer_replacement', ['id_replacement' => $this->input->post('idreplacement')]);
+
+		//mengiriim data ke damage
+		$this->PrinterReplacement_Model->insertToDamage();
+
+
+		$this->session->set_flashdata('notifSuccess', 'Printer Berhasil di kirim ke Damage');
+		// Redirect setelah operasi selesai
 		redirect('replacement');
 	}
+
+	//menampilkan list printer di modal edit
+	public function show_row_printer()
+	{
+		$this->load->helper('time_ago');
+
+		$custId = $this->input->post('custID');
+		$sn_damage = $this->input->post('snDamage');
+		$idRep = $this->input->post('idRep');
+
+		$printers = $this->PrinterReplacement_Model->get_printer_by_id($custId, $idRep, $sn_damage);
+
+
+		$html = '';
+
+		if (!empty($printers)) {
+
+		// Loop data printer dan buat string HTML
+		foreach ($printers as $printer) {
+
+			$time_ago = time_ago($printer->created_at);
+
+			$html .= '
+			<form method="POST" action="'.site_url('printerreplacement/insertDamage'). '">
+			<input type="hidden" name="idreplacement2" value="">
+				<div class="card mb-3 mx-2">
+					<div class="d-flex align-items-center p-3 border-radius-md">
+						<span class="avatar text-bg-info avatar-lg fs-5">
+							<i class="bi bi-printer"></i>
+						</span>
+						<div class="ms-3">
+							<h6 class="mb-0 fs-sm">Printer SN '. $printer->printer_sn . '</h6>
+							<small class="text-muted fs-sm"><i class="material-icons text-sm my-auto me-1">schedule</i> ' . $time_ago . '</small>
+						</div>
+
+						<input type="hidden" name="idreplacement" value="' . $printer->id_replacement . '">
+						<input type="hidden" name="printersn" value="' . $printer->printer_sn . '">
+						<input type="hidden" name="idprinter" value="' . $printer->id_printer . '">
+						<input type="hidden" name="idcust" value="' . $printer->id_cust . '">
+						<button type="submit" class="btn text-muted fs-3 ms-auto my-auto" type="button">
+						<i class="bi bi-plus-lg"></i>
+						</button>
+					</div>
+				</div>
+			</form>
+			';
+		}
+	} else {
+		$html;
+	};
+
+		echo $html;
+	}
+
 
 }
