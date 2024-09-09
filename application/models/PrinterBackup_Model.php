@@ -11,6 +11,13 @@ class PrinterBackup_Model extends CI_Model
 	{
 		$printer_sn = strtoupper($this->input->post('printersn', true));
 		$type = strtoupper($this->input->post('printertype', true));
+		$return_cgk = $this->input->post('return_cgk'); // isi valuue nya id
+
+		//update return_cgk damage
+		$form_data ['return_cgk'] = $printer_sn;
+		$this->db->where('id_printer', $return_cgk);
+		$this->db->update('printer_damage', $form_data);
+
 
 		$form_data = [
 			'printer_sn'	=> $printer_sn,

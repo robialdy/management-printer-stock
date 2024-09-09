@@ -45,14 +45,14 @@
 				</div>
 
 				<form action="<?= site_url() ?>printerreplacement/insertNew">
-					<small>Pembelian Printer Baru</small>
+					<small>Peminjaman Printer Baru</small>
 					<div class="card mb-3">
 						<div class="d-flex align-items-center p-3 border-radius-md">
 							<span class="avatar text-bg-info avatar-lg fs-5">
 								<i class="bi bi-printer-fill"></i>
 							</span>
 							<div class="ms-3">
-								<h6 class="mb-0 fs-sm">ADD New Printer?</h6>
+								<h6 class="mb-0 fs-sm">New Printer</h6>
 							</div>
 							<button type="submit" class="btn text-muted fs-3 ms-auto my-auto" type="button">
 								<i class="bi bi-plus-lg"></i>

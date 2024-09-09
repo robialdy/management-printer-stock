@@ -191,7 +191,7 @@ class PrinterReplacement extends CI_Controller
 						</span>
 						<div class="ms-3">
 							<h6 class="mb-0 fs-sm">Printer SN '. $printer->printer_sn . '</h6>
-							<small class="text-muted fs-sm"><i class="material-icons text-sm my-auto me-1">schedule</i> ' . $time_ago . '</small>
+							<small class="text-muted fs-sm"><i class="material-icons text-sm me-1 ">schedule</i> ' . $time_ago . '</small>
 						</div>
 
 						<input type="hidden" name="idreplacement" value="' . $printer->id_replacement . '">
@@ -207,7 +207,13 @@ class PrinterReplacement extends CI_Controller
 			';
 		}
 	} else {
-		$html;
+		$html .= '
+				<div class="card mb-3 mx-2 mt-1">
+						<div class="ms-3 text-center" style="cursor: context-menu;">
+							<h6 class="mb-0 fs-sm p-3">Empty to Changes</h6>
+						</div>
+				</div>
+		';
 	};
 
 		echo $html;

@@ -98,8 +98,8 @@ class PrinterReplacement_Model extends CI_Model
 		$form_dd = [
 			'id_printer'	=> 	$this->input->post('idprinter'),
 			'id_cust'		=> 	$this->input->post('idcust'),
-			'created_at'	=> date('d M Y / H:i:s'),
-			'update_at'	=> date('d M Y H:i:s'),
+			'created_at'	=> date('d F Y H:i:s'),
+			'update_at'	=> date('d F Y H:i:s'),
 		];
 		$this->db->insert('printer_damage', $form_dd);
 	}
@@ -138,14 +138,14 @@ class PrinterReplacement_Model extends CI_Model
 
 	public function get_printer_by_id($cust_id, $idRep, $sn_damage)
 	{
-		if ($sn_damage == '-'){
+		if ($sn_damage == '-'){ //cek jika sn damagenya ada tidak bisa dirubah lagi
 
 		$this->db->select('printer_replacement.*, printer_backup.printer_sn, printer_backup.type_printer, customers.cust_name');
 		$this->db->from('printer_replacement');
 		$this->db->join('printer_backup', 'printer_backup.id_printer = printer_replacement.id_printer');
 		$this->db->join('customers', 'customers.id_cust = printer_replacement.id_cust');
 		$this->db->where('printer_replacement.id_cust', $cust_id); //nyari berdasarkan cust
-		$this->db->where('printer_replacement.sn_damage', '-'); //nyari yang pake - doang
+		// $this->db->where('printer_replacement.sn_damage', '-'); //nyari yang pake - doang 
 		$this->db->where_not_in('printer_replacement.id_replacement', $idRep); //gak nampilin punya sendiri
 		$query = $this->db->get();
 		return $query->result();

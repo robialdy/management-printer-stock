@@ -133,6 +133,7 @@
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Date In</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Type Printer</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Printer SN</th>
+							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Return cgk</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Cust ID</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Agen Name</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Type cust</th>
@@ -163,6 +164,9 @@
 								</td>
 								<td>
 									<h6 class="mb-0 text-sm fw-normal"><?= $dm->printer_sn ?></h6>
+								</td>
+								<td>
+									<h6 class="mb-0 text-sm fw-normal"><?= $dm->return_cgk ?></h6>
 								</td>
 								<td>
 									<h6 class="mb-0 text-sm fw-normal"><?= $dm->cust_id ?></h6>

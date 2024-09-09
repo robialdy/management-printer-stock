@@ -4,7 +4,6 @@ class PrinterDamage_Model extends CI_Model
 {
  public function readData()
  { 
-	// array{0} tidak mengembalikan apapun ADA BUG
     $this->db->select('printer_damage.*, printer_backup.origin, printer_backup.date_in, printer_backup.type_printer, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust');
     $this->db->from('printer_damage');
     $this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
@@ -14,6 +13,21 @@ class PrinterDamage_Model extends CI_Model
 
     return $query->result();
  }
+
+ 	public function readDataSn()
+	{
+	
+
+		$this->db->select('printer_damage.*, printer_backup.printer_sn');
+		$this->db->from('printer_damage');
+		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
+		$this->db->where('printer_damage.return_cgk', '-'); 
+		$query = $this->db->get();
+		return $query->result();
+
+	
+
+	}
 
 	
 	public function jumlahData()

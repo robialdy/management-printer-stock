@@ -85,7 +85,23 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter type printer" aria-describedby="basic-addon1" id="typep" name="printertype" style="text-transform: uppercase;" required value="CP-11821">
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter type printer" aria-describedby="basic-addon1" id="typep" name="printertype" style="text-transform: uppercase;" required>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-4 mt-2">
+							<label for="sn">SN DAMAGE <span class="text-danger">*</span></label>
+						</div>
+						<div class="col">
+							<div class="input-group input-group-static mb-3">
+								<select class="choices form-select" id="exampleFormControlSelect1" name="return_cgk" required>
+									<option value="" selected disabled>ENTER SN DAMAGE</option>
+									<?php foreach ($sndamage as $sg) : ?>
+										<option value="<?= $sg->id_printer; ?>"><?= $sg->printer_sn; ?></option>
+									<?php endforeach; ?>
+								</select>
 							</div>
 						</div>
 					</div>

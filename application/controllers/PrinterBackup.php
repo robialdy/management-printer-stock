@@ -4,7 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class PrinterBackup extends CI_Controller
 {
 	//dibawah ini hmm
-	public $PrinterBackup_Model, $data_user;
+	public $PrinterBackup_Model, $data_user, $PrinterDamage_Model;
 	public function __construct()
 	{
 		parent::__construct();
@@ -12,6 +12,7 @@ class PrinterBackup extends CI_Controller
 			redirect('auth');
 		};
 		$this->load->model('PrinterBackup_Model');
+		$this->load->model('PrinterDamage_Model');
 		$this->data_user = $this->db->get_where('users', ['username' => $this->session->userdata('data_user')])->row_array();
 	}
 
@@ -22,7 +23,8 @@ class PrinterBackup extends CI_Controller
 			'printerList'	=> $this->PrinterBackup_Model->readData(),
 			'totalPrinter'	=> $this->PrinterBackup_Model->jumlahData(),
 			'data_user'		=> $this->data_user,
-			'dateTime'		=> $this->PrinterBackup_Model->dateTime()
+			'dateTime'		=> $this->PrinterBackup_Model->dateTime(),
+			'sndamage'		=> $this->PrinterDamage_Model->readDataSn(),
 		];
 
 		$this->load->view('printerBackup/printer_backup', $data);
