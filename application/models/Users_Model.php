@@ -9,7 +9,7 @@ class Users_Model extends CI_Model
 
 	public function readData_m()
 	{
-		return $this->db->order_by('created_at', 'DESC')->get_where('users', ['role' => 'Moderator'])->result_array();
+		return $this->db->order_by('created_at', 'DESC')->get_where('users', ['role' => 'SUPER ADMIN'])->result_array();
 	}
 
 	public function insert()

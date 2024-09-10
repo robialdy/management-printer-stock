@@ -81,7 +81,7 @@
 								<select class="choices form-select" id="exampleFormControlSelect1" name="role" required>
 									<option value="" selected disabled>SELECT ROLE ACCOUNT</option>
 									<option value="ADMIN"></option>ADMIN</option>
-									<option value="MODERATOR"></option>MODERATOR</option>
+									<option value="SUPER ADMIN"></option>SUPER ADMIN</option>
 								</select>
 							</div>
 						</div>

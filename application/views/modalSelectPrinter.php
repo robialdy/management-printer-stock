@@ -28,7 +28,7 @@
 									</span>
 									<div class="ms-3">
 										<h6 class="mb-0 fs-sm">Printer SN <?= $sp->printer_sn ?></h6>
-										<span class="text-muted fs-sm">Type <?= $sp->type_printer ?></span>
+										<span class="text-muted fs-sm">Type <?= $sp->name_type ?></span>
 									</div>
 									<button type="submit" class="btn text-muted fs-3 ms-auto my-auto" type="button">
 										<i class="bi bi-plus-lg"></i>

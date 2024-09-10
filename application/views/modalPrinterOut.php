@@ -37,7 +37,7 @@
 							<div class="input-group input-group-static mb-3">
 								<select class="choices form-select" id="exampleFormControlSelect1" name="agenname" required>
 									<option value="" selected disabled>ENTER AGEN NAME</option>
-									<?php foreach ($agen as $ag) : ?>
+									<?php foreach ($cust as $ag) : ?>
 										<option value="<?= $ag['id_cust']; ?>"><?= $ag['cust_name']; ?></option>
 									<?php endforeach; ?>
 								</select>
@@ -167,3 +167,4 @@
 		</div>
 	</div>
 </div>
+

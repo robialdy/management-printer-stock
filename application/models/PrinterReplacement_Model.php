@@ -4,14 +4,17 @@ class PrinterReplacement_Model extends CI_Model
 {
 	public function readData()
 	{
-		$this->db->select('printer_replacement.*, printer_backup.origin, printer_backup.date_in, printer_backup.type_printer, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust');
+		$this->db->select('printer_replacement.*, printer_backup.origin, printer_backup.date_in, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust, type_printer.name_type');
 		$this->db->from('printer_replacement');
 		$this->db->join('printer_backup', 'printer_replacement.id_printer = printer_backup.id_printer');
 		$this->db->join('customers', 'printer_replacement.id_cust = customers.id_cust');
-		$this->db->order_by('printer_replacement.created_at	', 'DESC');
+		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type'); // Join dari printer_backup ke type_printer
+		$this->db->order_by('printer_replacement.created_at', 'DESC');
+
 		$query = $this->db->get();
 		return $query->result();
 	}
+
 
 	public function printer_sn($printer_id)
 	{
@@ -128,10 +131,11 @@ class PrinterReplacement_Model extends CI_Model
 	public function modalSelectJoin()
 	{
 		$id_cust = $this->input->post('agenname');
-		$this->db->select('printer_replacement.*, printer_backup.printer_sn, printer_backup.type_printer, customers.cust_name');
+		$this->db->select('printer_replacement.*, printer_backup.printer_sn, type_printer.name_type, customers.cust_name');
 		$this->db->from('printer_replacement');
 		$this->db->join('printer_backup', 'printer_backup.id_printer = printer_replacement.id_printer');
 		$this->db->join('customers', 'customers.id_cust = printer_replacement.id_cust');
+		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
 		$this->db->where('printer_replacement.id_cust', $id_cust);
 		return $this->db->get();
 	}
@@ -140,10 +144,11 @@ class PrinterReplacement_Model extends CI_Model
 	{
 		if ($sn_damage == '-'){ //cek jika sn damagenya ada tidak bisa dirubah lagi
 
-		$this->db->select('printer_replacement.*, printer_backup.printer_sn, printer_backup.type_printer, customers.cust_name');
+		$this->db->select('printer_replacement.*, printer_backup.printer_sn, type_printer.name_type, customers.cust_name');
 		$this->db->from('printer_replacement');
 		$this->db->join('printer_backup', 'printer_backup.id_printer = printer_replacement.id_printer');
 		$this->db->join('customers', 'customers.id_cust = printer_replacement.id_cust');
+		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
 		$this->db->where('printer_replacement.id_cust', $cust_id); //nyari berdasarkan cust
 		// $this->db->where('printer_replacement.sn_damage', '-'); //nyari yang pake - doang 
 		$this->db->where_not_in('printer_replacement.id_replacement', $idRep); //gak nampilin punya sendiri
@@ -153,18 +158,6 @@ class PrinterReplacement_Model extends CI_Model
 			return null;
 		}
 
-	}
-
-	//modal edit menampilkan nama agen di printer replacement
-	public function custName()
-	{
-		//menghindari duplikat nama yang sama
-		$this->db->distinct();
-		$this->db->select('customers.id_cust, customers.cust_name');
-		$this->db->from('printer_replacement');
-		$this->db->join('customers', 'customers.id_cust = printer_replacement.id_cust');
-		$query = $this->db->get();
-		return $query->result();
 	}
 
 

@@ -160,7 +160,7 @@
 									<h6 class="mb-0 text-sm fw-normal"><?= $dm->date_in ?></h6>
 								</td>
 								<td>
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->type_printer ?></h6>
+									<h6 class="mb-0 text-sm fw-normal"><?= $dm->name_type ?></h6>
 								</td>
 								<td>
 									<h6 class="mb-0 text-sm fw-normal"><?= $dm->printer_sn ?></h6>

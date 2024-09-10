@@ -170,7 +170,7 @@
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->date_in ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $rp->type_printer ?></h6>
+										<h6 class="mb-0 text-sm fw-normal"><?= $rp->name_type ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->printer_sn ?></h6>

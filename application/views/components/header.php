@@ -110,7 +110,7 @@
 							<li class="nav-item">
 								<a class="nav-link text-white <?= ($this->uri->segment(1) == 'damage') ? 'active bg-info' : ''; ?>" href="<?= site_url('damage') ?>">
 									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
-                                    <i class="material-icons">warning</i>
+										<i class="material-icons">warning</i>
 									</div>
 									<span class="nav-link-text ms-1">Printer Damage</span>
 								</a>
@@ -121,17 +121,26 @@
 					</div>
 				</li>
 
+				<?php if ($data_user['role'] === 'SUPER ADMIN'): ?>
 
-				<li class="nav-item">
-					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'customers') ? 'active bg-info' : ''; ?>" href="<?= site_url('customers') ?>">
-						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-							<i class="material-icons">business</i>
-						</div>
-						<span class="nav-link-text ms-1">Master Data Customer</span>
-					</a>
-				</li>
+					<li class="nav-item">
+						<a class="nav-link text-white <?= ($this->uri->segment(1) == 'customers') ? 'active bg-info' : ''; ?>" href="<?= site_url('customers') ?>">
+							<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+								<i class="material-icons">business</i>
+							</div>
+							<span class="nav-link-text ms-1">Master Data Customer</span>
+						</a>
+					</li>
 
-				<?php if ($data_user['role'] === 'MODERATOR'): ?>
+					<li class="nav-item">
+						<a class="nav-link text-white <?= ($this->uri->segment(1) == 'type') ? 'active bg-info' : ''; ?>" href="<?= site_url('type') ?>">
+							<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+								<i class="material-icons">business</i>
+							</div>
+							<span class="nav-link-text ms-1">Master Data Type Printer</span>
+						</a>
+					</li>
+
 					<li class="nav-item">
 						<a class="nav-link text-white <?= ($this->uri->segment(1) == 'users') ? 'active bg-info' : ''; ?>" href="<?= site_url('users') ?>">
 							<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -151,7 +160,7 @@
 					</li>
 				<?php endif ?>
 
-				
+
 
 			</ul>
 		</div>
