@@ -6,8 +6,9 @@
 				<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<div class="text-center">
-					<h5 class="modal-title font-weight-normal" id="exampleModalLabel">Printer Out</h5>
+				<div class="text-start ms-3">
+					<h5 class="modal-title fw-bold" id="exampleModalLabel">PRINTER OUT</h5>
+					<small>Silahkan Menginput Data Printer</small>
 				</div>
 			</div>
 			<div class="modal-body">
@@ -36,9 +37,9 @@
 						<div class="col">
 							<div class="input-group input-group-static mb-3">
 								<select class="choices form-select" id="exampleFormControlSelect1" name="agenname" required>
-									<option value="" selected disabled>ENTER AGEN NAME</option>
-									<?php foreach ($agen as $ag) : ?>
-										<option value="<?= $ag['id_cust']; ?>"><?= $ag['cust_name']; ?></option>
+									<option value="" selected disabled>ENTER cust NAME</option>
+									<?php foreach ($cust as $ag) : ?>
+										<option value="<?= $ag->id_cust; ?>"><?= $ag->cust_name; ?></option>
 									<?php endforeach; ?>
 								</select>
 							</div>

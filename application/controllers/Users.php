@@ -32,7 +32,7 @@ class Users extends CI_Controller
 				'jumUsers'		=> $this->Users_Model->jumlah(),
 				'dateTime'		=> $this->Users_Model->dateTime(),
 			];
-			$this->load->view('moderator/user_manage', $data);
+			$this->load->view('users/user_manage', $data);
 		} else {
 			$this->Users_Model->insert();
 			redirect('users');
@@ -47,7 +47,7 @@ class Users extends CI_Controller
 			'data_user'	=> $this->data_user,
 		];
 
-		$this->load->view('moderator/user_log', $data);
+		$this->load->view('users/user_log', $data);
 	}
 
 	public function view_user_log()

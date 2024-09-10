@@ -24,17 +24,17 @@
 		<div class="card border-radius-md z-index-2" style="height: 200px;">
 			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
 				<div class="bg-gradient-info shadow-info border-radius-sm py-3 pe-1 text-center">
-					<span class="text-white fs-1 fw-light"><?= $jumAgen ?></span>
+					<span class="text-white fs-1 fw-light"><?= $jumlah_data ?></span>
 				</div>
 			</div>
 			<div class="card-body text-center">
-				<p class="text-md fw-normal">Total Master Data Customer</p>
+				<p class="text-md fw-normal">Total Master Data Type Printer</p>
 				<hr class="dark horizontal">
 				<div class="d-flex ">
 					<i class="material-icons text-sm my-auto me-1">schedule</i>
 					<p class="mb-0 text-sm">
-						<?php if (!empty($dateTime->created_at)): ?>
-							<?= $dateTime->created_at ?>
+						<?php if (!empty($date_time->created_at)): ?>
+							<?= $date_time->created_at ?>
 						<?php else: ?>
 							null
 						<?php endif; ?>
@@ -48,7 +48,7 @@
 <!-- Button trigger modal -->
 <div class="text-end me-5">
 	<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modalInsert">
-		<i class="bi bi-plus-lg"></i></i> customer
+		<i class="bi bi-plus-lg"></i></i> type printer
 	</button>
 </div>
 
@@ -63,67 +63,20 @@
 					<span aria-hidden="true">&times;</span>
 				</button>
 				<div class="text-start ms-3">
-					<h5 class="modal-title fw-bold" id="exampleModalLabel">ADD CUSTOMER</h5>
-					<small>Silahkan Menginput Data Customer</small>
+					<h5 class="modal-title fw-bold" id="exampleModalLabel">TYPE PRINTER</h5>
+					<small>Silahkan Menginput Data Type Printer</small>
 				</div>
 			</div>
 			<div class="modal-body">
-				<form method="POST" action="<?= site_url() ?>customers">
+				<form method="POST" action="<?= site_url() ?>typeprinter">
 
 					<div class="row">
 						<div class="col-4 mt-2">
-							<label for="sn">TYPE CUST</label>
-						</div>
-						<div class="col">
-							<div class="input-group input-group-dynamic">
-								<select class="choices form-select" id="typecust" name="typecust" required onchange="custIdAuto()">
-									<option value="" selected disabled>ENTER TYPE CUST</option>
-									<option value="AGEN">AGEN</option>
-									<option value="KP">KP</option>
-									<option value="CORPORATE">CORPORATE</option>
-									<!-- DI BAWAH CUST ID NYA BUAT SENDIRI OTOMATIS -->
-									<option value="OPS">OPS</option>
-								</select>
-							</div>
-						</div>
-					</div>
-
-					<script>
-						function custIdAuto() {
-							const typecust = document.getElementById('typecust');
-							const custid = document.getElementById('custid');
-							const randomNum = Math.floor(10000 + Math.random() * 90000); //ada kemungkinan bertemu angka sama 
-							const selectedValue = typecust.value;
-							const selectedNameValue = typecust.value;
-
-							if (selectedValue == 'OPS') {
-								custid.readOnly = true;
-								custid.value = 'OPS' + randomNum;
-							} else {
-								custid.readOnly = false;
-								custid.value = '';
-							}
-						}
-					</script>
-
-					<div class="row">
-						<div class="col-4 mt-2">
-							<label for="custid">CUST ID</label>
+							<label for="name">NAME TYPE</label>
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter cust id" aria-describedby="basic-addon1" id="custid" name="custid" style="text-transform: uppercase;" required>
-							</div>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-4 mt-2">
-							<label for="name">NAME</label>
-						</div>
-						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter customer name" aria-describedby="basic-addon1" id="name" name="name" style="text-transform: uppercase;" required>
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter name type printer" aria-describedby="basic-addon1" id="name" name="name_type" style="text-transform: uppercase;" required>
 							</div>
 						</div>
 					</div>
@@ -160,36 +113,27 @@
 						<thead>
 							<tr>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">No</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">cust id</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">name</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">type cust</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">Name Type</th>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2"></th>
 							</tr>
 						</thead>
 						<tbody>
-							<?php $i = 1; ?>
-							<?php foreach ($agenList as $al) : ?>
+							<?php $no = 1; ?>
+							<?php foreach ($type_prin as $tp) :; ?>
 								<tr>
 									<td class="text-center text-uppercase py-3">
-										<h6 class="mb-0 text-md fw-bold"><?= $i; ?></h6>
+										<h6 class="mb-0 text-md fw-bold"><?= $no++; ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-md fw-normal"><?= $al->cust_id; ?></h6>
+										<h6 class="mb-0 text-md fw-normal"><?= $tp->name_type ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-md fw-normal"><?= $al->cust_name; ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-md fw-normal"><?= $al->type_cust; ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<a href="<?= site_url('customers/delete/') . $al->id_cust; ?>" onclick="return confirm('Apakah anda yakin menghapus ini?');">
+										<a href="<?= site_url('typeprinter/delete/') . $tp->id_type ?>" onclick="return confirm('Apakah anda yakin menghapus ini?');">
 											<i class="material-icons text-secondary position-relative text-lg">delete</i>
 										</a>
 									</td>
 								</tr>
-								<?php $i++; ?>
-							<?php endforeach; ?>
+							<?php endforeach ?>
 						</tbody>
 					</table>
 				</div>

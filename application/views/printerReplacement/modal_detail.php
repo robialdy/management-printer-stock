@@ -7,8 +7,9 @@
 					<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<div class="text-center">
-						<h5 class="modal-title font-weight-normal" id="exampleModalLabel">Detail Kelengkapan Printer</h5>
+					<div class="text-start ms-3">
+						<h5 class="modal-title fw-bold" id="exampleModalLabel">DETAIL KELENGKAPAN PRINTER</h5>
+						<small>Informasi Terkait Kelengkapan Printer</small>
 					</div>
 				</div>
 				<div class="modal-body">

@@ -74,7 +74,7 @@
 			var until_date = $('#until_date').val();
 
 			$.ajax({
-				url: "<?= base_url('moderator/users/view_user_log') ?>",
+				url: "<?= base_url('users/view_user_log') ?>",
 				method: "POST",
 				data: {
 					from_date: from_date,

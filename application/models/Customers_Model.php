@@ -4,7 +4,7 @@ class Customers_Model extends CI_Model
 {
 	public function readData()
 	{
-		return $this->db->order_by('created_at', 'DESC')->get('customers')->result_array();
+		return $this->db->order_by('created_at', 'DESC')->get('customers')->result();
 	}
 
 	public function insertData()
@@ -14,7 +14,7 @@ class Customers_Model extends CI_Model
 			'cust_id'	=> $this->input->post('custid', true),
 			'cust_name'	=> $cust_name,
 			'type_cust'	=> $this->input->post('typecust', true),
-			'created_at'=> date('d M Y / H:i:s'),
+			'created_at'=> date('d F Y H:i:s'),
 		];
 		$this->db->insert('customers', $form_data);
 	}
@@ -30,5 +30,11 @@ class Customers_Model extends CI_Model
 		$this->db->limit(1);
 		$query = $this->db->get('customers');
 		return $query->row();
+	}
+
+	public function delete($id)
+	{
+		$this->db->where('id_cust', $id);
+		$this->db->delete('customers');
 	}
 }

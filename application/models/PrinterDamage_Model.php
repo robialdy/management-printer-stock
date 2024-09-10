@@ -4,10 +4,11 @@ class PrinterDamage_Model extends CI_Model
 {
  public function readData()
  { 
-    $this->db->select('printer_damage.*, printer_backup.origin, printer_backup.date_in, printer_backup.type_printer, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust');
+    $this->db->select('printer_damage.*, printer_backup.origin, printer_backup.date_in, type_printer.name_type, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust');
     $this->db->from('printer_damage');
     $this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
     $this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
+	$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
     $this->db->order_by('printer_backup.date_in', 'DESC');
 	$query = $this->db->get();
 
@@ -16,17 +17,12 @@ class PrinterDamage_Model extends CI_Model
 
  	public function readDataSn()
 	{
-	
-
 		$this->db->select('printer_damage.*, printer_backup.printer_sn');
 		$this->db->from('printer_damage');
 		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
 		$this->db->where('printer_damage.return_cgk', '-'); 
 		$query = $this->db->get();
 		return $query->result();
-
-	
-
 	}
 
 	

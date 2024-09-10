@@ -9,7 +9,7 @@ class Users_Model extends CI_Model
 
 	public function readData_m()
 	{
-		return $this->db->order_by('created_at', 'DESC')->get_where('users', ['role' => 'Moderator'])->result_array();
+		return $this->db->order_by('created_at', 'DESC')->get_where('users', ['role' => 'SUPER ADMIN'])->result_array();
 	}
 
 	public function insert()
@@ -18,7 +18,7 @@ class Users_Model extends CI_Model
 			'username'	=> $this->input->post('username', true),
 			'password'	=> password_hash($this->input->post('password1', true), PASSWORD_DEFAULT),
 			'role'		=> $this->input->post('role', true),
-			'created_at'=> date('d M Y / H:i:s'),
+			'created_at'=> date('d-m-Y H:i:s'),
 		];
 		$this->db->insert('users', $form_data);
 	}

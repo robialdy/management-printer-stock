@@ -94,8 +94,6 @@
 	</script>
 <?php endif; ?>
 
-<!-- modal select damage printer -->
-<?php $this->load->view('printerreplacement/modalSelectPrinterOut', ['damageselect' => $printerdamageselect]) ?>
 
 
 <!-- menampilan modal ketika buka page -->
@@ -170,7 +168,7 @@
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->date_in ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $rp->type_printer ?></h6>
+										<h6 class="mb-0 text-sm fw-normal"><?= $rp->name_type ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->printer_sn ?></h6>
@@ -241,13 +239,13 @@
 					<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
-					<div class="text-center">
-						<h5 class="modal-title font-weight-normal" id="exampleModalLabel">ADD SN DAMAGE</h5>
+					<div class="text-start ms-3">
+						<h5 class="modal-title fw-bold" id="exampleModalLabel">SN DAMAGE</h5>
+						<small>Pilih Untuk Menambahkan SN Damage</small> <br>
 					</div>
 				</div>
 				<div class="modal-body">
-
-					<small>Printer SN <?= $rp->printer_sn ?></small>
+					<small>~ Printer SN <?= $rp->printer_sn ?></small>
 					<div class="overflow-auto" style="max-height: 600px" id="printerContainer">
 
 					</div>

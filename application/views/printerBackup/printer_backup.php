@@ -61,8 +61,9 @@
 				<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<div class="text-center">
-					<h5 class="modal-title font-weight-normal" id="exampleModalLabel">Printer In</h5>
+				<div class="text-start ms-3">
+					<h5 class="modal-title fw-bold" id="exampleModalLabel">PRINTER IN</h5>
+					<small>Silahkan Menginput Data Printer</small>
 				</div>
 			</div>
 			<div class="modal-body">
@@ -81,11 +82,16 @@
 
 					<div class="row">
 						<div class="col-4 mt-2">
-							<label for="typep">TYPE PRINTER <span class="text-danger">*</span></label>
+							<label for="sn">TYPE PRINTER<span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter type printer" aria-describedby="basic-addon1" id="typep" name="printertype" style="text-transform: uppercase;" required>
+							<div class="input-group input-group-static">
+								<select class="choices form-select" id="exampleFormControlSelect1" name="typeprinter" required>
+									<option value="" selected disabled>ENTER TYPE PRINTER</option>
+									<?php foreach ($type_printer as $tp) : ?>
+										<option value="<?= $tp->id_type; ?>"><?= $tp->name_type; ?></option>
+									<?php endforeach; ?>
+								</select>
 							</div>
 						</div>
 					</div>
@@ -96,7 +102,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-static mb-3">
-								<select class="choices form-select" id="exampleFormControlSelect1" name="return_cgk" required>
+								<select class="choices form-select" id="exampleFormControlSelect1" name="return_cgk">
 									<option value="" selected disabled>ENTER SN DAMAGE</option>
 									<?php foreach ($sndamage as $sg) : ?>
 										<option value="<?= $sg->id_printer; ?>"><?= $sg->printer_sn; ?></option>
@@ -157,7 +163,7 @@
 										<h6 class="mb-0 text-md fw-normal"><?= $pl['date_in']; ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-md fw-normal"><?= $pl['type_printer']; ?></h6>
+										<h6 class="mb-0 text-md fw-normal"><?= $pl['name_type']; ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-md fw-normal"><?= $pl['printer_sn']; ?></h6>
