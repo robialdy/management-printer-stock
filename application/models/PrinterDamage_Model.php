@@ -79,6 +79,11 @@ class PrinterDamage_Model extends CI_Model
     return $query->row();
 }
 
+public function update()
+ {
+	$this->db->order_by('update_at', 'DESC'); // Urutkan berdasarkan update_at secara menurun
+    return $this->db->get('printer_damage')->result_array();
+}
     
 	
 }
