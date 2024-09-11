@@ -17,7 +17,7 @@ class PrinterBackup_Model extends CI_Model
 	public function insertData()
 	{
 		$printer_sn = strtoupper($this->input->post('printersn', true));
-		$return_cgk = $this->input->post('return_cgk'); // isi valuue nya id
+		$return_cgk = $this->input->post('return_cgk', true); // isi valuue nya id
 
 		//update return_cgk damage
 		$form_data ['return_cgk'] = $printer_sn;

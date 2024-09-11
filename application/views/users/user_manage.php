@@ -75,7 +75,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter username" aria-describedby="basic-addon1" id="sn" name="username" style="text-transform: uppercase;" required>
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter username" aria-describedby="basic-addon1" id="sn" name="username" style="text-transform: uppercase;" onkeypress="return event.charCode != 32" required>
 							</div>
 						</div>
 					</div>
@@ -85,7 +85,7 @@
 							<label for="sn">ROLE <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-static mb-2">
+							<div class="input-group input-group-static mb-1">
 								<select class="choices form-select" id="exampleFormControlSelect1" name="role" required>
 									<option value="" selected disabled>SELECT ROLE ACCOUNT</option>
 									<option value="ADMIN"></option>ADMIN</option>
@@ -96,27 +96,38 @@
 					</div>
 
 
-					<div class="row">
+					<div class="row position-relative">
 						<div class="col-4 mt-2">
 							<label for="sn">PASSWORD <span class="text-danger">*</span></label>
 						</div>
-						<div class="col">
+						<div class="col-7">
 							<div class="input-group input-group-dynamic mb-2">
-								<input type="password" class="form-control" aria-label="Username" placeholder="Enter Password" aria-describedby="basic-addon1" id="sn" name="password1" style="text-transform: uppercase;" required>
+								<input type="password" class="form-control" aria-label="Password" placeholder="Enter Password" id="password" name="password1" style="text-transform: uppercase;" required>
 							</div>
+							<span id="toggle-password" style="cursor: pointer; position: absolute; right: 15px; top: 50%; transform: translateY(-50%);">
+								<i class="material-icons" style="font-size: 1.5rem;">visibility_off</i>
+							</span>
 						</div>
 					</div>
 
-					<div class="row">
-						<div class="col-4 mt-2">
-							<label for="sn">RE-PASSWORD <span class="text-danger">*</span></label>
-						</div>
-						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
-								<input type="password" class="form-control" aria-label="Username" placeholder="Enter Re-Password" aria-describedby="basic-addon1" id="sn" name="password2" style="text-transform: uppercase;" required>
-							</div>
-						</div>
-					</div>
+					<script>
+						document.addEventListener('DOMContentLoaded', function() {
+							const passwordInput = document.getElementById('password');
+							const togglePassword = document.getElementById('toggle-password');
+							const icon = togglePassword.querySelector('i');
+
+							togglePassword.addEventListener('click', function() {
+								// Toggle the type attribute
+								const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+								passwordInput.setAttribute('type', type);
+
+								// Toggle the icon
+								icon.textContent = type === 'password' ? 'visibility_off' : 'visibility';
+							});
+						});
+					</script>
+
+
 
 					<div class="text-end mt-3">
 						<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
@@ -168,9 +179,11 @@
 										<h6 class="mb-0 text-sm fw-normal"><?= $rd['created_at'] ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<a href="<?= site_url('delete/') . $rd['username'] ?>" onclick="return confirm('Apakah anda yakin data user akan dihapus?');">
-											<i class="material-icons text-secondary position-relative text-lg">delete</i>
-										</a>
+										<form action="<?= site_url('delete/') . $rd['username'] ?>" method="post">
+											<button type="submit" class="btn p-0 mb-1" onclick="return confirm('Yakin ingin menghapus user ini?')">
+												<i class="material-icons text-secondary">delete</i>
+											</button>
+										</form>
 									</td>
 								</tr>
 								<?php $i++; ?>
@@ -214,9 +227,11 @@
 										<h6 class="mb-0 text-sm fw-normal"><?= $rd['created_at'] ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<a href="<?= site_url('delete/') . $rd['username'] ?>" onclick="return confirm('Apakah anda yakin data user akan dihapus?');">
-											<i class="material-icons text-secondary position-relative text-lg">delete</i>
-										</a>
+										<form action="<?= site_url('delete/') . $rd['username'] ?>" method="post">
+											<button type="submit" class="btn p-0 mb-1" onclick="return confirm('Yakin ingin menghapus user ini?')">
+												<i class="material-icons text-secondary">delete</i>
+											</button>
+										</form>
 									</td>
 								</tr>
 								<?php $i++; ?>

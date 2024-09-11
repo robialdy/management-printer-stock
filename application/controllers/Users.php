@@ -20,8 +20,7 @@ class Users extends CI_Controller
 	public function index()
 	{
 		$this->form_validation->set_rules('username', 'Username', 'required|trim|is_unique[users.username]');
-		$this->form_validation->set_rules('password1', 'Password', 'required|trim|matches[password2]');
-		$this->form_validation->set_rules('password2', 'Re Password', 'required|trim|matches[password1]');
+		$this->form_validation->set_rules('password1', 'Password', 'required|trim');
 
 		if ($this->form_validation->run() == FALSE) {			
 			$data = [
@@ -35,8 +34,8 @@ class Users extends CI_Controller
 			$this->load->view('users/user_manage', $data);
 		} else {
 			$this->Users_Model->insert();
-			$username = $this->input->post('username');
-			$this->session->set_flashdata('notifSuccess', "Create User $username Successfuly!");
+			$username = $this->input->post('username', true);
+			$this->session->set_flashdata('notifSuccess', "User $username Berhasil Ditambahkan!");
 			redirect('users');
 		}
 	}
@@ -54,8 +53,8 @@ class Users extends CI_Controller
 
 	public function view_user_log()
 	{
-		$start_date = $this->input->post('from_date');
-		$end_date = $this->input->post('until_date');
+		$start_date = $this->input->post('from_date', true);
+		$end_date = $this->input->post('until_date', true);
 
 		// var_dump($start_date . '  /  '. $end_date);
 		// die();
@@ -85,7 +84,7 @@ class Users extends CI_Controller
 	public function delete($username)
 	{
 		$this->Users_Model->delete($username);
-		$this->session->set_flashdata('notifSuccess', 'Delete Account Successfuly!');
+		$this->session->set_flashdata('notifSuccess', 'User Berhasil Dihapus!');
 		redirect('users');
 	}
 

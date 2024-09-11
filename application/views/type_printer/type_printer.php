@@ -128,9 +128,11 @@
 										<h6 class="mb-0 text-md fw-normal"><?= $tp->name_type ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<a href="<?= site_url('typeprinter/delete/') . $tp->id_type ?>" onclick="return confirm('Apakah anda yakin menghapus ini?');">
-											<i class="material-icons text-secondary position-relative text-lg">delete</i>
-										</a>
+										<form action="<?= site_url('typeprinter/delete/') . $tp->id_type ?>" method="post">
+											<button type="submit" class="btn p-0 mb-1" onclick="return confirm('Yakin ingin menghapus ini?')">
+												<i class="material-icons text-secondary">delete</i>
+											</button>
+										</form>
 									</td>
 								</tr>
 							<?php endforeach ?>

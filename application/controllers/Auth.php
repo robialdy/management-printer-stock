@@ -27,8 +27,8 @@ class Auth extends CI_Controller
 
 	private function _login()
 	{
-		$username = $this->input->post('username');
-		$password = $this->input->post('password');
+		$username = $this->input->post('username', true);
+		$password = $this->input->post('password', true);
 		$user = $this->db->get_where('users', ['username' => $username])->row_array();
 
 		if($user != null && password_verify($password, $user['password'])) {

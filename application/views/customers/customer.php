@@ -75,7 +75,7 @@
 							<label for="sn">TYPE CUST</label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-dynamic">
+							<div class="input-group input-group-dynamic mb-2">
 								<select class="choices form-select" id="typecust" name="typecust" required onchange="custIdAuto()">
 									<option value="" selected disabled>ENTER TYPE CUST</option>
 									<option value="AGEN">AGEN</option>
@@ -111,7 +111,7 @@
 							<label for="custid">CUST ID</label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
+							<div class="input-group input-group-dynamic mb-3">
 								<input type="text" class="form-control" aria-label="Username" placeholder="Enter cust id" aria-describedby="basic-addon1" id="custid" name="custid" style="text-transform: uppercase;" required>
 							</div>
 						</div>
@@ -122,7 +122,7 @@
 							<label for="name">NAME</label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
+							<div class="input-group input-group-dynamic mb-4">
 								<input type="text" class="form-control" aria-label="Username" placeholder="Enter customer name" aria-describedby="basic-addon1" id="name" name="name" style="text-transform: uppercase;" required>
 							</div>
 						</div>
@@ -183,9 +183,11 @@
 										<h6 class="mb-0 text-md fw-normal"><?= $al->type_cust; ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<a href="<?= site_url('customers/delete/') . $al->id_cust; ?>" onclick="return confirm('Apakah anda yakin menghapus ini?');">
-											<i class="material-icons text-secondary position-relative text-lg">delete</i>
-										</a>
+										<form action="<?= site_url('customers/delete/') . $al->id_cust; ?>" method="post">
+											<button type="submit" class="btn p-0 mb-1" onclick="return confirm('Yakin ingin menghapus ini?')">
+												<i class="material-icons text-secondary">delete</i>
+											</button>
+										</form>
 									</td>
 								</tr>
 								<?php $i++; ?>

@@ -13,7 +13,7 @@
 		Swal.fire({
 			icon: 'success',
 			title: 'Good job!',
-			text: 'Printer SN "<?= $this->session->flashdata('notifSuccess') ?>" berhasil ditambahkan!',
+			text: '<?= $this->session->flashdata('notifSuccess') ?>',
 			confirmButtonText: 'OK'
 		});
 	}
@@ -74,7 +74,7 @@
 							<label for="sn">PRINTER S/N <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
+							<div class="input-group input-group-dynamic mb-3">
 								<input type="text" class="form-control" aria-label="Username" placeholder="Enter printer s/n" aria-describedby="basic-addon1" id="sn" name="printersn" style="text-transform: uppercase;" required>
 							</div>
 						</div>
@@ -85,7 +85,7 @@
 							<label for="sn">TYPE PRINTER<span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-static">
+							<div class="input-group input-group-static mb-2">
 								<select class="choices form-select" id="exampleFormControlSelect1" name="typeprinter" required>
 									<option value="" selected disabled>ENTER TYPE PRINTER</option>
 									<?php foreach ($type_printer as $tp) : ?>
@@ -101,7 +101,7 @@
 							<label for="sn">SN DAMAGE <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-static mb-3">
+							<div class="input-group input-group-static mb-2">
 								<select class="choices form-select" id="exampleFormControlSelect1" name="return_cgk">
 									<option value="" selected disabled>ENTER SN DAMAGE</option>
 									<?php foreach ($sndamage as $sg) : ?>

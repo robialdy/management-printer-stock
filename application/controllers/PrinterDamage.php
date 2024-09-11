@@ -51,7 +51,7 @@ class PrinterDamage extends CI_Controller
 				'date_perbaikan'	=> date('d/m/Y / H:i:s'),
                 
             ];
-            $id = $this->input->post('id');
+            $id = $this->input->post('id', true);
     
             // Update data berdasarkan id_damage
             $this->db->where('id_damage', $id);
@@ -112,7 +112,7 @@ class PrinterDamage extends CI_Controller
 			}
 
 			// Update data di database
-			$id = $this->input->post('id_damage');
+			$id = $this->input->post('id_damage', true);
 			$this->db->where('id_damage', $id);
 			$this->db->update('printer_damage', $data);
 

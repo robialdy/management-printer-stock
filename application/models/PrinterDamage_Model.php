@@ -54,7 +54,7 @@ class PrinterDamage_Model extends CI_Model
              'status_pembayaran'=> $this->input->post('status_pembayaran',true),
 		];
 
-		$id = $this->input->post('id_damage');
+		$id = $this->input->post('id_damage', true);
     
         
 		$this->db->where('id_damage', $id);

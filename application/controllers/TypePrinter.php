@@ -32,8 +32,8 @@ class TypePrinter extends CI_Controller
 		$this->load->view('type_printer/type_printer', $data);
 	} else {
 			$this->Type_printer_Model->insert_data();
-			$name_type = strtoupper($this->input->post('name_type'));
-			$this->session->set_flashdata('notifSuccess', "Create Type Printer $name_type ");
+			$name_type = strtoupper($this->input->post('name_type', true));
+			$this->session->set_flashdata('notifSuccess', "Type Printer $name_type Berhasil Ditambahkan!");
 			redirect('type');
 	}
 	}
@@ -41,7 +41,7 @@ class TypePrinter extends CI_Controller
 	public function delete($id)
 	{
 		$this->Type_printer_Model->delete($id);
-		$this->session->set_flashdata('notifSuccess', 'Delete Type Printer Successfuly!');
+		$this->session->set_flashdata('notifSuccess', 'Type Printer Berhasil Dihapus!');
 		redirect('type');
 	}
 }

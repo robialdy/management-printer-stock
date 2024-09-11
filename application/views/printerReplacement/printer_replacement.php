@@ -77,23 +77,10 @@
 </div>
 
 
+<!-- untuk ajax -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <?php $printerselect = $this->session->flashdata('printerselect'); ?>
-
-<?php $printerdamageselect = $this->session->flashdata('printerdamageselect'); ?>
-
-<!-- menampilan modal ketika buka page -->
-<?php if ($printerdamageselect) : ?>
-	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			var myModal = new bootstrap.Modal(document.getElementById('modaldamageselect'), {
-				keyboard: false
-			});
-			myModal.show();
-		});
-	</script>
-<?php endif; ?>
-
 
 
 <!-- menampilan modal ketika buka page -->
@@ -113,6 +100,7 @@
 
 <!-- modal printer out -->
 <?php $this->load->view('modalPrinterOut')  ?>
+
 
 
 <!-- style td lebih lebar -->
@@ -256,7 +244,6 @@
 <?php endforeach;  ?>
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
 	$(document).ready(function() {
