@@ -27,14 +27,16 @@ class Users extends CI_Controller
 			$data = [
 				'title'	=> 'User Manage',
 				'data_user'	=> $this->data_user,
-				'read_data_a'	=> $this->Users_Model->readData_a(),
-				'read_data_m'	=> $this->Users_Model->readData_m(),
+				'read_data_a'	=> $this->Users_Model->readData_a($this->data_user['username']),
+				'read_data_m'	=> $this->Users_Model->readData_m($this->data_user['username']),
 				'jumUsers'		=> $this->Users_Model->jumlah(),
 				'dateTime'		=> $this->Users_Model->dateTime(),
 			];
 			$this->load->view('users/user_manage', $data);
 		} else {
 			$this->Users_Model->insert();
+			$username = $this->input->post('username');
+			$this->session->set_flashdata('notifSuccess', "Create User $username Successfuly!");
 			redirect('users');
 		}
 	}
