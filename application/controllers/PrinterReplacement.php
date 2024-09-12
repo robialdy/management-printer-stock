@@ -44,7 +44,7 @@ class PrinterReplacement extends CI_Controller
 		if ($query->num_rows() > 0 ){
 
 			// tangkap inputnya
-			$printer_sn = $this->input->post('printersn', true);
+			$printer_sn = $this->input->post('printersn', true); //idprinter
 			$agen_name = $this->input->post('agenname', true);
 			$pic_it = $this->input->post('picit', true);
 			$pic_user = $this->input->post('picuser', true);
@@ -78,7 +78,7 @@ class PrinterReplacement extends CI_Controller
 				redirect('replacement');
 			} else {
 				$this->PrinterReplacement_Model->insertData();
-				$this->session->set_flashdata('notifSuccess', "Printer SN $printer_sn Berhasil Ditambahkan!");
+				$this->session->set_flashdata('notifSuccess', 'Printer SN ' . $this->input->post('printersn', true) . ' Berhasil Ditambahkan!');
 				redirect('replacement');
 			}
 		}
@@ -87,8 +87,8 @@ class PrinterReplacement extends CI_Controller
 	public function insertNew()
 	{
 
-		$printer_sn = $this->session->userdata('printersn');
-		$agen_name = $this->session->userdata('agenname');
+		$printer_sn = $this->session->userdata('printersn'); //idprinter
+		$agen_name = $this->session->userdata('agenname'); //idcust
 		$pic_it = $this->session->userdata('picit');
 		$pic_user = $this->session->userdata('picuser');
 		$no_ref = $this->session->userdata('noref');

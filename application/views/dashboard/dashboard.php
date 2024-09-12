@@ -52,7 +52,7 @@
 		<div class="card border-radius-lg">
 			<div class="card-header p-3 pt-2">
 				<a href="<?= site_url('replacement') ?>" class="icon icon-xl icon-shape bg-gradient-info shadow-info text-right border-radius-sm mt-n4 position-absolute">
-					<p class="text-white p-3">Pembelian Printer</p>
+					<p class="text-white p-3">Peminjaman Printer</p>
 				</a>
 				<div class="text-end pt-1">
 					<p class="text-sm mb-0 text-capitalize">Total</p>

@@ -1,5 +1,6 @@
 <?php $this->load->view('components/header') ?>
 
+<!-- success -->
 <?php if ($this->session->flashdata('notifSuccess')) :  ?>
 	<script>
 		window.onload = function() {
@@ -14,6 +15,26 @@
 			icon: 'success',
 			title: 'Good job!',
 			text: '<?= $this->session->flashdata('notifSuccess') ?>',
+			confirmButtonText: 'OK'
+		});
+	}
+</script>
+
+
+<?php if ($this->session->flashdata('notifError')) :  ?>
+	<script>
+		window.onload = function() {
+			showErrorMessage();
+		};
+	</script>
+<?php endif; ?>
+
+<script>
+	function showErrorMessage() {
+		Swal.fire({
+			icon: 'error',
+			title: 'Oops...',
+			text: '<?= $this->session->flashdata('notifError') ?>',
 			confirmButtonText: 'OK'
 		});
 	}
@@ -102,7 +123,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-static mb-2">
-								<select class="choices form-select" id="exampleFormControlSelect1" name="return_cgk">
+								<select class="choices form-select" id="exampleFormControlSelect1" name="return_cgk" required>
 									<option value="" selected disabled>ENTER SN DAMAGE</option>
 									<?php foreach ($sndamage as $sg) : ?>
 										<option value="<?= $sg->id_printer; ?>"><?= $sg->printer_sn; ?></option>

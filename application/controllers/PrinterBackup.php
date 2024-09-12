@@ -34,13 +34,17 @@ class PrinterBackup extends CI_Controller
 
 	public function insert()
 	{
+		$prin_sn = strtoupper($this->input->post('printersn', true));
+
 		$this->form_validation->set_rules('printersn', 'PRINTER SN', 'required|is_unique[printer_backup.printer_sn]|trim');
 		$this->form_validation->set_rules('typeprinter', 'PRINTER SN', 'required|trim');
+		$this->form_validation->set_rules('return_cgk', 'Return Cgk', 'required|trim');
 		if ($this->form_validation->run() == FALSE) {
+			$this->session->set_flashdata('notifError', "Printer SN $prin_sn Telah Digunakan!");
 			redirect('printer');
 		}else {
 			$this->PrinterBackup_Model->insertData();
-			$prin_sn = strtoupper($this->input->post('printersn', true));
+			
 			$this->session->set_flashdata('notifSuccess', "Printer SN $prin_sn Berhasil Ditambahkan!");
 			redirect('printer');
 		}
