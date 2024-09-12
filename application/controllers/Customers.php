@@ -31,10 +31,17 @@ class Customers extends CI_Controller
 			$this->load->view('customers/customer', $data);
 		}else {
 			$this->Customers_Model->insertData();
-			$cust_name = strtoupper($this->input->post('name'));
-			$this->session->set_flashdata('notifSuccess', $cust_name);
+			$cust_name = strtoupper($this->input->post('name', true));
+			$this->session->set_flashdata('notifSuccess', "Create Customer $cust_name Succesfuly!");
 			redirect('customers');
 		}
+	}
+
+	public function delete($id)
+	{
+		$this->Customers_Model->delete($id);
+		$this->session->set_flashdata('notifSuccess', 'Delete Customers Successfuly!');
+		redirect('customers');
 	}
 
 

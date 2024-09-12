@@ -9,11 +9,13 @@ $route['translate_uri_dashes'] = FALSE;
 $route['printer'] = 'PrinterBackup';
 $route['replacement'] = 'PrinterReplacement';
 $route['registrasi'] = 'Auth/Regis';
-$route['users'] = 'moderator/users';
 
 $route['damage'] = 'printerdamage';
 
-$route['log'] = 'moderator/users/user_log';
+$route['type'] = 'TypePrinter';
 
-$route['delete/(:any)'] = 'moderator/users/delete/$1';
+$route['log'] = 'users/user_log';
+
+// perdelete an
+$route['delete/(:any)'] = 'users/delete/$1';
 

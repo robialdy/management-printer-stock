@@ -52,7 +52,7 @@ class PrinterDamage extends CI_Controller
                 'update_at' => date('Y-m-d H:i:s'),
             ];
 
-            $id = $this->input->post('id');
+            $id = $this->input->post('id', true);
 
             // Update data berdasarkan id_damage
             $this->db->where('id_damage', $id);
@@ -64,6 +64,7 @@ class PrinterDamage extends CI_Controller
             redirect('damage');
         }
     }
+
 
     public function edit()
     {
@@ -87,7 +88,6 @@ class PrinterDamage extends CI_Controller
 
                 // Load library upload dengan konfigurasi
                 $this->load->library('upload', $config);
-
 
                 // Proses upload
                 if ($this->upload->do_upload('file')) {

@@ -42,7 +42,10 @@
 										<input type="text" class="form-control" placeholder="Username" name="username" required autofocus>
 									</div>
 									<div class="input-group input-group-outline mb-3">
-										<input type="password" class="form-control" placeholder="Password" name="password" required>
+										<input type="password" class="form-control" placeholder="Password" name="password" id="password1" required>
+										<span id="toggle-password" class="mt-1" style="cursor: pointer;">
+											<i class="material-icons p-1 ms-2" style="font-size: 1.5rem;">visibility_off</i>
+										</span>
 									</div>
 
 									<!-- yang berfungsi ini -->
@@ -76,6 +79,21 @@
 			</footer>
 		</div>
 	</main>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			const passwordInput = document.getElementById('password1');
+			const togglePassword = document.getElementById('toggle-password');
+			const icon = togglePassword.querySelector('i');
+
+			togglePassword.addEventListener('click', function() {
+				const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+				passwordInput.setAttribute('type', type);
+
+				icon.textContent = type === 'password' ? 'visibility_off' : 'visibility';
+			});
+		});
+	</script>
 
 </body>
 

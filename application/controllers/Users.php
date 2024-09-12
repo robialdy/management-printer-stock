@@ -20,21 +20,22 @@ class Users extends CI_Controller
 	public function index()
 	{
 		$this->form_validation->set_rules('username', 'Username', 'required|trim|is_unique[users.username]');
-		$this->form_validation->set_rules('password1', 'Password', 'required|trim|matches[password2]');
-		$this->form_validation->set_rules('password2', 'Re Password', 'required|trim|matches[password1]');
+		$this->form_validation->set_rules('password1', 'Password', 'required|trim');
 
 		if ($this->form_validation->run() == FALSE) {			
 			$data = [
 				'title'	=> 'User Manage',
 				'data_user'	=> $this->data_user,
-				'read_data_a'	=> $this->Users_Model->readData_a(),
-				'read_data_m'	=> $this->Users_Model->readData_m(),
+				'read_data_a'	=> $this->Users_Model->readData_a($this->data_user['username']),
+				'read_data_m'	=> $this->Users_Model->readData_m($this->data_user['username']),
 				'jumUsers'		=> $this->Users_Model->jumlah(),
 				'dateTime'		=> $this->Users_Model->dateTime(),
 			];
-			$this->load->view('moderator/user_manage', $data);
+			$this->load->view('users/user_manage', $data);
 		} else {
 			$this->Users_Model->insert();
+			$username = $this->input->post('username', true);
+			$this->session->set_flashdata('notifSuccess', "User $username Berhasil Ditambahkan!");
 			redirect('users');
 		}
 	}
@@ -47,14 +48,13 @@ class Users extends CI_Controller
 			'data_user'	=> $this->data_user,
 		];
 
-		$this->load->view('moderator/user_log', $data);
+		$this->load->view('users/user_log', $data);
 	}
 
-	//belum jalan
 	public function view_user_log()
 	{
-		$start_date = $this->input->post('from_date');
-		$end_date = $this->input->post('until_date');
+		$start_date = $this->input->post('from_date', true);
+		$end_date = $this->input->post('until_date', true);
 
 		// var_dump($start_date . '  /  '. $end_date);
 		// die();
@@ -84,7 +84,7 @@ class Users extends CI_Controller
 	public function delete($username)
 	{
 		$this->Users_Model->delete($username);
-		$this->session->set_flashdata('notifSuccess', 'Delete Account Successfuly!');
+		$this->session->set_flashdata('notifSuccess', 'User Berhasil Dihapus!');
 		redirect('users');
 	}
 

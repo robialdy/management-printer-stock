@@ -15,7 +15,7 @@ class P extends CI_Controller
 
 	public function index()
 	{
-		$form_type = $this->input->post('form_type');
+		$form_type = $this->input->post('form_type', true);
 
 		if($form_type == 'change_username') {
 
@@ -48,8 +48,8 @@ class P extends CI_Controller
 				];
 				$this->load->view('profile/profile', $data);
 			} else {
-				$current_pass = $this->input->post('current_pass');
-				$new_password = $this->input->post('new_pass1');
+				$current_pass = $this->input->post('current_pass', true);
+				$new_password = $this->input->post('new_pass1', true);
 				if (!password_verify($current_pass, $this->data_user['password'])) {
 					$this->session->set_flashdata('current_error', '<small class="text-danger ms-2">Password lama salah!</small>');
 					redirect('p');
