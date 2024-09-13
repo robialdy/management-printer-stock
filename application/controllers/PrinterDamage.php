@@ -3,7 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class PrinterDamage extends CI_Controller
 {
-    private $data_user;
+    public $data_user, $PrinterDamage_Model;
 
     public function __construct()
     {
@@ -23,15 +23,15 @@ class PrinterDamage extends CI_Controller
 
     public function index()
     {
+
         $data = [
             'title' => 'Printer Damage',
             'data_user' => $this->data_user,
             'damage' => $this->PrinterDamage_Model->readData(),
+			'sn_modal'	=> $this->PrinterDamage_Model->read_data_perbaikan(),
             'jumdamage' => $this->PrinterDamage_Model->jumlahData(),
             'timedate' => $this->PrinterDamage_Model->timedate(),
-
         ];
-
         $this->load->view('damage/damage', $data);
     }
 

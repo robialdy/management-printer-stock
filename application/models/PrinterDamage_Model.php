@@ -15,6 +15,19 @@ class PrinterDamage_Model extends CI_Model
     return $query->result();
  }
 
+ 	// buat di modal add perbaikan
+	public function read_data_perbaikan()
+	{
+		$this->db->select('printer_damage.*, printer_backup.printer_sn');
+		$this->db->from('printer_damage');
+		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
+		$this->db->where('printer_damage.date_perbaikan', '-');
+		// $this->db->where('printer_damage.return_cgk', '-'); 
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+ 	//buat di backup ini 
  	public function readDataSn()
 	{
 		$this->db->select('printer_damage.*, printer_backup.printer_sn');
@@ -37,6 +50,7 @@ class PrinterDamage_Model extends CI_Model
 		$data = [
 			'biaya_perbaikan' => $this->input->post('biayaper', true),
 			'status_pembayaran' => $this->input->post('status_pembayaran', true),
+			'note' => 'Betul',
 		];
 		$id = $this->input->post('id');
 

@@ -39,7 +39,7 @@
 			</div>
 			<div class="card-body px-0 pb-2">
 				<div class="table-responsive p-0">
-					<table class="table align-items-center" id="datatable">
+					<table class="table table-hover align-items-center" id="datatable">
 						<thead>
 							<tr>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7">No</th>

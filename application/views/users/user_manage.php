@@ -102,7 +102,7 @@
 						</div>
 						<div class="col-7">
 							<div class="input-group input-group-dynamic mb-2">
-								<input type="password" class="form-control" aria-label="Password" placeholder="Enter Password" id="password" name="password1" required>
+								<input type="password" class="form-control" aria-label="Password" placeholder="Enter Password" id="password" name="password1" minlength="8" required>
 							</div>
 							<span id="toggle-password" style="cursor: pointer; position: absolute; right: 15px; top: 50%; transform: translateY(-50%);">
 								<i class="material-icons" style="font-size: 1.5rem;">visibility_off</i>

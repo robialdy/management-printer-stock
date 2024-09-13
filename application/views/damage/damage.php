@@ -20,21 +20,22 @@
 
 <div class="row">
 	<div class="col-lg-6 col-md-6 mt-3 mb-3">
-		<div class="card border-radius-md z-index-2" style="height: 200px;">
+		<div class="card border-radius-md z-index-2 " style="height: 200px;">
 			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
 				<div class="bg-gradient-info shadow-info border-radius-sm py-3 pe-1 text-center">
 					<span class="text-white fs-1 fw-light"><?= $jumdamage ?></span>
 				</div>
 			</div>
 			<div class="card-body text-center">
-				<p class="text-md fw-normal">Total Printer Damage</p>
+				<p class="text-md fw-normal">Total Printer Backup</p>
+				<hr class="dark horizontal">
 				<div class="d-flex ">
 					<i class="material-icons text-sm my-auto me-1">schedule</i>
 					<p class="mb-0 text-sm">
-						<?php if (!empty($timedate->created_at) || $jumdamage == 0): ?>
-							<?= date('d/m/Y H:i:s') ?>
+						<?php if (empty($timedate->created_at) || $jumdamage == 0): ?>
+							null
 						<?php else: ?>
-							<?= $timedate->created_at ?> 
+							<?= $timedate->created_at ?>
 						<?php endif; ?>
 					</p>
 				</div>
@@ -43,13 +44,16 @@
 	</div>
 </div>
 
-<div class="text-end me-5">
-	<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modalInsert">
-		<i class="bi bi-pencil-square"></i> BIAYA PERBAIKAN
-	</button>
+<div class="row justify-content-end">
+	<div class="col-auto me-5">
+		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modalperbaikan">
+			<i class="bi bi-pencil-square"></i> BIAYA PERBAIKAN
+		</button>
+	</div>
 </div>
+
 <!-- Modal update -->
-<div class="modal fade" id="modalInsert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalperbaikan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
 			<div class="text-end me-1">
@@ -71,8 +75,8 @@
 							<div class="input-group input-group-static mb-2">
 								<select class="choices form-select" id="exampleFormControlSelect1" name="id" required>
 									<option value="" selected disabled>Enter Printer S/N</option>
-									<?php foreach ($damage as $dm) : ?>
-										<option value="<?= $dm->id_damage; ?>"><?= $dm->printer_sn; ?></option>
+									<?php foreach ($sn_modal as $sm) : ?>
+										<option value="<?= $sm->id_damage; ?>"><?= $sm->printer_sn; ?></option>
 									<?php endforeach; ?>
 								</select>
 							</div>
@@ -84,20 +88,20 @@
 							<label for="biayaper">BIAYA PERBAIKAN</label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
+							<div class="input-group input-group-dynamic mb-4">
 								<input type="number" class="form-control" aria-label="Biaya Perbaikan" placeholder="Enter biaya perbaikan" id="biayaper" name="biayaper" style="text-transform: uppercase;" required>
 							</div>
 						</div>
 					</div>
-                    
-					
+
+
 					<div class="row">
 						<div class="col-4 mt-2">
 							<label for="typep">KELENGKAPAN</label>
 						</div>
 						<div class="col mt-2">
 
-							<div class="row">
+							<div class="row mb-1">
 								<div class="form-check col">
 									<input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="dus" value="DUS">
 									<label class="form-check-label" for="dus">
@@ -112,7 +116,7 @@
 								</div>
 							</div>
 
-							<div class="row">
+							<div class="row mb-1">
 								<div class="form-check col">
 									<input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="corelabel" value="CORE LABEL 1">
 									<label class="form-check-label" for="corelabel">
@@ -127,7 +131,7 @@
 								</div>
 							</div>
 
-							<div class="row">
+							<div class="row mb-1">
 								<div class="form-check col">
 									<input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="coreribbon" value="CORE RIBBON 2">
 									<label class="form-check-label" for="coreribbon">
@@ -142,7 +146,7 @@
 								</div>
 							</div>
 
-							<div class="row">
+							<div class="row mb-1">
 								<div class="form-check col">
 									<input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="power" value="KABEL POWER">
 									<label class="form-check-label" for="power">
@@ -152,7 +156,7 @@
 							</div>
 
 							<!-- Checkbox untuk memilih semua -->
-							<div class="row">
+							<div class="row mb-1">
 								<div class="form-check col">
 									<input class="" type="checkbox" id="masterCheckbox">
 									<label class="form-check-label" for="masterCheckbox">
@@ -169,14 +173,14 @@
 						<div class="col-4 mt-2">
 							<label>Status Pembayaran</label>
 						</div>
-						<div class="col">
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="status_pembayaran" id="belumBayar" value="belum Bayar" checked>
-								<label class="form-check-label" for="belumBayar">Belum Bayar</label>
+						<div class="col mt-2 ms-3">
+							<div class="form-check-inline">
+								<input class="" type="radio" name="status_pembayaran" id="belumBayar" value="belum Bayar" checked>
+								<label class="" for="belumBayar">Belum Bayar</label>
 							</div>
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" type="radio" name="status_pembayaran" id="sudahBayar" value="sudah Bayar">
-								<label class="form-check-label" for="SudahBayar">Sudah Bayar</label>
+							<div class="form-check-inline">
+								<input class="" type="radio" name="status_pembayaran" id="sudahBayar" value="sudah Bayar">
+								<label class="" for="SudahBayar">Sudah Bayar</label>
 							</div>
 						</div>
 					</div>
@@ -192,115 +196,121 @@
 	</div>
 </div>
 
-<div class="col-12">
-	<div class="card my-4">
-		<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-			<div class="bg-gradient-info shadow-info border-radius-md pt-4 pb-3">
-			<h6 class="text-white ps-3 fw-light">Printer Damage</h6>
+<!-- style td lebih lebar -->
+<style>
+	.table-sm td {
+		padding-top: 15px !important;
+		padding-bottom: 15px !important;
+	}
+</style>
+
+
+
+<div class=" row">
+	<div class="col-12">
+		<div class="card my-4 border-radius-md">
+			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+				<div class="bg-gradient-info shadow-info border-radius-md pt-4 pb-3">
+					<h6 class="text-white ps-3 fw-light">Printer Damage</h6>
+				</div>
 			</div>
-		</div>
-		<div class="card-body px-0 pb-2">
-			<div class="table-responsive p-0">
-				<table class="table table-sm table-hover align-items-center" id="datatable-search">
-					<thead>
-						<tr>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">No</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Origin</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Date In</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Type Printer</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Printer SN</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Return cgk</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Cust ID</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Agen Name</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Type cust</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Pic IT</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Date Perbaikan</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Biaya Perbaikan </th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Note</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Status Pembayaran</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Kelengkapan</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">File Transaksi</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Edit</th>
-						</tr>
-					</thead>
-					<tbody>
-						<?php $i = 1; ?>
-						<?php foreach ($damage as $dm) : ?>
-							<tr class="text-center text-uppercase">
-								<th>
-									<h6 class="mb-0 text-sm fw-normal"><?= $i; ?></h6>
-								</th>
-								<td class="text-center text-uppercase">
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->origin ?></h6>
-								</td>
-								<td class="text-center text-uppercase">
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->date_in ?></h6>
-								</td>
-                
-								<td>
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->name_type ?></h6>
-
-								</td>
-								<td class="text-center text-uppercase">
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->printer_sn ?></h6>	
-								</td>
-
-								<td>
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->return_cgk ?></h6>
-								</td>
-								<td>
-
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->cust_id ?></h6>
-								</td>
-								<td class="text-center text-uppercase">
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->cust_name ?></h6>
-								</td>
-								<td class="text-center text-uppercase">
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->type_cust ?></h6>
-								</td>
-								<td class="text-center text-uppercase">
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->pic_it ?></h6>
-								</td>
-								<td class="text-center text-uppercase">
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->date_perbaikan ?></h6>
-								</td>
-								<td class="text-center text-uppercase">
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->biaya_perbaikan ?></h6>
-								</td>
-								<td class="text-center text-uppercase">
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->note ?></h6>
-								</td>
-								<td class="text-center text-uppercase">
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->status_pembayaran ?></h6>
-								</td>
-								<td class="text-center">
+			<div class="card-body px-0 pb-2">
+				<div class="table-responsive p-0">
+					<table class="table table-sm align-items-center table-hover" id="datatable-search">
+						<thead>
+							<tr>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">No</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">ORIGIN</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">DATE IN</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">TYPE</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">SN Printer</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">RETURN CGK</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">CUST ID</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">CUST MAME</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">TYPE CUST</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">PIC IT</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">Tgl Perbaikan</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">Biaya</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">NOTE</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">status</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">kelengkapan</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">File</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php $i = 1; ?>
+							<?php foreach ($damage as $dm) : ?>
+								<tr>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-sm fw-bold"><?= $i; ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-sm fw-normal"><?= $dm->origin ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-sm fw-normal"><?= $dm->date_in ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-sm fw-normal"><?= $dm->name_type ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-sm fw-normal"><?= $dm->printer_sn ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-sm fw-normal"><?= $dm->return_cgk ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-sm fw-normal"><?= $dm->cust_id ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-sm fw-normal"><?= $dm->cust_name ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-sm fw-normal"><?= $dm->type_cust ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-sm fw-normal"><?= $dm->pic_it ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-sm fw-normal"><?= $dm->date_perbaikan ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-sm fw-normal"><?= $dm->biaya_perbaikan ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-sm fw-normal"><?= $dm->note ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-sm fw-normal"><?= $dm->status_pembayaran ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
 										<a class="mb-0 text-sm fw-normal text-info text-decoration-underline" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDetail<?= $dm->id_damage ?>">
 											DET.
 										</a>
 									</td>
-								<td class="text-center text-uppercase">
-									<h6 class="mb-0 text-sm fw-normal"> <button type="button" class="btn btn-link mb-0" data-bs-toggle="modal" data-bs-target="#modalfile-<?= $dm->id_damage ?>">
-											file
-										</button></h6>
-
-								</td>
-								<td>
-
-									<a class="mb-0 text-sm fw-normal text-info text-decoration-underline" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalaja-<?= $dm->id_damage ?>">
-										<i class="material-icons text-secondary">edit</i>
-									</a>
-								</td>
-								
+									<td class="text-center text-uppercase">
+										<a class="mb-0 text-sm fw-normal" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalfile-<?= $dm->id_damage ?>">
+											<i class="material-icons">insert_drive_file</i>
+										</a>
+									</td>
+									<td class="text-center text-uppercase">
+										<a class="mb-0 text-sm fw-normal" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalaja-<?= $dm->id_damage ?>">
+											<i class="material-icons">edit</i>
+										</a>
+									</td>
+								</tr>
 								<?php $i++; ?>
-							<?php endforeach; ?>
-					</tbody>
-
-
-				</table>
+							<?php endforeach ?>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+
 
 
 
