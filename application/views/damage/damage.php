@@ -18,6 +18,16 @@
 	}
 </script>
 
+<head>
+    <style>
+  table {
+    width: 100%;
+    table-layout: auto;
+    border-collapse: collapse;
+}	
+    </style>
+</head>
+
 <div class="row">
 	<div class="col-lg-6 col-md-6 mt-3 mb-3">
 		<div class="card border-radius-md z-index-2" style="height: 200px;">
@@ -43,11 +53,14 @@
 	</div>
 </div>
 
+
 <div class="text-end me-5">
+    <a href="<?= site_url('printerdamage/exportToExcel') ?>" class="btn btn-success">Export to Excel</a>
 	<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modalInsert">
 		<i class="bi bi-pencil-square"></i> BIAYA PERBAIKAN
 	</button>
 </div>
+
 <!-- Modal update -->
 <div class="modal fade" id="modalInsert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
@@ -89,6 +102,16 @@
 						</div>
 					</div>
                     
+					<div class="row">
+						<div class="col-4 mt-2">
+							<label for="nodum">NO DUMMY</label>
+						</div>
+						<div class="col">
+							<div class="input-group input-group-dynamic mb-2">
+								<input type="number" class="form-control" aria-label="No Dummy" placeholder="Enter No Dummy" id="nodum" name="nodum" style="text-transform: uppercase;" required>
+							</div>
+						</div>
+					</div>
 					
 					<div class="row">
 						<div class="col-4 mt-2">
@@ -163,6 +186,21 @@
 						</div>
 					</div>
 
+					<script>
+						// Ambil checkbox utama
+						var masterCheckbox = document.getElementById('masterCheckbox');
+
+						// Tambahkan event listener untuk checkbox utama
+						masterCheckbox.addEventListener('click', function() {
+							// Ambil semua checkbox dengan class 'childCheckbox'
+							var checkboxes = document.querySelectorAll('.childCheckbox');
+
+							checkboxes.forEach(function(checkbox) {
+								checkbox.checked = masterCheckbox.checked;
+							});
+						});
+					</script>
+
 
 					<div class="row">
 						<div class="col-4 mt-2">
@@ -216,6 +254,7 @@
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Pic IT</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Date Perbaikan</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Biaya Perbaikan </th>
+							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">No Dummy </th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Note</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Status Pembayaran</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Kelengkapan</th>
@@ -258,10 +297,14 @@
 									<h6 class="mb-0 text-sm fw-normal"><?= $dm->pic_it ?></h6>
 								</td>
 								<td class="text-center text-uppercase">
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->date_perbaikan ?></h6>
+									<h6 class="mb-0 text-sm fw-normal"> <?= $dm->date_perbaikan ?> </h6>
+								</td>
+								<td class="text-center ">
+									<h6 class="mb-0 text-sm fw-normal"><?= "Rp " . number_format($dm->biaya_perbaikan, 2, ',', '.'); ?>
+									</h6>
 								</td>
 								<td class="text-center text-uppercase">
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->biaya_perbaikan ?></h6>
+									<h6 class="mb-0 text-sm fw-normal"><?= $dm->no_dummy ?></h6>
 								</td>
 								<td class="text-center text-uppercase">
 									<h6 class="mb-0 text-sm fw-normal"><?= $dm->note ?></h6>
@@ -271,17 +314,15 @@
 								</td>
 								<td class="text-center">
 										<a class="mb-0 text-sm fw-normal text-info text-decoration-underline" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDetail<?= $dm->id_damage ?>">
-											DET.
+											DET
 										</a>
 									</td>
 								<td class="text-center text-uppercase">
 									<h6 class="mb-0 text-sm fw-normal"> <button type="button" class="btn btn-link mb-0" data-bs-toggle="modal" data-bs-target="#modalfile-<?= $dm->id_damage ?>">
 											file
-										</button></h6>
-
+						             </button></h6>
 								</td>
 								<td>
-
 									<a class="mb-0 text-sm fw-normal text-info text-decoration-underline" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalaja-<?= $dm->id_damage ?>">
 										<i class="material-icons text-secondary">edit</i>
 									</a>
@@ -290,7 +331,6 @@
 								<?php $i++; ?>
 							<?php endforeach; ?>
 					</tbody>
-
 
 				</table>
 			</div>
@@ -373,17 +413,6 @@
 						</div>
 					</div>
 
-					<div class="row mb-2">
-						<div class="col-4 mt-2">
-							<label for="biayaper">Upload File</label>
-						</div>
-						<div class="col">
-							<div class="input-group input-group-dynamic">
-								<input type="file" class="form-control" placeholder="Enter Biaya Perbaikan" id="file" name="file" accept=".pdf">
-							</div>
-						</div>
-					</div>
-
 					<!-- Buttons -->
 					<div class="text-end mt-3">
 						<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
@@ -396,7 +425,6 @@
 	</div>
 <?php endforeach; ?>
 
-<!-- Modal file -->
 <?php foreach ($damage as $dm) : ?>
 	<div class="modal fade" id="modalfile-<?= htmlspecialchars($dm->id_damage) ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-xl" role="document">
@@ -407,11 +435,72 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
+				<div class="row mb-2">
+					<div class="col-4 mt-2">
+						<label for="customFile">Pilih File</label>
+					</div>
+					<div class="col">
+						<div class="input-group input-group-dynamic">
+							<div class="input-group">
+								<form action="<?= site_url('printerdamage/uploadProof') ?>" method="POST" enctype="multipart/form-data" class="d-flex w-100 gap-2 align-items-center">
+									<!-- Input ID Damage -->
+									<input type="hidden" name="id_damage" value="<?= htmlspecialchars($dm->id_damage) ?>">
+
+									<!-- Tombol pilih file -->
+									<label class="btn btn-outline-secondary d-flex px-4 py-2" for="customFile-<?= htmlspecialchars($dm->id_damage) ?>">Pilih File</label>
+
+									<!-- Custom file input -->
+									<div class="d-flex align-items-center gap-3 w-100" style="cursor:pointer;" id="fileWrapper-<?= htmlspecialchars($dm->id_damage) ?>">
+										<span id="fileName-<?= htmlspecialchars($dm->id_damage) ?>" class="form-text mb-3">No file chosen</span>
+										<input type="file" class="d-none" id="customFile-<?= htmlspecialchars($dm->id_damage) ?>" name="file_proof">
+									</div>
+
+									<!-- Tombol Upload -->
+									<div>
+										<button class="btn btn-info px-4 py-2" type="submit">Upload</button>
+									</div>
+								</form>
+							</div>
+
+							<script>
+								// Klik div "fileWrapper" untuk membuka file dialog
+								document.getElementById('fileWrapper-<?= htmlspecialchars($dm->id_damage) ?>').addEventListener('click', function() {
+									document.getElementById('customFile-<?= htmlspecialchars($dm->id_damage) ?>').click();
+								});
+
+								// Ganti teks file name ketika file dipilih
+								document.getElementById('customFile-<?= htmlspecialchars($dm->id_damage) ?>').addEventListener('change', function() {
+									var fileName = this.files[0] ? this.files[0].name : 'No file chosen';
+									document.getElementById('fileName-<?= htmlspecialchars($dm->id_damage) ?>').textContent = fileName;
+								});
+							</script>
+						</div>
+					</div>
+				</div>
 
 				<div class="modal-body">
 					<?php if (!empty($dm->file)): ?>
-						<iframe src="<?= base_url('public/img/file_uploaded/' . htmlspecialchars($dm->file)); ?>" width="100%" height="730px" style="border: none; border-radius: 8px;"></iframe>
+						<?php 
+							// Cek ekstensi file
+							$file_extension = pathinfo($dm->file, PATHINFO_EXTENSION);
+							if (in_array($file_extension, ['pdf'])): 
+						?>
+							<!-- Tampilkan PDF -->
+							<iframe src="<?= base_url('public/img/file_uploaded/' . htmlspecialchars($dm->file)); ?>" width="100%" height="730px" style="border: none; border-radius: 8px;"></iframe>
+						<?php elseif (in_array($file_extension, ['jpg', 'jpeg', 'png'])): ?>
+							<!-- Tampilkan Gambar -->
+							<img src="<?= base_url('public/img/file_uploaded/' . htmlspecialchars($dm->file)); ?>" alt="Report Image" class="img-fluid" style="border-radius: 8px;">
+						<?php else: ?>
+							<!-- Jika format file tidak dikenal -->
+							<div class="d-flex align-items-center justify-content-center" style="height: 730px;">
+								<div class="text-center">
+									<i class="bi bi-exclamation-circle" style="font-size: 3rem; color: #dc3545;"></i>
+									<p class="mt-3 fs-4 text-danger">Format file tidak dikenali.</p>
+								</div>
+							</div>
+						<?php endif; ?>
 					<?php else: ?>
+						<!-- Jika file tidak ditemukan -->
 						<div class="d-flex align-items-center justify-content-center" style="height: 730px;">
 							<div class="text-center">
 								<i class="bi bi-exclamation-circle" style="font-size: 3rem; color: #dc3545;"></i>
@@ -424,6 +513,7 @@
 		</div>
 	</div>
 <?php endforeach; ?>
+
 
 <!-- Modal detail -->
 <?php foreach ($damage as $dm) : ?>
