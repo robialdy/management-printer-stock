@@ -21,12 +21,13 @@
 <script src="<?= base_url() ?>public/js/material-dashboard.js"></script>
 
 
-<!-- modal -->
+<!-- plugin -->
 <script src="<?= base_url() ?>public/js/core/bootstrap.min.js"></script>
 <script src="<?= base_url() ?>public/js/core/popper.min.js"></script>
 <script src="<?= base_url() ?>public/js/plugins/sweetalert.min.js"></script>
 <script src="<?= base_url() ?>public/js/plugins/perfect-scrollbar.min.js"></script>
 <script src="<?= base_url() ?>public/js/plugins/smooth-scrollbar.min.js"></script>
+<script src="<?= base_url() ?>public/js/plugins/dropzone.min.js"></script>
 
 <!-- select ssearch -->
 <script src="<?= base_url() ?>public/select_search/choices.js"></script>

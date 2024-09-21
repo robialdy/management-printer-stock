@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+use PhpOffice\PhpWord\TemplateProcessor;
+
 class PrinterReplacement extends CI_Controller
 {
 	
@@ -16,6 +18,20 @@ class PrinterReplacement extends CI_Controller
 		$this->load->model('PrinterBackup_Model');
 		$this->load->model('Customers_Model');
 		$this->data_user = $this->db->get_where('users', ['username' => $this->session->userdata('data_user')])->row_array();
+	}
+
+	public function detail($sn)
+	{
+		// var_dump($this->PrinterReplacement_Model->read_data_detail($sn));
+		// die;
+
+		$data = [
+			'title' => 'Detail Printer',
+			'data_user'		=> $this->data_user,
+			'detail' => $this->PrinterReplacement_Model->read_data_detail($sn),
+		];
+
+		$this->load->view('printerreplacement/detail', $data);
 	}
 
 	public function index()
@@ -77,10 +93,41 @@ class PrinterReplacement extends CI_Controller
 				redirect('replacement');
 			} else {
 				$this->PrinterReplacement_Model->insertData();
-				$this->session->set_flashdata('notifSuccess', 'Printer SN ' . $this->input->post('printersn', true) . ' Berhasil Ditambahkan!');
+				$sn = $this->PrinterReplacement_Model->search_sn($this->input->post('printersn', true));
+				$this->session->set_flashdata('notifSuccess', 'Printer SN ' . $sn->printer_sn . ' Berhasil Ditambahkan!');
 				redirect('replacement');
 			}
 		}
+	}
+
+	public function uploadProof()
+	{
+		if ($this->input->post('proof')) {
+			$path = FCPATH . 'public/proof_replacement/'. $this->input->post('proof');
+			unlink($path);
+		}
+
+
+		$config['upload_path'] = FCPATH . 'public/proof_replacement/';
+		$config['allowed_types'] = 'pdf|jpg|jpeg|png';
+		$config['max_size'] = 30000; // Batas ukuran file (da lam KB)
+
+		$this->load->library('upload', $config);
+
+		// Proses upload
+		if ($this->upload->do_upload('file_proof')) {
+			$new_file = $this->upload->data('file_name');
+		} else {
+			redirect('replacement/' . $this->input->post('sn'));
+		}
+
+		$id = $this->input->post('idrep');
+		$this->db->where('id_replacement', $id);
+		$this->db->update('printer_replacement', ['proof_replacement' => $new_file]);
+
+		$this->session->set_flashdata('notifSuccess', 'Bukti Transaksi Berhasil Diupload!');
+		redirect('replacement/'. $this->input->post('sn'));
+
 	}
 
 	public function insertNew()
@@ -97,7 +144,8 @@ class PrinterReplacement extends CI_Controller
 		$sn_lama = $this->input->post('printersn', true);
 		$this->PrinterReplacement_Model->insertNew($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $date_out, $kelengkapan, $sn_lama);
 
-		$this->session->set_flashdata('notifSuccess', "Printer SN $printer_sn Berhasil Ditambahkan!");
+		$sn = $this->PrinterReplacement_Model->search_sn($printer_sn);
+		$this->session->set_flashdata('notifSuccess', "Printer SN $sn->printer_sn Berhasil Ditambahkan!");	
 		redirect('replacement');
 	}
 

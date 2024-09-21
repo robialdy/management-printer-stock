@@ -186,7 +186,7 @@
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->date_out ?></h6>
 									</td>
 									<td class="text-center">
-										<a class="mb-0 text-sm fw-normal text-info text-decoration-underline" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalDetail<?= $rp->id_replacement ?>">
+										<a href="<?= site_url('replacement/' . $rp->printer_sn ); ?>" class="mb-0 text-sm fw-normal text-info text-decoration-underline">
 											DET.
 										</a>
 									</td>
@@ -272,10 +272,6 @@
 		});
 	});
 </script>
-
-
-<!-- modal detail -->
-<?php $this->load->view('printerreplacement/modal_detail'); ?>
 
 
 
