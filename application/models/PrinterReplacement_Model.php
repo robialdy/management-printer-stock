@@ -15,6 +15,24 @@ class PrinterReplacement_Model extends CI_Model
 		return $query->result();
 	}
 
+	public function search_sn($id)
+	{
+		return $this->db->select('printer_sn')->from('printer_backup')->where('id_printer', $id)->get()->row();
+
+	}
+
+	public function read_data_detail($sn)
+	{
+		$this->db->select('printer_replacement.*, printer_backup.origin, printer_backup.date_in, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust, type_printer.name_type');
+		$this->db->from('printer_replacement');
+		$this->db->join('printer_backup', 'printer_replacement.id_printer = printer_backup.id_printer');
+		$this->db->join('customers', 'printer_replacement.id_cust = customers.id_cust');
+		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type'); // Join dari printer_backup ke type_printer
+		$this->db->where('printer_backup.printer_sn', $sn);
+		$query = $this->db->get();
+		return $query->row();
+	}
+
 	//auto invoice no ref
 	public function autoInvoice()
 	{
