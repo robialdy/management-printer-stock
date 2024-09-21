@@ -1,5 +1,6 @@
 <?php $this->load->view('components/header') ?>
 
+<!-- success -->
 <?php if ($this->session->flashdata('notifSuccess')) :  ?>
 	<script>
 		window.onload = function() {
@@ -13,7 +14,27 @@
 		Swal.fire({
 			icon: 'success',
 			title: 'Good job!',
-			text: 'Printer SN "<?= $this->session->flashdata('notifSuccess') ?>" berhasil ditambahkan!',
+			text: '<?= $this->session->flashdata('notifSuccess') ?>',
+			confirmButtonText: 'OK'
+		});
+	}
+</script>
+
+
+<?php if ($this->session->flashdata('notifError')) :  ?>
+	<script>
+		window.onload = function() {
+			showErrorMessage();
+		};
+	</script>
+<?php endif; ?>
+
+<script>
+	function showErrorMessage() {
+		Swal.fire({
+			icon: 'error',
+			title: 'Oops...',
+			text: '<?= $this->session->flashdata('notifError') ?>',
 			confirmButtonText: 'OK'
 		});
 	}
@@ -61,8 +82,9 @@
 				<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<div class="text-center">
-					<h5 class="modal-title font-weight-normal" id="exampleModalLabel">Printer In</h5>
+				<div class="text-start ms-3">
+					<h5 class="modal-title fw-bold" id="exampleModalLabel">PRINTER IN</h5>
+					<small>Silahkan Menginput Data Printer</small>
 				</div>
 			</div>
 			<div class="modal-body">
@@ -73,7 +95,7 @@
 							<label for="sn">PRINTER S/N <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
+							<div class="input-group input-group-dynamic mb-3">
 								<input type="text" class="form-control" aria-label="Username" placeholder="Enter printer s/n" aria-describedby="basic-addon1" id="sn" name="printersn" style="text-transform: uppercase;" required>
 							</div>
 						</div>
@@ -81,11 +103,32 @@
 
 					<div class="row">
 						<div class="col-4 mt-2">
-							<label for="typep">TYPE PRINTER <span class="text-danger">*</span></label>
+							<label for="sn">TYPE PRINTER<span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter type printer" aria-describedby="basic-addon1" id="typep" name="printertype" style="text-transform: uppercase;" required>
+							<div class="input-group input-group-static mb-2">
+								<select class="choices form-select" id="exampleFormControlSelect1" name="typeprinter" required>
+									<option value="" selected disabled>ENTER TYPE PRINTER</option>
+									<?php foreach ($type_printer as $tp) : ?>
+										<option value="<?= $tp->id_type; ?>"><?= $tp->name_type; ?></option>
+									<?php endforeach; ?>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-4 mt-2">
+							<label for="sn">SN DAMAGE <span class="text-danger">*</span></label>
+						</div>
+						<div class="col">
+							<div class="input-group input-group-static mb-2">
+								<select class="choices form-select" id="exampleFormControlSelect1" name="return_cgk" required>
+									<option value="" selected disabled>ENTER SN DAMAGE</option>
+									<?php foreach ($sndamage as $sg) : ?>
+										<option value="<?= $sg->id_printer; ?>"><?= $sg->printer_sn; ?></option>
+									<?php endforeach; ?>
+								</select>
 							</div>
 						</div>
 					</div>
@@ -125,7 +168,6 @@
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">date in</th>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">type printer</th>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">printer sn</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">note</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -142,13 +184,10 @@
 										<h6 class="mb-0 text-md fw-normal"><?= $pl['date_in']; ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-md fw-normal"><?= $pl['type_printer']; ?></h6>
+										<h6 class="mb-0 text-md fw-normal"><?= $pl['name_type']; ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-md fw-normal"><?= $pl['printer_sn']; ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-md fw-normal"><?= $pl['note']; ?></h6>
 									</td>
 								</tr>
 								<?php $i++; ?>

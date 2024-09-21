@@ -1,13 +1,14 @@
 <!-- Modal -->
 <div class="modal fade" id="modalprinterout" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
+	<div class="modal-dialog modal-dialog-centered modal-" role="document">
 		<div class="modal-content">
 			<div class="text-end me-1">
 				<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<div class="text-center">
-					<h5 class="modal-title font-weight-normal" id="exampleModalLabel">Printer Out</h5>
+				<div class="text-start ms-3">
+					<h5 class="modal-title fw-bold" id="exampleModalLabel">PRINTER OUT</h5>
+					<small>Silahkan Menginput Data Printer</small>
 				</div>
 			</div>
 			<div class="modal-body">
@@ -18,7 +19,7 @@
 							<label for="sn">PRINTER S/N <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-static mb-2">
+							<div class="input-group input-group-static mb-3">
 								<select class="choices form-select" id="exampleFormControlSelect1" name="printersn" required>
 									<option value="" selected disabled>ENTER PRINTER S/N</option>
 									<?php foreach ($printer as $pr) : ?>
@@ -34,11 +35,11 @@
 							<label for="sn">CUST NAME <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-static mb-2">
+							<div class="input-group input-group-static mb-3">
 								<select class="choices form-select" id="exampleFormControlSelect1" name="agenname" required>
-									<option value="" selected disabled>ENTER AGEN NAME</option>
-									<?php foreach ($agen as $ag) : ?>
-										<option value="<?= $ag['id_cust']; ?>"><?= $ag['cust_name']; ?></option>
+									<option value="" selected disabled>ENTER CUST NAME</option>
+									<?php foreach ($cust as $ag) : ?>
+										<option value="<?= $ag->id_cust; ?>"><?= $ag->cust_name; ?></option>
 									<?php endforeach; ?>
 								</select>
 							</div>
@@ -50,8 +51,8 @@
 							<label for="typep">PIC IT <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter pic it" aria-describedby="basic-addon1" id="typep" name="picit" style="text-transform: uppercase;" required>
+							<div class="input-group input-group-dynamic mb-4">
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter pic it" aria-describedby="basic-addon1" id="typep" name="picit" style="text-transform: uppercase;" required minlength="3">
 							</div>
 						</div>
 					</div>
@@ -61,8 +62,8 @@
 							<label for="typep">PIC USER <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-dynamic mb-2">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter pic user" aria-describedby="basic-addon1" id="typep" name="picuser" style="text-transform: uppercase;" required>
+							<div class="input-group input-group-dynamic mb-4">
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter pic user" aria-describedby="basic-addon1" id="typep" name="picuser" style="text-transform: uppercase;" required minlength="3">
 							</div>
 						</div>
 					</div>
@@ -73,7 +74,7 @@
 						</div>
 						<div class="col mt-2">
 
-							<div class="row">
+							<div class="row mb-1">
 								<div class="form-check col">
 									<input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="dus" value="DUS">
 									<label class="form-check-label" for="dus">
@@ -88,7 +89,7 @@
 								</div>
 							</div>
 
-							<div class="row">
+							<div class="row mb-1">
 								<div class="form-check col">
 									<input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="corelabel" value="CORE LABEL 1">
 									<label class="form-check-label" for="corelabel">
@@ -103,7 +104,7 @@
 								</div>
 							</div>
 
-							<div class="row">
+							<div class="row mb-1">
 								<div class="form-check col">
 									<input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="coreribbon" value="CORE RIBBON 2">
 									<label class="form-check-label" for="coreribbon">
@@ -118,7 +119,7 @@
 								</div>
 							</div>
 
-							<div class="row">
+							<div class="row mb-1">
 								<div class="form-check col">
 									<input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="power" value="KABEL POWER">
 									<label class="form-check-label" for="power">
@@ -128,7 +129,7 @@
 							</div>
 
 							<!-- Checkbox untuk memilih semua -->
-							<div class="row">
+							<div class="row mt-1">
 								<div class="form-check col">
 									<input class="" type="checkbox" id="masterCheckbox">
 									<label class="form-check-label" for="masterCheckbox">

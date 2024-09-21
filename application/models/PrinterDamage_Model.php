@@ -4,40 +4,31 @@ class PrinterDamage_Model extends CI_Model
 {
  public function readData()
  { 
-    $this->db->select('printer_damage.*, printer_backup.origin, printer_backup.date_in, printer_backup.type_printer, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust');
+    $this->db->select('printer_damage.*, printer_backup.origin, printer_backup.date_in, type_printer.name_type, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust');
     $this->db->from('printer_damage');
     $this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
     $this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
-    $this->db->order_by('printer_backup.date_in', 'DESC'); 
-    $query = $this->db->get();
+	$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
+    $this->db->order_by('printer_backup.date_in', 'DESC');
+	$query = $this->db->get();
+
     return $query->result();
  }
 
-	
-	public function insertData()
+ 	public function readDataSn()
 	{
-		$form_data = [
-			
-			'id_printer'=> $this->input->post('printersn', true),
-			'id_cust'	=> $this->input->post('agenname', true),
-            'pic_it'	=> $this->input->post('picit', true),
-			'date_perbaikan'=> date('d/m/Y / H:i:s'),
-			'biaya_perbaikan' =>$this->input->post('biayaperbaikan',true),
-            'status_pembayaran'=>$this->input->post('statuspembayaran',true),
-			'created_at'=> date('d M Y / H:i:s'),
-			'update_at'=>date('d M Y / H:i:s'),
-		];
-		$this->db->insert('printer_damage', $form_data);
+		$this->db->select('printer_damage.*, printer_backup.printer_sn');
+		$this->db->from('printer_damage');
+		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
+		$this->db->where('printer_damage.return_cgk', '-'); 
+		$query = $this->db->get();
+		return $query->result();
 	}
+
 	
 	public function jumlahData()
 	{
 		
-		return $this->db->count_all_results('printer_damage');
-	}
-
-	public function jumlah()
-	{
 		return $this->db->count_all_results('printer_damage');
 	}
 
@@ -63,7 +54,7 @@ class PrinterDamage_Model extends CI_Model
              'status_pembayaran'=> $this->input->post('status_pembayaran',true),
 		];
 
-		$id = $this->input->post('id_damage');
+		$id = $this->input->post('id_damage', true);
     
         
 		$this->db->where('id_damage', $id);

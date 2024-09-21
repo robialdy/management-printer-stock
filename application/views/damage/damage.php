@@ -69,8 +69,9 @@
 				<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-				<div class="text-center">
-					<h5 class="modal-title font-weight-normal" id="exampleModalLabel">Biaya Perbaikan</h5>
+				<div class="text-start ms-3">
+					<h5 class="modal-title fw-bold" id="exampleModalLabel">ADD PERBAIKAN</h5>
+					<small>Silahkan Menginput Data Perbaikan</small>
 				</div>
 			</div>
 			<div class="modal-body">
@@ -229,7 +230,6 @@
 	</div>
 </div>
 
-
 <div class="col-12">
 	<div class="card my-4">
 		<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
@@ -247,7 +247,7 @@
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Date In</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Type Printer</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Printer SN</th>
-							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">CDK Jakarta</th>
+							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Return cgk</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Cust ID</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Agen Name</th>
 							<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 ps-2">Type cust</th>
@@ -275,16 +275,20 @@
 								<td class="text-center text-uppercase">
 									<h6 class="mb-0 text-sm fw-normal"><?= $dm->date_in ?></h6>
 								</td>
-								<td class="text-center text-uppercase">
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->type_printer ?></h6>
+                
+								<td>
+									<h6 class="mb-0 text-sm fw-normal"><?= $dm->name_type ?></h6>
+
 								</td>
 								<td class="text-center text-uppercase">
 									<h6 class="mb-0 text-sm fw-normal"><?= $dm->printer_sn ?></h6>	
 								</td>
-								<td class="text-center text-uppercase">
-									<h6 class="mb-0 text-sm fw-normal"><?= $dm->cdk_jakarta ?></h6>
+
+								<td>
+									<h6 class="mb-0 text-sm fw-normal"><?= $dm->return_cgk ?></h6>
 								</td>
-								<td class="text-center text-uppercase">
+								<td>
+
 									<h6 class="mb-0 text-sm fw-normal"><?= $dm->cust_id ?></h6>
 								</td>
 								<td class="text-center text-uppercase">

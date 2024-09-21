@@ -2,14 +2,14 @@
 
 class Users_Model extends CI_Model
 {
-	public function readData_a()
+	public function readData_a($username)
 	{
-		return $this->db->order_by('created_at', 'DESC')->get_where('users', ['role' => 'Admin'])->result_array();
+		return $this->db->where('role', 'Admin')->where_not_in('username', $username)->order_by('created_at', 'DESC')->get('users')->result_array();
 	}
 
-	public function readData_m()
+	public function readData_m($username)
 	{
-		return $this->db->order_by('created_at', 'DESC')->get_where('users', ['role' => 'Moderator'])->result_array();
+		return $this->db->where('role', 'SUPER ADMIN')->where_not_in('username', $username)->order_by('created_at', 'DESC')->get('users')->result_array();
 	}
 
 	public function insert()
@@ -18,7 +18,7 @@ class Users_Model extends CI_Model
 			'username'	=> $this->input->post('username', true),
 			'password'	=> password_hash($this->input->post('password1', true), PASSWORD_DEFAULT),
 			'role'		=> $this->input->post('role', true),
-			'created_at'=> date('d M Y / H:i:s'),
+			'created_at'=> date('d-m-Y H:i:s'),
 		];
 		$this->db->insert('users', $form_data);
 	}
