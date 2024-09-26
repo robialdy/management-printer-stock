@@ -149,7 +149,7 @@
 					</div>
 				</div>
 
-				<label class="form-label fw-bold fs-6 mt-3">UPLOAD BUKTI TRANSAKSI</label>
+				<label class="form-label fw-bold fs-6">UPLOAD BUKTI TRANSAKSI</label>
 				<div class="input-group">
 					<form action="<?= site_url('printerreplacement/uploadProof') ?>" method="POST" enctype="multipart/form-data" class="d-flex w-100 gap-2 align-items-center">
 						<input type="hidden" name="idrep" value="<?= $detail->id_replacement ?>">
@@ -157,7 +157,7 @@
 						<input type="hidden" name="proof" value="<?= $detail->proof_replacement ?>">
 
 						<!-- Tombol pilih file -->
-						<label class="btn btn-outline-secondary d-flex px-4 py-2" for="customFile">Pilih File</label>
+						<label class="btn btn-outline-secondary d-flex px-3 py-1" for="customFile">Pilih File</label>
 
 						<!-- Custom file input -->
 						<div class="d-flex align-items-center gap-3 w-100" style="cursor:pointer;" id="fileWrapper">

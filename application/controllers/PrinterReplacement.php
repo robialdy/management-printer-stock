@@ -152,7 +152,7 @@ class PrinterReplacement extends CI_Controller
 	public function insertWithDamage()
 	{
 
-		$printer_sn = $this->session->userdata('printersn');
+		$printer_sn = $this->session->userdata('printersn'); //idprinter
 		$agen_name = $this->session->userdata('agenname');
 		$pic_it = $this->session->userdata('picit');
 		$pic_user = $this->session->userdata('picuser');
@@ -160,13 +160,10 @@ class PrinterReplacement extends CI_Controller
 		$date_out = $this->session->userdata('dateout');
 		$kelengkapan = $this->session->userdata('kelengkapan');
 
+		// ini delete cukup yang printer_list
 		$this->db->delete('printer_replacement', ['id_replacement' => $this->input->post('idreplacement', true)]);
 
-		// //ini apa eyy lupa 
-		// $idprinter = $this->input->post('idprinter');
-		// $this->db->select('printer_sn');
-		// $this->db->where('id_printer', $idprinter);
-		// $prin_sn = $this->db->get('printer_backup');
+		$this->db->delete('printer_list_inagen', ['id_printer' => $this->input->post('idprinter', true)]);
 
 		//send to damage
 		$this->PrinterReplacement_Model->insertToDamage();
@@ -185,24 +182,22 @@ class PrinterReplacement extends CI_Controller
 	{
 		
 		// mengupdate status sn damage di replacement
-		$idreplacement = $this->input->post('idreplacement2', true);
+		$idreplacement = $this->input->post('idreplacement', true);
 		$printersn = $this->input->post('printersn', true);
-
-
+		
 		$form_data ['sn_damage'] = $printersn;
 		$this->db->where('id_replacement', $idreplacement);
 		$this->db->update('printer_replacement', $form_data);
 
 
-		//delete data sebelumnya
-		$this->db->delete('printer_replacement', ['id_replacement' => $this->input->post('idreplacement', true)]);
+		//delete data sebelumnya udh include dua tabel karena master dari foreignkey nya di delete
+		$this->db->delete('printer_list_inagen', ['id_printer_list' => $this->input->post('idlist', true)]);
 
 		//mengiriim data ke damage
 		$this->PrinterReplacement_Model->insertToDamage();
 
 
 		$this->session->set_flashdata('notifSuccess', 'Printer Berhasil ditambahkan di SN Damage');
-		// Redirect setelah operasi selesai
 		redirect('replacement');
 	}
 
@@ -213,9 +208,10 @@ class PrinterReplacement extends CI_Controller
 
 		$custId = $this->input->post('custID', true);
 		$sn_damage = $this->input->post('snDamage', true);
-		$idRep = $this->input->post('idRep', true);
+		$id_list = $this->input->post('id_list', true);
+		$id_rep = $this->input->post('idRep', true);
 
-		$printers = $this->PrinterReplacement_Model->get_printer_by_id($custId, $idRep, $sn_damage);
+		$printers = $this->PrinterReplacement_Model->get_printer_by_id($custId, $id_list, $sn_damage);
 
 
 		$html = '';
@@ -229,7 +225,6 @@ class PrinterReplacement extends CI_Controller
 
 			$html .= '
 			<form method="POST" action="'.site_url('printerreplacement/insertDamage'). '">
-			<input type="hidden" name="idreplacement2" value="">
 				<div class="card mb-3 mx-2">
 					<div class="d-flex align-items-center p-3 border-radius-md">
 						<span class="avatar text-bg-info avatar-lg fs-5">
@@ -244,8 +239,9 @@ class PrinterReplacement extends CI_Controller
 						</div>
 
 
-						<input type="hidden" name="idreplacement" value="' . $printer->id_replacement . '">
+						<input type="hidden" name="idreplacement" value="' . $id_rep . '">
 						<input type="hidden" name="printersn" value="' . $printer->printer_sn . '">
+						<input type="hidden" name="idlist" value="' . $printer->id_printer_list . '">
 						<input type="hidden" name="idprinter" value="' . $printer->id_printer . '">
 						<input type="hidden" name="idcust" value="' . $printer->id_cust . '">
 						<button type="submit" class="btn text-muted fs-3 ms-auto my-auto" type="button">

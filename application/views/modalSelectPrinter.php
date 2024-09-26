@@ -35,11 +35,10 @@
 									</button>
 								</div>
 							</div>
+							<input type="hidden" value="<?= $sp->id_cust ?>" name="idcust">
 							<input type="hidden" value="<?= $sp->printer_sn ?>" name="printersn">
 							<input type="hidden" value="<?= $sp->id_replacement ?>" name="idreplacement">
-							<!-- input untuk kirim ke damage -->
 							<input type="hidden" value="<?= $sp->id_printer ?>" name="idprinter">
-							<input type="hidden" value="<?= $sp->id_cust ?>" name="idcust">
 						</form>
 					<?php endforeach; ?>
 				</div>

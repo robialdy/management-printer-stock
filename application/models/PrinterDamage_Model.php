@@ -2,93 +2,100 @@
 
 class PrinterDamage_Model extends CI_Model
 {
- public function readData()
- { 
-    $this->db->select('printer_damage.*, printer_backup.origin, printer_backup.date_in, type_printer.name_type, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust');
-    $this->db->from('printer_damage');
-    $this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
-    $this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
-	$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
-    $this->db->order_by('printer_backup.date_in', 'DESC');
-	$query = $this->db->get();
-
-    return $query->result();
- }
-
- 	// buat di modal add perbaikan
-	public function read_data_perbaikan()
+	public function read_data()
 	{
-		$this->db->select('printer_damage.*, printer_backup.printer_sn');
+		$this->db->select('printer_damage.*, printer_backup.origin, printer_backup.date_in, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust, type_printer.name_type');
 		$this->db->from('printer_damage');
 		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
-		$this->db->where('printer_damage.date_perbaikan', '-');
-		// $this->db->where('printer_damage.return_cgk', '-'); 
+		$this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
+		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
+		$this->db->order_by('printer_damage.created_at', 'DESC');
 		$query = $this->db->get();
 		return $query->result();
 	}
 
- 	//buat di backup ini 
- 	public function readDataSn()
+	public function read_data_nodummy()
 	{
-		$this->db->select('printer_damage.*, printer_backup.printer_sn');
+		$this->db->select('printer_damage.*, printer_backup.origin, printer_backup.date_in, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust, type_printer.name_type');
 		$this->db->from('printer_damage');
 		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
-		$this->db->where('printer_damage.return_cgk', '-'); 
+		$this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
+		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
+		$this->db->where('printer_damage.no_dummy', '-');
+		$this->db->order_by('printer_damage.created_at', 'DESC');
 		$query = $this->db->get();
 		return $query->result();
 	}
 
-	
-	public function jumlahData()
+	public function read_data_return_cgk()
 	{
-		
+		$this->db->select('printer_damage.*, printer_backup.origin, printer_backup.date_in, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust, type_printer.name_type');
+		$this->db->from('printer_damage');
+		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
+		$this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
+		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
+		$this->db->where('printer_damage.return_cgk', '-');
+		$this->db->order_by('printer_damage.created_at', 'DESC');
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	public function read_data_add_perbaikan()
+	{
+		$this->db->select('printer_damage.*, printer_backup.origin, printer_backup.date_in, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust, type_printer.name_type');
+		$this->db->from('printer_damage');
+		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
+		$this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
+		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
+		$this->db->where('printer_damage.pic_it', '-');
+		$this->db->order_by('printer_damage.created_at', 'DESC');
+		$query = $this->db->get();
+		return $query->result();
+	}
+
+	public function add_perbaikan()
+	{
+		$take_kelengkapan = $this->input->post('kelengkapan');
+		$kelengkapan = implode(', ', $take_kelengkapan);
+
+		$form_data = [
+			'note'				=> 'BETUL',
+			'kelengkapan'		=> $kelengkapan,
+			'pic_it'			=> $this->input->post('pic_it'),
+		];
+		$this->db->where('id_printer', $this->input->post('printersn')); //id printer
+		$this->db->update('printer_damage', $form_data);
+	}
+
+	public function add_nodummy($idprinter, $nodummy) // idprinter = array
+	{
+		foreach ($idprinter as $id_prin) {
+			// Lakukan update untuk setiap printer yang dipilih
+			$this->db->where('id_printer', $id_prin);
+			$this->db->update('printer_damage', ['no_dummy' => $nodummy]); // Sesuaikan nama tabel dan kolom
+		}
+	}
+
+	public function edit()
+	{
+		$form_data = [
+			'biaya_perbaikan'		=> $this->input->post('biaya'),
+			'status_pembayaran' => $this->input->post('status_pembayaran'),
+		];
+		$this->db->where('id_damage', $this->input->post('id_damage'));
+		$this->db->update('printer_damage', $form_data);
+	}
+
+	public function sum_damage()
+	{
 		return $this->db->count_all_results('printer_damage');
 	}
 
-	public function updateData()
-    {
-		$data = [
-			'biaya_perbaikan' => $this->input->post('biayaper', true),
-			'status_pembayaran' => $this->input->post('status_pembayaran', true),
-			'note' => 'Betul',
-		];
-		$id = $this->input->post('id');
-
-        $this->db->where('id_damage', $id);
-        $this->db->update('printer_damage', $data);
-    }
-
-
-	public function editData()
+	public function date_time()
 	{
-		$data =[
-              'pic_it'=> $this->input->post('picit',true),
-             'note'=> $this->input->post('note',true),
-             'biaya_perbaikan'=> $this->input->post('biayaper',true),
-             'status_pembayaran'=> $this->input->post('status_pembayaran',true),
-		];
-
-		$id = $this->input->post('id_damage', true);
-    
-        
-		$this->db->where('id_damage', $id);
-		$this->db->update('printer_damage', $data);
+		$this->db->order_by('created_at', 'DESC');
+		$this->db->limit(1);
+		$query = $this->db->get('printer_damage');
+		return $query->row();
 	}
-
-	
-	public function timedate()
-{
-    $this->db->order_by('created_at', 'DESC');
-    $this->db->limit(1);
-    $query = $this->db->get('printer_damage');
-    return $query->row();
-}
-
-public function update()
- {
-	$this->db->order_by('update_at', 'DESC'); // Urutkan berdasarkan update_at secara menurun
-    return $this->db->get('printer_damage')->result_array();
-}
-    
-	
 }

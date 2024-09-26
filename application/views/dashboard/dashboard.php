@@ -41,7 +41,7 @@
 				</a>
 				<div class="text-end pt-1">
 					<p class="text-sm mb-0 text-capitalize">Total</p>
-					<h4 class="mb-0"><?= $jumdamage ?></h4>
+					<h4 class="mb-0">30</h4>
 				</div>
 			</div>
 			<hr class="dark horizontal">

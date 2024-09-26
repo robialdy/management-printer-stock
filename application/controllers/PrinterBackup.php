@@ -25,7 +25,7 @@ class PrinterBackup extends CI_Controller
 			'totalPrinter'	=> $this->PrinterBackup_Model->jumlahData(),
 			'data_user'		=> $this->data_user,
 			'dateTime'		=> $this->PrinterBackup_Model->dateTime(),
-			'sndamage'		=> $this->PrinterDamage_Model->readDataSn(),
+			'sndamage'		=> $this->PrinterDamage_Model->read_data_return_cgk(),
 			'type_printer'	=> $this->Type_printer_Model->read_data(),
 		];
 
@@ -38,7 +38,7 @@ class PrinterBackup extends CI_Controller
 
 		$this->form_validation->set_rules('printersn', 'PRINTER SN', 'required|is_unique[printer_backup.printer_sn]|trim');
 		$this->form_validation->set_rules('typeprinter', 'PRINTER SN', 'required|trim');
-		$this->form_validation->set_rules('return_cgk', 'Return Cgk', 'required|trim');
+		$this->form_validation->set_rules('return_cgk', 'Return Cgk', 'trim');
 		if ($this->form_validation->run() == FALSE) {
 			$this->session->set_flashdata('notifError', "Printer SN $prin_sn Telah Digunakan!");
 			redirect('printer');

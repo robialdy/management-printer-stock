@@ -121,6 +121,39 @@
 					</div>
 				</li>
 
+				<li class="nav-item ">
+					<a class="nav-link text-white " data-bs-toggle="collapse" aria-expanded="false" href="#usersExample2">
+						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+							<i class="material-icons">format_list_bulleted</i>
+						</div>
+						<span class="sidenav-normal  ps-1">Master Data Printer List<b class="caret"></b></span>
+					</a>
+					<div class="collapse <?= ($this->uri->segment(1) == 'printerdetail' || $this->uri->segment(1) == 'printersummary') ? 'show' : ''; ?>" id="usersExample2">
+						<ul class="nav nav-sm flex-column">
+
+							<li class="nav-item">
+								<a class="nav-link text-white <?= ($this->uri->segment(1) == 'printerdetail') ? 'active bg-info' : ''; ?>" href="<?= site_url('printerdetail') ?>">
+									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
+										<i class="material-icons">description</i>
+									</div>
+									<span class="nav-link-text ms-1">Printer Detail</span>
+								</a>
+							</li>
+
+
+							<li class="nav-item">
+								<a class="nav-link text-white <?= ($this->uri->segment(1) == 'printersummary') ? 'active bg-info' : ''; ?>" href="<?= site_url('printersummary') ?>">
+									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
+										<i class="material-icons">summarize</i>
+									</div>
+									<span class="nav-link-text ms-1">Printer Summary</span>
+								</a>
+							</li>
+
+						</ul>
+					</div>
+				</li>
+
 				<?php if ($data_user['role'] === 'SUPER ADMIN'): ?>
 
 					<li class="nav-item">

@@ -1,125 +1,195 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+
 class PrinterDamage extends CI_Controller
 {
-    public $data_user, $PrinterDamage_Model;
+	public function __construct()
+	{
+		parent::__construct();
+		if (!$this->session->userdata('data_user')) {
+			redirect('auth');
+		};
+		$this->load->model('PrinterDamage_Model');
+		$this->data_user = $this->db->get_where('users', ['username' => $this->session->userdata('data_user')])->row_array();
+	}
 
-    public function __construct()
-    {
-        parent::__construct();
-        if (!$this->session->userdata('data_user')) {
-            redirect('auth');
-        }
+	public function index()
+	{
 
-        // Load model PrinterDamage_Model
-        $this->load->model('PrinterDamage_Model');
+		$data = [
+			'title' => 'Printer Damage',
+			'data_user'	=> $this->data_user,
+			'damage'	=> $this->PrinterDamage_Model->read_data(),
+			'sum_damage'=> $this->PrinterDamage_Model->sum_damage(),
+			'date_time'	=> $this->PrinterDamage_Model->date_time(),
+			'damage_perbaikan' => $this->PrinterDamage_Model->read_data_add_perbaikan(),
+			'no_dummy'	=> $this->PrinterDamage_Model->read_data_nodummy(),
+		];
+		$this->load->view('printerDamage/printer_damage', $data);
+	}
 
-        // Ambil dan simpan data user dari session
-        $this->data_user = $this->db->get_where('users', [
-            'username' => $this->session->userdata('data_user')
-        ])->row_array();
-    }
+	public function add_perbaikan()
+	{
+		$this->form_validation->set_rules('printersn', 'PRINTER SN', 'required|trim');
+		$this->form_validation->set_rules('biaya', 'BIAYA', 'required|trim');
+		$this->form_validation->set_rules('status_pembayaran', 'STATUS', 'required|trim');
 
-    public function index()
-    {
+		if ($this->form_validation->run() == FALSE) {
+			redirect('damage');
+		} else {
+			$this->PrinterDamage_Model->add_perbaikan();
+			$this->session->set_flashdata('notifSuccess', 'Printer berhasil di perbaiki');
+			redirect('damage');
+		}
+	}
 
-        $data = [
-            'title' => 'Printer Damage',
-            'data_user' => $this->data_user,
-            'damage' => $this->PrinterDamage_Model->readData(),
-			'sn_modal'	=> $this->PrinterDamage_Model->read_data_perbaikan(),
-            'jumdamage' => $this->PrinterDamage_Model->jumlahData(),
-            'timedate' => $this->PrinterDamage_Model->timedate(),
-        ];
-        $this->load->view('damage/damage', $data);
-    }
+	public function add_nodummy()
+	{
+		// $this->form_validation->set_rules('idprinter', 'PRINTER SN', 'required|trim');
+		$this->form_validation->set_rules('nodummy', 'NO dummy', 'required|trim');
 
-    public function update()
-    {
-        $this->form_validation->set_rules('id', 'Printer SN', 'required|trim');
-        $this->form_validation->set_rules('biayaper', 'Biaya Perbaikan', 'required|trim|numeric|greater_than_equal_to[0]');
-        $this->form_validation->set_rules('status_pembayaran', 'Status Pembayaran', 'required|trim');
+		if ($this->form_validation->run() == FALSE) {
+			redirect('damage');
+		} else {
+			$nodummy = $this->input->post('nodummy');
+			$idprinter = $this->input->post('idprinter'); //array
 
-        if ($this->form_validation->run() == false) {
-            redirect('damage');
-        } else {
-            // Ambil data dari input
-            $data = [
-                'biaya_perbaikan' => $this->input->post('biayaper', true),
-                'status_pembayaran' => $this->input->post('status_pembayaran', true),
-                'date_perbaikan' => date('Y/m/d H:i:s'),
-                'update_at' => date('Y-m-d H:i:s'),
-            ];
+			$this->PrinterDamage_Model->add_nodummy($idprinter, $nodummy);
+			$this->session->set_flashdata('notifSuccess', 'Printer berhasil di perbaiki');
+			redirect('damage');
+		}
+	}
 
-            $id = $this->input->post('id', true);
+	public function edit()
+	{
+		$this->form_validation->set_rules('no_dummy', 'NO DUMMY', 'trim');
+		$this->form_validation->set_rules('biaya', 'BIAYA', 'required|trim');
+		$this->form_validation->set_rules('status_pembayaran', 'STATUS', 'required|trim');
 
-            // Update data berdasarkan id_damage
-            $this->db->where('id_damage', $id);
-            $this->db->update('printer_damage', $data);
+		if ($this->form_validation->run() == FALSE) {
+			redirect('damage');
+		} else {
+			$this->PrinterDamage_Model->edit();
+			$this->session->set_flashdata('notifSuccess', 'Printer berhasil di edit');
+			redirect('damage');
+		}
+	}
 
-            $this->session->set_flashdata('notifSuccess', 'Data Updated Successfully');
+	public function upload_file()
+	{
+		if ($this->input->post('name_file_indb')) {
+			$path = FCPATH . 'public/file_damage/' . $this->input->post('name_file_indb');
+			unlink($path);
+		}
 
-            // Redirect kembali ke halaman damage
-            redirect('damage');
-        }
-    }
+		$config['upload_path'] = FCPATH . 'public/file_damage/';
+		$config['allowed_types'] = 'pdf|jpg|jpeg|png';
+		$config['max_size'] = 30000; // Batas ukuran file (da lam KB)
+		$this->load->library('upload', $config);
+
+		// Proses upload
+		if ($this->upload->do_upload('file')) {
+			$new_file = $this->upload->data('file_name');
+		} else {
+			redirect('damage');
+		}
+
+		$id = $this->input->post('id_damage');
+		$this->db->where('id_damage', $id);
+		$this->db->update('printer_damage', ['file' => $new_file]);
+
+		$this->session->set_flashdata('notifSuccess', 'Lampiran File Transaksi Berhasil Diupload!');
+		redirect('damage');
+	}
+
+	public function export_excel()
+	{
+		$data = $this->PrinterDamage_Model->read_data();
+
+		// Membuat objek spreadsheet baru
+		$spreadsheet = new Spreadsheet();
+		$sheet = $spreadsheet->getActiveSheet();
+
+		// Mengisi header kolom
+		$headers = ['NO.', 'NO. DUMMY', 'TANGGAL', 'ORIGIN', 'CUST.ID', 'CUST.NAME', 'TYPE PRINTER', 'SN', 'DESCRIPTION', 'KELENGKAPAN'];
+		$columnNames = range('A', 'J');
+
+		// Mengatur panjang sesuai keinginan
+		$sheet->getColumnDimension('A')->setWidth(5);
+		$sheet->getColumnDimension('B')->setWidth(25);
+		$sheet->getColumnDimension('C')->setWidth(20);
+		$sheet->getColumnDimension('D')->setWidth(20);
+		$sheet->getColumnDimension('E')->setWidth(20);
+		$sheet->getColumnDimension('F')->setWidth(50);
+		$sheet->getColumnDimension('G')->setWidth(15);
+		$sheet->getColumnDimension('H')->setWidth(15);
+		$sheet->getColumnDimension('I')->setWidth(40);
+		$sheet->getColumnDimension('J')->setWidth(90);
 
 
-    public function edit()
-    {
-        // Aturan validasi form
-        $this->form_validation->set_rules('note', 'Note', 'required|trim');
-        $this->form_validation->set_rules('biayaper', 'Biaya Perbaikan', 'required|trim');
+		// mengatur desain header
+		foreach ($columnNames as $index => $column) {
+			// mengisi data header praktis di loop
+			$sheet->setCellValue($column . '1', $headers[$index]);
+			// Menambahkan border ke header
+			$sheet->getStyle($column . '1')->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+			// Mengatur gaya bold pada header
+			$sheet->getStyle($column . '1')->getFont()->setBold(true);
+			// Menambah padding
+			$sheet->getRowDimension(1)->setRowHeight(45);
+			// warna header
+			$sheet->getStyle($column . '1')->getFill()->setFillType(Fill::FILL_SOLID);
+			$sheet->getStyle($column . '1')->getFill()->getStartColor()->setARGB('C6E0B4'); // Mengubah warna latar belakang menjadi hijau
+			// Mengatur posisi text header ke tengah
+			$sheet->getStyle($column . '1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+			$sheet->getStyle($column . '1')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+		}
 
-        // Cek validasi form
-        if ($this->form_validation->run() == false) {
-            redirect('damage');
-        } else {
-            // Mengambil nama file yang diunggah
-            $upload_file = $_FILES['file']['name'];
-
-            // Jika ada file yang diunggah
-            if ($upload_file) {
-
-                $config['upload_path'] = FCPATH . 'public/img/file_uploaded/';
-                $config['allowed_types'] = 'pdf';
-                $config['max_size'] = 30000; // Batas ukuran file (da lam KB)
-
-                // Load library upload dengan konfigurasi
-                $this->load->library('upload', $config);
-
-                // Proses upload
-                if ($this->upload->do_upload('file')) {
-                    // Ambil nama file yang baru diunggah
-                    $new_file = $this->upload->data('file_name');
-                } else {
-                    echo $this->upload->display_errors();
-                    return;
-                }
-            }
+		// Mengisi data dari database ke dalam Excel
+		$i = 1;
+		$row = 2;
+		foreach ($data as $dm) {
+			// mengisi data
+			$sheet->setCellValue('A' . $row, $i++);   
+			$sheet->setCellValue('B' . $row, $dm->no_dummy);    
+			$sheet->setCellValue('C' . $row, '');   
+			$sheet->setCellValue('D' . $row, $dm->origin);  
+			$sheet->setCellValue('E' . $row, $dm->cust_id);   
+			$sheet->setCellValue('F' . $row, $dm->cust_name);
+			$sheet->setCellValue('G' . $row, $dm->name_type); 
+			$sheet->setCellValue('H' . $row, $dm->printer_sn);
+			$sheet->setCellValue('I' . $row, '-');
+			$sheet->setCellValue('J' . $row, $dm->kelengkapan);  
+			foreach ($columnNames as $column) {
+				// Mengeedit desain data nya excel
+				$sheet->getStyle($column . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+				$sheet->getStyle($column . $row)->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+				$sheet->getStyle($column . $row)->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+			}
+			$row++;
+		}
 
 
-            $data = [
-                'pic_it' => $this->input->post('picit', true),
-                'note' => $this->input->post('note', true),
-                'biaya_perbaikan' => $this->input->post('biayaper', true),
-                'status_pembayaran' => $this->input->post('status_pembayaran', true),
-                'date_perbaikan' => date('Y-m-d H:i:s'),
-                'update_at' => date('Y-m-d H:i:s'),
-            ];
+		// Set nama file
+		$filename = 'printer_damage_data.xlsx';
 
-            // Tambahkan data file jika ada file yang diunggah
-            if (!empty($new_file)) {
-                $data['file'] = $new_file;
-            }
+		// Hapus buffer output
+		ob_end_clean();
 
-            $id = $this->input->post('id_damage');
-            $this->db->where('id_damage', $id);
-            $this->db->update('printer_damage', $data);
+		header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		header('Content-Disposition: attachment;filename="' . $filename . '"');
+		header('Cache-Control: max-age=0');
 
-            // Redirect ke halaman damage
-            redirect('damage');
-        }
-    }
+		// meload isi konten untuk di terapkan di dalam excel
+		$writer = new Xlsx($spreadsheet);
+		$writer->save('php://output');
+		exit; // Hentikan eksekusi skrip
+	}
 }
