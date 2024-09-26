@@ -128,6 +128,28 @@
 						</div>
 					</div>
 
+					<div class="row">
+						<div class="col-4 mt-2">
+							<label for="name">ORIGIN ID</label>
+						</div>
+						<div class="col">
+							<div class="input-group input-group-dynamic mb-4">
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter origin id" aria-describedby="basic-addon1" id="name" name="originid" style="text-transform: uppercase;" required>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-4 mt-2">
+							<label for="name">ORIGIN NAME</label>
+						</div>
+						<div class="col">
+							<div class="input-group input-group-dynamic mb-4">
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter origin name" aria-describedby="basic-addon1" id="name" name="originname" style="text-transform: uppercase;" required>
+							</div>
+						</div>
+					</div>
+
 
 					<div class="text-end mt-3">
 						<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
@@ -163,6 +185,8 @@
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">cust id</th>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">name</th>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">type cust</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">origin id</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">origin name</th>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2"></th>
 							</tr>
 						</thead>
@@ -181,6 +205,12 @@
 									</td>
 									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-md fw-normal"><?= $al->type_cust; ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-md fw-normal"><?= $al->origin_id; ?></h6>
+									</td>
+									<td class="text-center text-uppercase">
+										<h6 class="mb-0 text-md fw-normal"><?= $al->origin_name; ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
 										<form action="<?= site_url('customers/delete/') . $al->id_cust; ?>" method="post">

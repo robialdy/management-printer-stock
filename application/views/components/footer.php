@@ -12,7 +12,6 @@
 </div>
 
 
-<script src="<?= base_url() ?>/public/datatables/datatables.js"></script>
 <!-- Github buttons -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 
@@ -27,7 +26,7 @@
 <script src="<?= base_url() ?>public/js/plugins/sweetalert.min.js"></script>
 <script src="<?= base_url() ?>public/js/plugins/perfect-scrollbar.min.js"></script>
 <script src="<?= base_url() ?>public/js/plugins/smooth-scrollbar.min.js"></script>
-<script src="<?= base_url() ?>public/js/plugins/dropzone.min.js"></script>
+<script src="<?= base_url() ?>/public/datatables/datatables.js"></script>
 
 <!-- select ssearch -->
 <script src="<?= base_url() ?>public/select_search/choices.js"></script>

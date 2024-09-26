@@ -123,7 +123,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-static mb-2">
-								<select class="choices form-select" id="exampleFormControlSelect1" name="return_cgk" required>
+								<select class="choices form-select" id="exampleFormControlSelect1" name="return_cgk">
 									<option value="" selected disabled>ENTER SN DAMAGE</option>
 									<?php foreach ($sndamage as $sg) : ?>
 										<option value="<?= $sg->id_printer; ?>"><?= $sg->printer_sn; ?></option>

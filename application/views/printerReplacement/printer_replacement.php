@@ -139,7 +139,8 @@
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">pic user</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">no ref</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">date out</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">Detail</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2"></th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2"></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -159,7 +160,7 @@
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->name_type ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $rp->printer_sn ?></h6>
+										<h6 class="mb-0 text-sm fw-normal"><?= $rp->printer_sn_rep ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->cust_id ?></h6>
@@ -186,8 +187,8 @@
 										<h6 class="mb-0 text-sm fw-normal"><?= $rp->date_out ?></h6>
 									</td>
 									<td class="text-center">
-										<a href="<?= site_url('replacement/' . $rp->printer_sn ); ?>" class="mb-0 text-sm fw-normal text-info text-decoration-underline">
-											DET.
+										<a href="<?= site_url('replacement/' . $rp->printer_sn); ?>" class="mb-0 text-sm fw-normal">
+											<i class="material-icons">assignment</i>
 										</a>
 									</td>
 									<td>
@@ -195,6 +196,7 @@
 											data-bs-toggle="modal"
 											data-bs-target="#modaldamageselect<?= $rp->id_replacement ?>"
 											data-id="<?= $rp->id_cust ?>"
+											data-idlist="<?= $rp->id_printer_list ?>"
 											data-idreplacement="<?= $rp->id_replacement ?>"
 											data-sndamage="<?= $rp->sn_damage ?>">
 											<i class="material-icons">edit</i>
@@ -250,8 +252,9 @@
 		$(document).on('click', '.btn-edit', function() {
 			var custID = $(this).data('id'); //milih berdasarkan custiomer
 			var modalID = $(this).data('bs-target');
-			var idReplacement = $(this).data('idreplacement'); // Ambil ID Replacement
+			var id_list = $(this).data('idlist'); // Ambil ID Replacement
 			var snDamage = $(this).data('sndamage'); //dipake untuk pengecekan jika udh punya sn = kosong
+			var idRep = $(this).data('idreplacement');
 
 			// AJAX request
 			$.ajax({
@@ -259,8 +262,9 @@
 				type: 'POST',
 				data: {
 					custID: custID, //kirim ke serve
-					idRep: idReplacement,
-					snDamage: snDamage
+					id_list: id_list,
+					snDamage: snDamage,
+					idRep: idRep
 				},
 				success: function(response) {
 					$(modalID + ' #printerContainer').html(response);
