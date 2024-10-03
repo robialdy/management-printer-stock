@@ -32,6 +32,37 @@ class PrinterBackup extends CI_Controller
 		$this->load->view('printerBackup/printer_backup', $data);
 	}
 
+	public function view_data_table()
+	{
+		$data = $this->PrinterBackup_Model->read_data_backup();
+
+		$html = '';
+		$i = 1;
+		foreach ($data as $al) {
+			$html .= '
+        <tr>
+            <td class="text-center text-uppercase">
+                <h6 class="mb-0 text-md fw-normal">' . $i++ . '</h6>
+            </td>
+            <td class="text-center text-uppercase">
+                <h6 class="mb-0 text-md fw-normal">' . $al['origin'] . '</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-md fw-normal">' . $al['date_in'] . '</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-md fw-normal">' . $al['name_type'] . '</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-md fw-normal">' . $al['printer_sn'] . '</h6>
+            </td>
+        </tr>';
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode(['html' => $html]);
+	}
+
 	public function insert()
 	{
 		$prin_sn = strtoupper($this->input->post('printersn', true));

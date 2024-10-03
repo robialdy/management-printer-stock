@@ -20,6 +20,7 @@ class Dashboard extends CI_Controller
 		$data = [
 			'title'			=> 'Dashboard',
 			'jumPrinter' 	=> $this->PrinterBackup_Model->jumlah(),
+			'jumPrinter_type' 	=> $this->PrinterBackup_Model->jumlah_type(),
 			'jumBackup'		=> $this->PrinterBackup_Model->jumlahData(),
 			'jumPembelian'	=> $this->PrinterReplacement_Model->jumlahData(),
 			'data_user'		=> $this->data_user,

@@ -48,7 +48,7 @@
 				<div class="icon icon-lg icon-shape bg-gradient-info shadow text-center border-radius-xl mt-n4 me-3 float-start">
 					<i class="material-icons opacity-10">print</i>
 				</div>
-				<h6 class="mb-0">Printer SN: <?= $detail->printer_sn ?></h6>
+				<h5 class="mb-0">Printer Detail</h5>
 			</div>
 
 			<!-- Card Body -->
@@ -58,7 +58,7 @@
 					<div class="col-12 col-md-6">
 						<div class="form-group">
 							<label class="form-label fw-bold fs-6">ORIGIN</label>
-							<p class="form-text text-muted ms-1"><?= $detail->origin ?></p>
+							<p class="form-text text-muted ms-1"><?= $detail->origin_name ?></p>
 						</div>
 					</div>
 					<div class="col-12 col-md-6">
@@ -107,12 +107,6 @@
 					</div>
 					<div class="col-12 col-md-6">
 						<div class="form-group">
-							<label class="form-label fw-bold fs-6">SN DAMAGE</label>
-							<p class="form-text text-muted ms-1"><?= $detail->sn_damage ?></p>
-						</div>
-					</div>
-					<div class="col-12 col-md-6">
-						<div class="form-group">
 							<label class="form-label fw-bold fs-6">PIC IT</label>
 							<p class="form-text text-muted ms-1">
 								<?= $detail->pic_it ?>
@@ -141,7 +135,7 @@
 					</div>
 					<div class="col-12 col-md-6">
 						<div class="form-group">
-							<label class="form-label fw-bold fs-6">DETAIL</label>
+							<label class="form-label fw-bold fs-6">KELENGKAPAN</label>
 							<p class="form-text text-muted ms-1">
 								<?= $detail->kelengkapan ?>
 							</p>
@@ -151,10 +145,10 @@
 
 				<label class="form-label fw-bold fs-6">UPLOAD BUKTI TRANSAKSI</label>
 				<div class="input-group">
-					<form action="<?= site_url('printerreplacement/uploadProof') ?>" method="POST" enctype="multipart/form-data" class="d-flex w-100 gap-2 align-items-center">
-						<input type="hidden" name="idrep" value="<?= $detail->id_replacement ?>">
+						<?= form_open('printerlist/uploadProof', ['enctype' => 'multipart/form-data', 'class' => 'd-flex w-100 gap-2 align-items-center']) ?>
+						<input type="hidden" name="idrep" value="<?= $detail->id_printer_list ?>">
 						<input type="hidden" name="sn" value="<?= $detail->printer_sn ?>">
-						<input type="hidden" name="proof" value="<?= $detail->proof_replacement ?>">
+						<input type="hidden" name="proof" value="<?= $detail->proof ?>">
 
 						<!-- Tombol pilih file -->
 						<label class="btn btn-outline-secondary d-flex px-3 py-1" for="customFile">Pilih File</label>
@@ -169,7 +163,7 @@
 						<div>
 							<button class="btn btn-info px-4 py-2" type="submit" id="inputGroupFileAddon04">Upload</button>
 						</div>
-					</form>
+					<?= form_close(); ?>
 				</div>
 
 				<script>
@@ -199,7 +193,7 @@
 				<p class="text-muted mt-2">
 					Pastikan Printer telah terhubung!
 				</p>
-				<form action="<?= site_url('formatreplacement/generate_format/' . $detail->printer_sn) ?>" target="_blank" method="POST">
+				<form action="<?= site_url('formatprint/generate_format/' . $detail->printer_sn) ?>" target="_blank" method="POST">
 					<button type="submit" class="btn bg-gradient-info">Cetak</button>
 				</form>
 			</div>
@@ -207,7 +201,7 @@
 		<div class="card mt-4">
 			<div class="card-body text-center">
 				<h6 class="mb-0">Bukti Transaksi</h6>
-				<?php if ($detail->proof_replacement) : ?>
+				<?php if ($detail->proof) : ?>
 					<div class="mt-2">
 						<p class="text-muted mt-2">
 							Lihat bukti transaksi printer!
@@ -236,12 +230,12 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body text-center">
-				<?php if (substr($detail->proof_replacement, -4) === '.pdf') : ?>
-					<iframe src="<?= base_url('public/proof_replacement/' . $detail->proof_replacement) ?>" width="100%" height="700px">
+				<?php if (substr($detail->proof, -4) === '.pdf') : ?>
+					<iframe src="<?= base_url('public/proof_replacement/' . $detail->proof) ?>" width="100%" height="700px">
 					</iframe>
 				<?php else : ?>
 					<div style="max-width: 100%; max-height: 700px; overflow: auto;">
-						<img src="<?= base_url('public/proof_replacement/' . $detail->proof_replacement) ?>" alt="Bukti Transaksi" class="img-fluid">
+						<img src="<?= base_url('public/proof_replacement/' . $detail->proof) ?>" alt="Bukti Transaksi" class="img-fluid">
 					</div>
 				<?php endif; ?>
 			</div>

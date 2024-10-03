@@ -1,11 +1,101 @@
 <?php $this->load->view('components/header') ?>
 
+<?php if ($this->session->flashdata('notifSuccess')) :  ?>
+	<script>
+		window.onload = function() {
+			showSuccessMessage();
+		};
+	</script>
+<?php endif; ?>
+<script>
+	function showSuccessMessage() {
+		Swal.fire({
+			icon: 'success',
+			title: 'Good job!',
+			text: '<?= $this->session->flashdata('notifSuccess') ?>!',
+			confirmButtonText: 'OK'
+		});
+	}
+</script>
+
+<div class="row">
+	<div class="col-lg-6 col-md-6 mt-3 mb-3">
+		<div class="card border-radius-md z-index-2 " style="height: 200px;">
+			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+				<div class="bg-gradient-info shadow-info border-radius-sm py-3 pe-1 text-center">
+					<span class="text-white fs-1 fw-light"><?= $jum_printer ?></span>
+				</div>
+			</div>
+			<div class="card-body text-center">
+				<p class="text-md fw-normal">Total Printer Backup</p>
+				<hr class="dark horizontal">
+				<div class="d-flex ">
+					<i class="material-icons text-sm my-auto me-1">schedule</i>
+					<p class="mb-0 text-sm">
+						<?php if (empty($dateTimeB->created_at) || $jum_printer == 0): ?>
+							null
+						<?php else: ?>
+							<?= $dateTimeB->created_at ?>
+						<?php endif; ?>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-lg-6 col-md-6 mt-3 mb-3">
+		<div class="card border-radius-md z-index-2 " style="height: 200px;">
+			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+				<div class="bg-gradient-info shadow-info border-radius-sm py-3 pe-1 text-center">
+					<span class="text-white fs-1 fw-light"><?= $jum_data ?></span>
+				</div>
+			</div>
+			<div class="card-body text-center">
+				<p class="text-md fw-normal">Total Printer List</p>
+				<hr class="dark horizontal">
+				<div class="d-flex ">
+					<i class="material-icons text-sm my-auto me-1">schedule</i>
+					<p class="mb-0 text-sm">
+						<?php if (empty($time->date_out) || $jum_data == 0): ?>
+							null
+						<?php else: ?>
+							<?= $time->date_out ?>
+						<?php endif; ?>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row justify-content-end">
+	<div class="col-auto">
+		<form action="<?= base_url('printerlist/import_excel') ?>" method="post" enctype="multipart/form-data">
+			<label for="file">Pilih File Excel:</label>
+			<input type="file" name="excel_file" accept=".xlsx" required>
+			<input type="submit" value="Upload">
+		</form>
+	</div>
+	<div class="col-auto me-5">
+		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modalprinterout">
+			<i class="bi bi-printer me-2"></i>Printer Out
+		</button>
+	</div>
+</div>
+
+<?php $this->load->view('printer_list/printer_out'); ?>
+
 <style>
 	/* css di file sistem material-dashboard.css */
 	/* .dataTable-wrapper .dataTable-container .table tbody tr td {
 		padding: .75rem 1.5rem
 	} */
 </style>
+
+
+<div id="loading" style="display: none; position: absolute; top: 120%; left: 50%; transform: translate(-50%, -50%); z-index: 10;">
+	<div class="spinner-border text-info" role="status">
+	</div>
+</div>
 
 <div class="row">
 	<div class="col-12">
@@ -17,7 +107,7 @@
 			</div>
 			<div class="card-body px-0 pb-2">
 				<div class="table-responsive p-0">
-					<table class="table align-items-center table-hover" id="datatable-search">
+					<table class="table align-items-center table-hover" id="datatable">
 						<thead>
 							<tr>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">NO</th>
@@ -33,53 +123,12 @@
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">NO REF</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">DATE OUT</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">STATUS</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2"></th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2"></th>
 							</tr>
 						</thead>
 						<tbody>
-							<?php $i = 1; ?>
-							<?php foreach ($printer_detail as $pd) : ?>
-								<tr>
-									<td class="text-center text-uppercase py-3">
-										<h6 class="mb-0 text-sm fw-normal"><?= $i++ ?></h6>
-									</td>
-									<td class="text-center text-uppercase py-3">
-										<h6 class="mb-0 text-sm fw-normal"><?= $pd->origin; ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $pd->date_in; ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $pd->name_type; ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $pd->printer_sn; ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $pd->cust_id ?></h6>
-									</td>
-									<td class="text-center text-uppercase py-3">
-										<h6 class="mb-0 text-sm fw-normal"><?= $pd->cust_name ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $pd->type_cust ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $pd->pic_it ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $pd->pic_user ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $pd->no_ref ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $pd->date_out ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal">ACTIVE</h6>
-									</td>
-								</tr>
-							<?php endforeach; ?>
+							<!-- lewat json boss biar ketika data banyak ga ada delay gaje -->
 						</tbody>
 					</table>
 				</div>
@@ -87,5 +136,106 @@
 		</div>
 	</div>
 </div>
+
+<script src="<?= base_url('public/js/jquery.min.js') ?>"></script>
+
+<!-- Script untuk mengambil dan menampilkan data -->
+<script>
+	$(document).ready(function() {
+		loadData(); // Memuat halaman
+
+		function loadData() {
+
+			$('#loading').show();
+
+			$.ajax({
+				url: "<?= base_url('printerlist/view_data_table') ?>",
+				type: "POST",
+				dataType: "json",
+				success: function(response) {
+					const tableBody = $('#datatable tbody');
+					tableBody.empty(); // Kosongkan tabel 
+					tableBody.append(response.html);
+
+					const dataTable = new simpleDatatables.DataTable("#datatable", {
+						sortable: false,
+						perPage: 10,
+					});
+				},
+				error: function() {
+					alert('Terjadi kesalahan saat memuat data.');
+				},
+				complete: function() {
+					// Sembunyikan loading setelah selesai
+					$('#loading').hide();
+				}
+			});
+		}
+	});
+</script>
+
+<!-- Modal kelengkapan-->
+<?php foreach ($printer_detail as $pd) : ?>
+	<div class="modal fade" id="kelengkapan-<?= $pd->id_printer_list ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="text-end me-1">
+					<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="text-start ms-3">
+					<h5 class="modal-title fw-bold" id="exampleModalLabel">KELENGKAPAN</h5>
+					<small>Detail Kelengkapan Printer Peminjaman</small>
+				</div>
+				<div class="modal-body">
+					<div class="mx-3 mt-2">
+						<h5 class="font-weight-normal text-info text-gradient">Printer SN <?= $pd->printer_sn; ?></h5>
+						<blockquote class="blockquote mb-0">
+							<p class="text-dark ms-3"><?= $pd->kelengkapan; ?></p>
+						</blockquote>
+					</div>
+
+					<div class="text-end mt-3">
+						<button type="button" class="btn bg-white shadow" data-bs-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<?php endforeach; ?>
+
+<!-- Modal send printer-->
+<?php foreach ($printer_detail as $pd) : ?>
+	<div class="modal fade" id="send-<?= $pd->id_printer_list ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="text-end me-1">
+					<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="text-start ms-3">
+					<h5 class="modal-title fw-bold" id="exampleModalLabel">SEND TO PRINTER BACKUP</h5>
+					<small>Apakah Anda Yakin Ingin Memindahkan Printer Dengan SN <?= $pd->printer_sn ?> Ke Backup?</small>
+				</div>
+				<div class="modal-body">
+
+					<form action="<?= site_url('printerlist/send_to_backup'); ?>" method="POST">
+
+						<input type="hidden" name="id_printer" value="<?= $pd->id_printer; ?>">
+						<input type="hidden" name="printer_sn" value="<?= $pd->printer_sn; ?>">
+
+						<div class="text-end">
+							<button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Send</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+<?php endforeach; ?>
+
+
 
 <?php $this->load->view('components/footer') ?>

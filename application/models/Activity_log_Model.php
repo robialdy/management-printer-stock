@@ -20,8 +20,8 @@ class Activity_log_Model extends CI_Model
 		$this->db->from('activity_log');
 		$this->db->join('users', 'activity_log.id_user = users.id_user');
 		$this->db->order_by('activity_log.login_at', 'DESC');
-		$this->db->where('activity_log.login_at >=', $start_date . ' 00:00:00'); // ntar di ganti dari input
-		$this->db->where('activity_log.login_at <=', $end_date . ' 23:59:59'); // ntar di ganti dari input
+		$this->db->where('activity_log.login_at >=', $start_date . ' 00:00:00');
+		$this->db->where('activity_log.login_at <=', $end_date . ' 23:59:59');
 		$query = $this->db->get();
 
 		return $query->result();

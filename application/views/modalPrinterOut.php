@@ -12,7 +12,7 @@
 				</div>
 			</div>
 			<div class="modal-body">
-				<form method="POST" action="<?= site_url() ?>printerreplacement/insert">
+					<?= form_open('printerreplacement/insert') ?>
 
 					<div class="row">
 						<div class="col-4 mt-2">
@@ -163,7 +163,7 @@
 						<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
 						<button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save changes</button>
 					</div>
-				</form>
+				<?= form_close(); ?>
 			</div>
 		</div>
 	</div>

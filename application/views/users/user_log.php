@@ -29,6 +29,12 @@
 	}
 </style>
 
+<div id="loading" style="display: none; position: absolute; top: 120%; left: 50%; transform: translate(-50%, -50%); z-index: 10;">
+	<div class="spinner-border text-info" role="status">
+
+	</div>
+</div>
+
 <div class="row">
 	<div class="col-12">
 		<div class="card my-4 border-radius-md">
@@ -61,11 +67,13 @@
 	</div>
 </div>
 
-<!-- belum jalan date range nya -->
-<!-- tidak kekirim value dari inputnya -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="<?= base_url('public/js/jquery.min.js') ?>"></script>
 
 <script type="text/javascript">
+	const processingIndicator = document.getElementById("loading");
+
+	processingIndicator.style.display = "block";
+
 	$(document).ready(function() {
 		var dataTable;
 
@@ -85,6 +93,7 @@
 					if (dataTable) {
 						dataTable.destroy();
 					}
+					processingIndicator.style.display = "none";
 
 					// Update table body with new data
 					$('#log_table_body').html(data);

@@ -8,7 +8,7 @@ $route['translate_uri_dashes'] = FALSE;
 // custom url
 $route['printer'] = 'PrinterBackup';
 $route['replacement'] = 'PrinterReplacement';
-$route['replacement/(:any)'] = 'PrinterReplacement/detail/$1';
+$route['printerdetail/(:any)'] = 'PrinterList/detail_/$1';
 $route['registrasi'] = 'Auth/Regis';
 $route['printerdetail'] = 'PrinterList/detail';
 $route['printersummary'] = 'PrinterList/summary';

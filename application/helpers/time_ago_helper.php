@@ -3,8 +3,10 @@
 if (!function_exists('time_ago')) {
 	function time_ago($time)
 	{
+		$date = DateTime::createFromFormat('d/m/Y H:i:s', $time);
+
 		// Convert the input time to a timestamp
-		$time_ago = strtotime($time);
+		$time_ago = $date->getTimestamp();
 		$time_now = time();
 		$time_difference = $time_now - $time_ago;
 		$seconds = $time_difference;
@@ -40,5 +42,5 @@ if (!function_exists('time_ago')) {
 		} else {
 			return $time;
 		}
-	}
+	}	
 }

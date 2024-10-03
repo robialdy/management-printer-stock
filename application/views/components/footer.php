@@ -32,17 +32,21 @@
 <script src="<?= base_url() ?>public/select_search/choices.js"></script>
 <script src="<?= base_url() ?>public/select_search/form-element-select.js"></script>
 
+<!-- datatable dari sbadmin -->
+<!-- <script src="<?= base_url() ?>/public/datatables/jquery.dataTables.min.js"></script>
+<script src="<?= base_url() ?>/public/datatables/dataTables.bootstrap4.min.js"></script> -->
 
 <script>
-	//dataTable = new simpleDatatables.DataTable("#datatable-search");
-
 	const dataTableSearch = new simpleDatatables.DataTable("#datatable-search", {
 		sortable: false,
+		perPage: 10,
 	});
+
 
 
 	const dataTableSearch2 = new simpleDatatables.DataTable("#datatable-search2", {
 		sortable: false,
+		perPage: 30,
 	});
 </script>
 

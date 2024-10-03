@@ -83,4 +83,45 @@
 	</div>
 </div>
 
+<script src="<?= base_url('public/js/jquery.min.js') ?>"></script>
+
+<script type="text/javascript">
+	const processingIndicator = document.getElementById("loading");
+
+	processingIndicator.style.display = "block";
+
+	$(document).ready(function() {
+		var dataTable;
+
+		function fetchData() {
+
+			$.ajax({
+				url: "<?= base_url('printerlist/view_data_table') ?>",
+				method: "POST",
+				data: {
+
+				},
+				success: function(data) {
+					// Destroy DataTable if it exists
+					if (dataTable) {
+						dataTable.destroy();
+					}
+					processingIndicator.style.display = "none";
+
+					// Update table body with new data
+					$('#log_table_body').html(data);
+
+					// Re-initialize DataTable
+					dataTable = new simpleDatatables.DataTable("#datatable", {
+						sortable: false,
+					});
+				}
+			});
+		}
+
+		// Fetch data on page load
+		fetchData();
+	});
+</script>
+
 <?php $this->load->view('components/footer') ?>

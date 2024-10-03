@@ -47,18 +47,26 @@
 
 <div class="row justify-content-end">
 	<div class="col-auto">
-		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#add_nodummy">
-			<i class="material-icons me-2">build</i>ADD NO DUMMY
+		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#add_damage">
+			<i class="material-icons me-2">warning</i>ADD DAMAGE
 		</button>
 	</div>
-	<div class="col-auto me-5">
-		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#add_perbaikan">
-			<i class="material-icons me-2">build</i>ADD PERBAIKAN
+	<div class="col-auto">
+		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#add_nodummy">
+			<i class="material-icons me-2">confirmation_number</i>ADD NO DUMMY
 		</button>
+	</div>
+	<div class="col-auto">
+		<div class="col-auto me-5">
+			<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#excel">
+				<i class="material-icons me-2">assignment</i>DOWNLOAD EXCEL
+			</button>
+		</div>
 	</div>
 </div>
 
-<div class="modal fade" id="add_nodummy" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- modal download excel -->
+<div class="modal fade" id="excel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-" role="document">
 		<div class="modal-content">
 			<div class="text-end me-1">
@@ -66,44 +74,24 @@
 					<span aria-hidden="true">&times;</span>
 				</button>
 				<div class="text-start ms-3">
-					<h5 class="modal-title fw-bold" id="exampleModalLabel">ADD NO DUMMY</h5>
-					<small>Silahkan Menginput Data Untuk No Dummy</small>
+					<h5 class="modal-title fw-bold" id="exampleModalLabel">DOWNLOAD EXCEL</h5>
+					<small>Pilih Range Tanggal</small>
 				</div>
 			</div>
 			<div class="modal-body">
-				<form method="POST" action="<?= site_url('printerdamage/add_nodummy') ?>">
+				<form action="<?= base_url('printerdamage/export_excel') ?>" method="POST">
 
-					<label for="sn" class="text-dark">PRINTER S/N <span class="text-danger">*</span></label>
-					<div class="input-group">
-						<select class="form-select" id="printersn" name="idprinter[]" multiple required>
-							<option value="" disabled>Select Printer Sn *</option>
-							<?php foreach ($damage_perbaikan as $dm) : ?>
-								<option value="<?= $dm->id_printer; ?>"><?= $dm->printer_sn; ?></option>
-							<?php endforeach; ?>
-						</select>
+					<div class="input-group input-group-static">
+						<label for="from">From</label>
+						<input type="date" class="form-control" id="from" name="from" required>
 					</div>
 
-					<script>
-						document.addEventListener('DOMContentLoaded', function() {
-							const choices = new Choices('#printersn', {
-								removeItemButton: true, // Tombol untuk menghapus item yang dipilih
-								searchEnabled: true, // Aktifkan pencarian
-								shouldSort: false, // Nonaktifkan pengurutan
-								placeholder: true, // Menampilkan placeholder
-								placeholderValue: 'SELECT PRINTER SN', // Teks placeholder
-							});
-						});
-					</script>
-
-					<label for="sn" class="text-dark">NO DUMMY <span class="text-danger">*</span></label>
-					<div class="input-group input-group-dynamic mb-3">
-						<input type="int" class="form-control" name="nodummy" placeholder="ENTER NO DUMMY" required>
+					<div class="input-group input-group-static mt-2">
+						<label for="until">Until</label>
+						<input type="date" class="form-control" id="until" name="until" required>
 					</div>
 
-
-
-
-					<div class="text-end mt-3">
+					<div class="text-end mt-4">
 						<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
 						<button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save changes</button>
 					</div>
@@ -113,8 +101,8 @@
 	</div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="add_perbaikan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- modal add damage -->
+<div class="modal fade" id="add_damage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-" role="document">
 		<div class="modal-content">
 			<div class="text-end me-1">
@@ -122,38 +110,36 @@
 					<span aria-hidden="true">&times;</span>
 				</button>
 				<div class="text-start ms-3">
-					<h5 class="modal-title fw-bold" id="exampleModalLabel">ADD PERBAIKAN</h5>
-					<small>Silahkan Menginput Data Untuk Perbaikan Printer</small>
+					<h5 class="modal-title fw-bold" id="exampleModalLabel">ADD DAMAGE</h5>
+					<small>Silahkan Input No SN Printer List</small>
 				</div>
 			</div>
 			<div class="modal-body">
-				<form method="POST" action="<?= site_url('printerdamage/add_perbaikan') ?>">
+				<form action="<?= base_url('printerdamage/add_damage') ?>" method="POST">
 
-					<div class="row align-items-center mb-2">
-						<div class="col-4">
+					<div class="row">
+						<div class="col-4 mt-2">
 							<label for="sn">PRINTER S/N <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-dynamic">
-								<select class="form-select" id="printersn" name="printersn[]" multiple required>
-									<option value="" disabled>Select Printer SN</option>
-									<?php foreach ($damage_perbaikan as $dm) : ?>
-										<option value="<?= $dm->id_printer; ?>"><?= $dm->printer_sn; ?></option>
+							<div class="input-group input-group-static mb-3">
+								<select class="choices form-select" id="exampleFormControlSelect1" name="idprinter" required>
+									<option value="" selected disabled>ENTER PRINTER S/N</option>
+									<?php foreach ($printer_list as $pl) : ?>
+										<option value="<?= $pl->id_printer . '|' . $pl->id_cust; ?>"><?= $pl->printer_sn . ' - ' . $pl->cust_name; ?></option>
 									<?php endforeach; ?>
 								</select>
 							</div>
 						</div>
 					</div>
 
-
-
-					<div class="row">
+					<div class="row mb-2">
 						<div class="col-4 mt-2">
-							<label for="sn">PIC IT <span class="text-danger">*</span></label>
+							<label for="typep">DESKRIPSI</label>
 						</div>
 						<div class="col">
-							<div class="input-group input-group-dynamic mb-3">
-								<input type="text" class="form-control" name="pic_it" placeholder="ENTER PIC IT" required>
+							<div class="input-group input-group-dynamic mb-4">
+								<input type="text" class="form-control" aria-label="Username" placeholder="Enter Deskripsi kerusakan" id="typep" name="deskripsi" style="text-transform: uppercase;" required>
 							</div>
 						</div>
 					</div>
@@ -218,35 +204,10 @@
 								</div>
 							</div>
 
-							<!-- Checkbox untuk memilih semua -->
-							<div class="row mt-1">
-								<div class="form-check col">
-									<input class="" type="checkbox" id="masterCheckbox">
-									<label class="form-check-label" for="masterCheckbox">
-										PILIH SEMUA
-										<i class="material-icons text-info">done_all</i>
-									</label>
-								</div>
-							</div>
 						</div>
 					</div>
 
-					<script>
-						// Ambil checkbox utama
-						var masterCheckbox = document.getElementById('masterCheckbox');
-
-						// Tambahkan event listener untuk checkbox utama
-						masterCheckbox.addEventListener('click', function() {
-							// Ambil semua checkbox dengan class 'childCheckbox'
-							var checkboxes = document.querySelectorAll('.childCheckbox');
-
-							checkboxes.forEach(function(checkbox) {
-								checkbox.checked = masterCheckbox.checked;
-							});
-						});
-					</script>
-
-					<div class="text-end mt-3">
+					<div class="text-end mt-4">
 						<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
 						<button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save changes</button>
 					</div>
@@ -255,6 +216,62 @@
 		</div>
 	</div>
 </div>
+
+<div class="modal fade" id="add_nodummy" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-" role="document">
+		<div class="modal-content">
+			<div class="text-end me-1">
+				<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<div class="text-start ms-3">
+					<h5 class="modal-title fw-bold" id="exampleModalLabel">ADD NO DUMMY</h5>
+					<small>Silahkan Menginput Data Untuk No Dummy</small>
+				</div>
+			</div>
+			<div class="modal-body">
+				<?= form_open('printerdamage/add_nodummy'); ?>
+
+				<label for="sn" class="text-dark">PRINTER S/N <span class="text-danger">*</span></label>
+				<div class="input-group">
+					<select class="form-select" id="printersn" name="idprinter[]" multiple required>
+						<option value="" disabled>Select Printer Sn</option>
+						<?php foreach ($no_dummy as $nd) : ?>
+							<option value="<?= $nd->id_printer; ?>"><?= $nd->printer_sn; ?></option>
+						<?php endforeach; ?>
+					</select>
+				</div>
+
+				<script>
+					document.addEventListener('DOMContentLoaded', function() {
+						const choices = new Choices('#printersn', {
+							removeItemButton: true, // Tombol untuk menghapus item yang dipilih
+							searchEnabled: true, // Aktifkan pencarian
+							shouldSort: false, // Nonaktifkan pengurutan
+							placeholder: true, // Menampilkan placeholder
+							placeholderValue: 'SELECT PRINTER SN', // Teks placeholder
+						});
+					});
+				</script>
+
+				<label for="sn" class="text-dark">NO DUMMY <span class="text-danger">*</span></label>
+				<div class="input-group input-group-dynamic mb-3">
+					<input type="int" class="form-control" name="nodummy" placeholder="ENTER NO DUMMY" required>
+				</div>
+
+
+
+
+				<div class="text-end mt-3">
+					<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save changes</button>
+				</div>
+				<?= form_close(); ?>
+			</div>
+		</div>
+	</div>
+</div>
+
 
 
 <!-- style td lebih lebar -->
@@ -265,20 +282,23 @@
 	}
 </style>
 
+<div id="loading" style="display: none; position: absolute; top: 120%; left: 50%; transform: translate(-50%, -50%); z-index: 10;">
+	<div class="spinner-border text-info" role="status">
+
+	</div>
+</div>
+
 <div class=" row">
 	<div class="col-12">
 		<div class="card my-4 border-radius-md">
 			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
-				<div class="bg-gradient-info shadow-info border-radius-md pt-3 pb-1 d-flex justify-content-between align-items-center">
-					<h6 class="text-white ps-3 fw-light pb-2">Printer Replacement</h6>
-					<a href="<?= base_url('printerdamage/export_excel') ?>" class="btn bg-white shadow me-3">
-						<i class="material-icons pe-2">assignment</i>EXCEL
-					</a>
+				<div class="bg-gradient-info shadow-info border-radius-md pt-4 pb-3">
+					<h6 class="text-white ps-3 fw-light">Printer Damage</h6>
 				</div>
 			</div>
 			<div class="card-body px-0 pb-2">
 				<div class="table-responsive p-0">
-					<table class="table table-sm align-items-center table-hover" id="datatable-search">
+					<table class="table table-sm align-items-center table-hover" id="datatable">
 						<thead>
 							<tr>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">No</th>
@@ -290,7 +310,6 @@
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">cust id</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">cust name</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">type cust</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">pic it</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">biaya</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">no dummy</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">note</th>
@@ -301,74 +320,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<?php $i = 1; ?>
-							<?php foreach ($damage as $dm): ?>
-								<tr>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-bold"><?= $i++; ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $dm->origin ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $dm->date_in ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $dm->name_type ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $dm->printer_sn ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $dm->return_cgk ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal text-wrap"><?= $dm->cust_id ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $dm->cust_name ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $dm->type_cust ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $dm->pic_it ?></h6>
-									</td>
-									<td class="text-center">
-										<h6 class="mb-0 text-sm fw-normal">
-											<?php if ($dm->biaya_perbaikan != null) : ?>
-												Rp.<?= number_format($dm->biaya_perbaikan, 2, ',', '.') ?>
-											<?php else : ?>
-												-
-											<?php endif; ?>
-										</h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $dm->no_dummy ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $dm->note ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $dm->status_pembayaran ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<a class="mb-0 text-sm fw-normal" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#kelengkapan-<?= $dm->id_damage ?>">
-											<i class="material-icons">assignment</i>
-										</a>
-									</td>
-									<td class="text-center">
-										<a class="mb-0 text-sm fw-normal" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#file-<?= $dm->id_damage ?>">
-											<i class="material-icons">cloud_upload</i>
-										</a>
-									</td>
-									<td class="text-center">
-										<a class="mb-0 text-sm fw-normal" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit-<?= $dm->id_damage ?>">
-											<i class="material-icons">edit</i>
-										</a>
-									</td>
-								</tr>
-							<?php endforeach; ?>
+							<!-- lewat json boss biar ketika data banyak ga ada delay gaje -->
 						</tbody>
 					</table>
 				</div>
@@ -376,6 +328,43 @@
 		</div>
 	</div>
 </div>
+
+<script src="<?= base_url('public/js/jquery.min.js') ?>"></script>
+
+<!-- Script untuk mengambil dan menampilkan data -->
+<script>
+	$(document).ready(function() {
+		loadData(); // Memuat halaman
+
+		function loadData() {
+
+			$('#loading').show();
+
+			$.ajax({
+				url: "<?= base_url('printerdamage/view_data_table') ?>",
+				type: "POST",
+				dataType: "json",
+				success: function(response) {
+					const tableBody = $('#datatable tbody');
+					tableBody.empty(); // Kosongkan tabel 
+					tableBody.append(response.html);
+
+					const dataTable = new simpleDatatables.DataTable("#datatable", {
+						sortable: false,
+						perPage: 10,
+					});
+				},
+				error: function() {
+					alert('Terjadi kesalahan saat memuat data.');
+				},
+				complete: function() {
+					// Sembunyikan loading setelah selesai
+					$('#loading').hide();
+				}
+			});
+		}
+	});
+</script>
 
 <!-- Modal edit-->
 <?php foreach ($damage as $dm) : ?>
@@ -392,48 +381,48 @@
 					<small>Silahkan Edit Data Untuk Perbaikan Printer</small>
 				</div>
 				<div class="modal-body">
-					<form method="POST" action="<?= site_url('printerdamage/edit') ?>">
+					<?= form_open('printerdamage/edit'); ?>
 
-						<input type="hidden" name="id_damage" value="<?= $dm->id_damage ?>">
+					<input type="hidden" name="id_damage" value="<?= $dm->id_damage ?>">
 
-						<div class="row">
-							<div class="col-4 mt-2">
-								<label for="biaya">BIAYA PERBAIKAN <span class="text-danger">*</span></label>
+					<div class="row">
+						<div class="col-4 mt-2">
+							<label for="biaya">BIAYA PERBAIKAN <span class="text-danger">*</span></label>
+						</div>
+						<div class="col">
+							<div class="input-group input-group-dynamic mb-3">
+								<input type="number" class="form-control" name="biaya" value="<?= $dm->biaya_perbaikan ?>" required>
 							</div>
-							<div class="col">
-								<div class="input-group input-group-dynamic mb-3">
-									<input type="number" class="form-control" name="biaya" value="<?= $dm->biaya_perbaikan ?>" required>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-4 mt-2">
+							<label for="status_pembayaran">STATUS PEMBAYARAN <span class="text-danger">*</span></label>
+						</div>
+						<div class="col mt-3">
+							<div class="row">
+								<div class="form-check col">
+									<input type="radio" name="status_pembayaran" id="sudah_bayar" value="SUDAH BAYAR" <?= $dm->status_pembayaran == "SUDAH BAYAR" ? 'checked' : '' ?> required>
+									<label class="form-check-label" for="sudah_bayar">
+										SUDAH BAYAR
+									</label>
+								</div>
+								<div class="form-check col">
+									<input type="radio" name="status_pembayaran" id="belum_bayar" value="BELUM BAYAR" <?= $dm->status_pembayaran == "BELUM BAYAR" ? 'checked' : '' ?>>
+									<label class="form-check-label" for="belum_bayar">
+										BELUM BAYAR
+									</label>
 								</div>
 							</div>
 						</div>
+					</div>
 
-						<div class="row">
-							<div class="col-4 mt-2">
-								<label for="status_pembayaran">STATUS PEMBAYARAN <span class="text-danger">*</span></label>
-							</div>
-							<div class="col mt-3">
-								<div class="row">
-									<div class="form-check col">
-										<input type="radio" name="status_pembayaran" id="ssbayar" value="SUDAH BAYAR" <?= $dm->status_pembayaran == "SUDAH BAYAR" ? 'checked' : '' ?> required>
-										<label class="form-check-label" for="ssbayar">
-											SUDAH BAYAR
-										</label>
-									</div>
-									<div class="form-check col">
-										<input type="radio" name="status_pembayaran" id="bbbayar" value="BELUM BAYAR" <?= $dm->status_pembayaran == "BELUM BAYAR" ? 'checked' : '' ?>>
-										<label class="form-check-label" for="bbbayar">
-											BELUM BAYAR
-										</label>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="text-end mt-3">
-							<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
-							<button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save changes</button>
-						</div>
-					</form>
+					<div class="text-end mt-3">
+						<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
+						<button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save changes</button>
+					</div>
+					<?= form_close(); ?>
 				</div>
 			</div>
 		</div>
@@ -458,21 +447,21 @@
 
 					<div class="mx-1 mb-4">
 						<blockquote class="blockquote" style="max-width: 100%; margin: auto;">
-							<form action="<?= site_url('printerdamage/upload_file') ?>" method="POST" enctype="multipart/form-data" class="d-flex w-100 gap-2 align-items-center">
-								<input type="hidden" name="id_damage" value="<?= $dm->id_damage ?>">
-								<input type="hidden" name="name_file_indb" value="<?= $dm->file ?>">
+							<?= form_open('printerdamage/upload_file', ['enctype' => 'multipart/form-data', 'class' => 'd-flex w-100 gap-2 align-items-center']); ?>
+							<input type="hidden" name="id_damage" value="<?= $dm->id_damage ?>">
+							<input type="hidden" name="name_file_indb" value="<?= $dm->file ?>">
 
-								<!-- Custom file input -->
-								<div class="d-flex align-items-center gap-3 w-30 file-wrapper" style="cursor:pointer;">
-									<span class="form-text ms-2 file-name">Click! untuk upload file</span>
-									<input type="file" class="d-none custom-file" name="file" required>
-								</div>
+							<!-- Custom file input -->
+							<div class="d-flex align-items-center gap-3 w-30 file-wrapper" style="cursor:pointer;">
+								<span class="form-text ms-2 file-name">Click! untuk upload file</span>
+								<input type="file" class="d-none custom-file" name="file" required>
+							</div>
 
-								<!-- Tombol Upload -->
-								<div>
-									<button class="btn btn-info px-4 py-2 mb-0" type="submit" id="inputGroupFileAddon04">Upload</button>
-								</div>
-							</form>
+							<!-- Tombol Upload -->
+							<div>
+								<button class="btn btn-info px-4 py-2 mb-0" type="submit" id="inputGroupFileAddon04">Upload</button>
+							</div>
+							<?= form_close(); ?>
 						</blockquote>
 					</div>
 
@@ -501,7 +490,6 @@
 <?php endforeach; ?>
 
 <script>
-	// Event Delegation: Mengikat event listener secara dinamis ke elemen parent
 	document.addEventListener('click', function(event) {
 		// Mengecek apakah elemen yang di-klik memiliki class 'file-wrapper'
 		if (event.target.closest('.file-wrapper')) {
@@ -534,14 +522,29 @@
 					</button>
 				</div>
 				<div class="text-start ms-3">
-					<h5 class="modal-title fw-bold" id="exampleModalLabel">KELENGKAPAN</h5>
-					<small>Detail Kelengkapan Printer Yang Dibawa Ke Jakarta</small>
+					<h5 class="modal-title fw-bold" id="exampleModalLabel">KELENGKAPAN & KERUSAKAN</h5>
+					<small>Detail Kelengkapan Printer Yang Dibawa Ke Jakarta & Kerusakan</small>
+					<h5 class="font-weight-normal text-info text-gradient mt-2">SN <?= $dm->printer_sn; ?></h5>
 				</div>
 				<div class="modal-body">
-					<div class="mx-3 mt-2">
-						<h5 class="font-weight-normal text-info text-gradient">Printer SN <?= $dm->printer_sn; ?></h5>
+					<div class="mx-3">
+						<?php if ($dm->kelengkapan != null) : ?>
+							<h6 class="font-weight-bold text-dark">KELENGKAPAN</h6>
+							<blockquote class="blockquote mb-0">
+								<p class="text-dark ms-3"><?= $dm->kelengkapan; ?></p>
+							</blockquote>
+						<?php else : ?>
+							<h6 class="font-weight-bold text-dark">KELENGKAPAN</h6>
+							<blockquote class="blockquote mb-0">
+								<p class="text-dark ms-3">-</p>
+							</blockquote>
+						<?php endif; ?>
+					</div>
+
+					<div class="mx-3 mt-3">
+						<h6 class="font-weight-bold text-dark">DESKRIPSI KERUSAKAN</h6>
 						<blockquote class="blockquote mb-0">
-							<p class="text-dark ms-3"><?= $dm->kelengkapan; ?></p>
+							<p class="text-dark ms-3"><?= $dm->deskripsi; ?></p>
 						</blockquote>
 					</div>
 

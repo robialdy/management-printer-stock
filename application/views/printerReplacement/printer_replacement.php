@@ -50,7 +50,7 @@
 				</div>
 			</div>
 			<div class="card-body text-center">
-				<p class="text-md fw-normal">Total Pembelian Printer</p>
+				<p class="text-md fw-normal">Total Transaksi Penukaran Printer</p>
 				<hr class="dark horizontal">
 				<div class="d-flex ">
 					<i class="material-icons text-sm my-auto me-1">schedule</i>
@@ -111,7 +111,10 @@
 	}
 </style>
 
-
+<div id="loading" style="display: none; position: absolute; top: 120%; left: 50%; transform: translate(-50%, -50%); z-index: 10;">
+	<div class="spinner-border text-info" role="status">
+	</div>
+</div>
 
 <div class=" row">
 	<div class="col-12">
@@ -123,7 +126,7 @@
 			</div>
 			<div class="card-body px-0 pb-2">
 				<div class="table-responsive p-0">
-					<table class="table table-sm align-items-center table-hover" id="datatable-search">
+					<table class="table table-sm align-items-center table-hover" id="datatable">
 						<thead>
 							<tr>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">No</th>
@@ -144,67 +147,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<?php $i = 1; ?>
-							<?php foreach ($replacement as $rp) : ?>
-								<tr>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-bold"><?= $i; ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $rp->origin ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $rp->date_in ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $rp->name_type ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $rp->printer_sn_rep ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $rp->cust_id ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal text-wrap"><?= $rp->cust_name ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $rp->type_cust ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $rp->sn_damage ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $rp->pic_it ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $rp->pic_user ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $rp->no_ref ?></h6>
-									</td>
-									<td class="text-center text-uppercase">
-										<h6 class="mb-0 text-sm fw-normal"><?= $rp->date_out ?></h6>
-									</td>
-									<td class="text-center">
-										<a href="<?= site_url('replacement/' . $rp->printer_sn); ?>" class="mb-0 text-sm fw-normal">
-											<i class="material-icons">assignment</i>
-										</a>
-									</td>
-									<td>
-										<a class="mb-0 text-sm fw-normal text-decoration-underline btn-edit" style="cursor: pointer;"
-											data-bs-toggle="modal"
-											data-bs-target="#modaldamageselect<?= $rp->id_replacement ?>"
-											data-id="<?= $rp->id_cust ?>"
-											data-idlist="<?= $rp->id_printer_list ?>"
-											data-idreplacement="<?= $rp->id_replacement ?>"
-											data-sndamage="<?= $rp->sn_damage ?>">
-											<i class="material-icons">edit</i>
-										</a>
-									</td>
-								</tr>
-								<?php $i++; ?>
-							<?php endforeach ?>
+							<!-- lewat json boss biar ketika data banyak ga ada delay gaje -->
 						</tbody>
 					</table>
 				</div>
@@ -212,6 +155,40 @@
 		</div>
 	</div>
 </div>
+
+<script>
+	$(document).ready(function() {
+		loadData(); // Memuat halaman
+
+		function loadData() {
+
+			$('#loading').show();
+
+			$.ajax({
+				url: "<?= base_url('printerreplacement/view_data_table') ?>",
+				type: "POST",
+				dataType: "json",
+				success: function(response) {
+					const tableBody = $('#datatable tbody');
+					tableBody.empty(); // Kosongkan tabel 
+					tableBody.append(response.html);
+
+					const dataTable = new simpleDatatables.DataTable("#datatable", {
+						sortable: false,
+						perPage: 10,
+					});
+				},
+				error: function() {
+					alert('Terjadi kesalahan saat memuat data.');
+				},
+				complete: function() {
+					// Sembunyikan loading setelah selesai
+					$('#loading').hide();
+				}
+			});
+		}
+	});
+</script>
 
 <!-- modal edit -->
 <style>
@@ -270,7 +247,7 @@
 					$(modalID + ' #printerContainer').html(response);
 
 					// Setelah respons dimasukkan, set idreplacement2 dengan nilai idReplacement
-					$(modalID + ' input[name="idreplacement2"]').val(idReplacement);
+					$(modalID + ' input[name="idreplacement2"]').val(idRep);
 				}
 			});
 		});

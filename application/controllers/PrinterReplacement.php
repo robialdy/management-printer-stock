@@ -1,13 +1,11 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-use PhpOffice\PhpWord\TemplateProcessor;
-
 class PrinterReplacement extends CI_Controller
 {
 	
 	//dibawah ini hmm ngubah tanda aja biar ga merah hehe
-	public $PrinterReplacement_Model, $PrinterBackup_Model, $Customers_Model, $form_validation, $session, $data_user;
+	public $PrinterReplacement_Model, $PrinterBackup_Model, $Customers_Model, $form_validation, $session, $data_user, $PrinterList_Model;
 	public function __construct()
 	{
 		parent::__construct();
@@ -17,21 +15,8 @@ class PrinterReplacement extends CI_Controller
 		$this->load->model('PrinterReplacement_Model');
 		$this->load->model('PrinterBackup_Model');
 		$this->load->model('Customers_Model');
+		$this->load->model('PrinterList_Model');
 		$this->data_user = $this->db->get_where('users', ['username' => $this->session->userdata('data_user')])->row_array();
-	}
-
-	public function detail($sn)
-	{
-		// var_dump($this->PrinterReplacement_Model->read_data_detail($sn));
-		// die;
-
-		$data = [
-			'title' => 'Detail Printer',
-			'data_user'		=> $this->data_user,
-			'detail' => $this->PrinterReplacement_Model->read_data_detail($sn),
-		];
-
-		$this->load->view('printerreplacement/detail', $data);
 	}
 
 	public function index()
@@ -39,8 +24,8 @@ class PrinterReplacement extends CI_Controller
 		$data = [
 			'title'			=> 'Printer Replacement',
 			'replacement'	=> $this->PrinterReplacement_Model->readData(),
-			'printer'		=> $this->PrinterBackup_Model->readData(),
-			'cust'			=> $this->Customers_Model->readData(), //ada bug
+			'printer'		=> $this->PrinterBackup_Model->read_data_backup(),
+			'cust'			=> $this->PrinterList_Model->read_data_cust(), 
 			'jumPrinter'	=> $this->PrinterBackup_Model->jumlahData(),
 			'jumReplacement'=> $this->PrinterReplacement_Model->jumlahData(),
 			'data_user'		=> $this->data_user,
@@ -51,20 +36,17 @@ class PrinterReplacement extends CI_Controller
 		$this->load->view('printerReplacement/printer_replacement', $data);
 	}
 
+	// modal printer out
 	public function insert()
 	{
 
-		$query = $this->PrinterReplacement_Model->modalSelectJoin();
 		
-		if ($query->num_rows() > 0 ){
-
-			// tangkap inputnya
+		// tangkap inputnya
 			$printer_sn = $this->input->post('printersn', true); //idprinter
 			$agen_name = $this->input->post('agenname', true);
 			$pic_it = $this->input->post('picit', true);
 			$pic_user = $this->input->post('picuser', true);
 			$no_ref = $this->PrinterReplacement_Model->autoInvoice();
-			$date_out = date('d/m/Y H:i:s');
 
 			$take_kelengkapan = $this->input->post('kelengkapan', true);
 			$kelengkapan = implode(', ', $take_kelengkapan);
@@ -75,93 +57,30 @@ class PrinterReplacement extends CI_Controller
 			$this->session->set_userdata('picit', $pic_it);
 			$this->session->set_userdata('picuser', $pic_user);
 			$this->session->set_userdata('noref', $no_ref);
-			$this->session->set_userdata('dateout', $date_out);
 			$this->session->set_userdata('kelengkapan', $kelengkapan);
-
+			
+			// mengeluarkan modal
+			$query = $this->PrinterReplacement_Model->modalSelectJoin();
 			$printerselect = $query->result();
+
 			$this->session->set_flashdata('printerselect', $printerselect);
 			redirect('replacement');
 
-		} else {
-			
-			$this->form_validation->set_rules('printersn', 'PRINTER SN', 'required|trim');
-			$this->form_validation->set_rules('agenname', 'AGEN NAME', 'required|trim');
-			$this->form_validation->set_rules('picit', 'PIC IT', 'required|trim');
-			$this->form_validation->set_rules('picuser', 'PIC USER', 'required|trim');
-			// $this->form_validation->set_rules('kelengkapan', 'PRINTER SN', 'required|trim');
-			if ($this->form_validation->run() == FALSE) {
-				redirect('replacement');
-			} else {
-				$this->PrinterReplacement_Model->insertData();
-				$sn = $this->PrinterReplacement_Model->search_sn($this->input->post('printersn', true));
-				$this->session->set_flashdata('notifSuccess', 'Printer SN ' . $sn->printer_sn . ' Berhasil Ditambahkan!');
-				redirect('replacement');
-			}
-		}
 	}
 
-	public function uploadProof()
-	{
-		if ($this->input->post('proof')) {
-			$path = FCPATH . 'public/proof_replacement/'. $this->input->post('proof');
-			unlink($path);
-		}
 
-
-		$config['upload_path'] = FCPATH . 'public/proof_replacement/';
-		$config['allowed_types'] = 'pdf|jpg|jpeg|png';
-		$config['max_size'] = 30000; // Batas ukuran file (da lam KB)
-
-		$this->load->library('upload', $config);
-
-		// Proses upload
-		if ($this->upload->do_upload('file_proof')) {
-			$new_file = $this->upload->data('file_name');
-		} else {
-			redirect('replacement/' . $this->input->post('sn'));
-		}
-
-		$id = $this->input->post('idrep');
-		$this->db->where('id_replacement', $id);
-		$this->db->update('printer_replacement', ['proof_replacement' => $new_file]);
-
-		$this->session->set_flashdata('notifSuccess', 'Bukti Transaksi Berhasil Diupload!');
-		redirect('replacement/'. $this->input->post('sn'));
-
-	}
-
-	public function insertNew()
-	{
-
-		$printer_sn = $this->session->userdata('printersn'); //idprinter
-		$agen_name = $this->session->userdata('agenname'); //idcust
-		$pic_it = $this->session->userdata('picit');
-		$pic_user = $this->session->userdata('picuser');
-		$no_ref = $this->session->userdata('noref');
-		$date_out = $this->session->userdata('dateout');
-		$kelengkapan = $this->session->userdata('kelengkapan');
-
-		$sn_lama = $this->input->post('printersn', true);
-		$this->PrinterReplacement_Model->insertNew($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $date_out, $kelengkapan, $sn_lama);
-
-		$sn = $this->PrinterReplacement_Model->search_sn($printer_sn);
-		$this->session->set_flashdata('notifSuccess', "Printer SN $sn->printer_sn Berhasil Ditambahkan!");	
-		redirect('replacement');
-	}
-
+	// modal select printer
 	public function insertWithDamage()
 	{
 
+		// penangan printer out
 		$printer_sn = $this->session->userdata('printersn'); //idprinter
 		$agen_name = $this->session->userdata('agenname');
 		$pic_it = $this->session->userdata('picit');
 		$pic_user = $this->session->userdata('picuser');
 		$no_ref = $this->session->userdata('noref');
-		$date_out = $this->session->userdata('dateout');
 		$kelengkapan = $this->session->userdata('kelengkapan');
 
-		// ini delete cukup yang printer_list
-		$this->db->delete('printer_replacement', ['id_replacement' => $this->input->post('idreplacement', true)]);
 
 		$this->db->delete('printer_list_inagen', ['id_printer' => $this->input->post('idprinter', true)]);
 
@@ -170,7 +89,7 @@ class PrinterReplacement extends CI_Controller
 		
 		//send ke replacement
 		$sn_lama = $this->input->post('printersn', true);
-		$this->PrinterReplacement_Model->insertNew($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $date_out, $kelengkapan, $sn_lama);
+		$this->PrinterReplacement_Model->insertNew($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $kelengkapan, $sn_lama);
 
 		$this->session->set_flashdata('notifSuccess', "Printer SN $sn_lama Berhasil Ditukar!");
 		redirect('replacement');
@@ -201,6 +120,77 @@ class PrinterReplacement extends CI_Controller
 		redirect('replacement');
 	}
 
+	public function view_data_table()
+	{
+		$data = $this->PrinterReplacement_Model->readData();
+
+		$html = '';
+		$i = 1;
+		foreach ($data as $al) {
+			$html .= '
+        <tr>
+            <td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $i++ . '</h6>
+            </td>
+            <td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $al->origin_name . '</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $al->date_in . '</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $al->name_type . '</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $al->printer_sn_rep . '</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $al->cust_id . '</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $al->cust_name . '</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $al->type_cust . '</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $al->sn_damage . '</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $al->pic_it . '</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $al->pic_user . '</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $al->no_ref . '</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $al->date_out . '</h6>
+            </td>
+			<td class="text-center">
+				<a href="' . site_url('printerdetail/' . $al->printer_sn) . '" class="mb-0 text-sm fw-normal">
+					<i class="material-icons">assignment</i>
+				</a>
+			</td>
+			<td>
+				<a class="mb-0 text-sm fw-normal text-decoration-underline btn-edit" style="cursor: pointer;"
+                	data-bs-toggle="modal"
+                	data-bs-target="#modaldamageselect' . $al->id_replacement . '"
+                	data-id="' . $al->id_cust . '"
+                	data-idlist="' . $al->id_printer_list . '"
+                	data-idreplacement="' . $al->id_replacement . '"
+                	data-sndamage="' . $al->sn_damage . '">
+                <i class="material-icons">edit</i>
+            	</a>
+			</td>
+        </tr>';
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode(['html' => $html]);
+	}
+
 	//menampilkan list printer di modal edit
 	public function show_row_printer()
 	{
@@ -213,7 +203,6 @@ class PrinterReplacement extends CI_Controller
 
 		$printers = $this->PrinterReplacement_Model->get_printer_by_id($custId, $id_list, $sn_damage);
 
-
 		$html = '';
 
 		if (!empty($printers)) {
@@ -221,7 +210,7 @@ class PrinterReplacement extends CI_Controller
 		// Loop data printer dan buat string HTML
 		foreach ($printers as $printer) {
 
-			$time_ago = time_ago($printer->created_at);
+			$time_ago = time_ago($printer->date_out);
 
 			$html .= '
 			<form method="POST" action="'.site_url('printerreplacement/insertDamage'). '">
