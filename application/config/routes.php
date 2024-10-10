@@ -11,6 +11,7 @@ $route['replacement'] = 'PrinterReplacement';
 $route['printerdetail/(:any)'] = 'PrinterList/detail_/$1';
 $route['registrasi'] = 'Auth/Regis';
 $route['printerdetail'] = 'PrinterList/detail';
+$route['pembelian'] = 'PrinterPembelian';
 $route['printersummary'] = 'PrinterList/summary';
 $route['damage'] = 'printerdamage';
 $route['type'] = 'TypePrinter';

@@ -11,9 +11,49 @@
 	function showSuccessMessage() {
 		Swal.fire({
 			icon: 'success',
-			title: 'Good job!',
 			text: '<?= $this->session->flashdata('notifSuccess') ?>',
-			confirmButtonText: 'OK'
+			toast: true,
+			position: 'top-end',
+			showConfirmButton: false,
+			timer: 3500,
+			timerProgressBar: true,
+			width: 450,
+			padding: '1em',
+			iconColor: '#4CAF50', // Warna ikon success yang lebih menonjol
+			didOpen: (toast) => {
+				toast.style.borderRadius = '8px'; // Membuat sudut lebih halus
+				toast.style.boxShadow = '0px 4px 15px rgba(0, 0, 0, 0.2)'; // Efek shadow untuk floating
+				document.querySelector('.swal2-container').style.pointerEvents = 'none'; // Menghindari block area di luar toast
+			}
+		});
+	}
+</script>
+
+<?php if ($this->session->flashdata('notifError')) :  ?>
+	<script>
+		window.onload = function() {
+			showErrorMessage();
+		};
+	</script>
+<?php endif; ?>
+<script>
+	function showErrorMessage() {
+		Swal.fire({
+			icon: 'error',
+			text: '<?= $this->session->flashdata('notifError') ?>',
+			toast: true,
+			position: 'top-end',
+			showConfirmButton: false,
+			timer: 3500,
+			timerProgressBar: true,
+			width: 450,
+			padding: '1em',
+			iconColor: '#4CAF50', // Warna ikon success yang lebih menonjol
+			didOpen: (toast) => {
+				toast.style.borderRadius = '8px'; // Membuat sudut lebih halus
+				toast.style.boxShadow = '0px 4px 15px rgba(0, 0, 0, 0.2)'; // Efek shadow untuk floating
+				document.querySelector('.swal2-container').style.pointerEvents = 'none'; // Menghindari block area di luar toast
+			}
 		});
 	}
 </script>
@@ -229,6 +269,11 @@
 	</div>
 </div>
 
+<div id="modal-container">
+	<!-- modal dimuat -->
+</div>
+
+
 <script src="<?= base_url('public/js/jquery.min.js') ?>"></script>
 
 <!-- Script untuk mengambil dan menampilkan data -->
@@ -264,57 +309,35 @@
 			});
 		}
 	});
+
+	// menjalankan modal
+	$(document).ready(function() {
+		$(document).on('hidden.bs.modal', '#edit', function() {
+			$(this).remove();
+		});
+
+		$(document).on('click', '.btn-edit', function() {
+			var modalID = '#edit';
+
+			// AJAX request
+			$.ajax({
+				url: '<?= site_url('customers/modal_edit') ?>',
+				type: 'POST',
+				data: {
+					modal: $(this).data('modal'),
+				},
+				success: function(response) {
+					$('#modal-container').html(response);
+					$(modalID).modal('show');
+					// Inisialisasi choices
+					const choices = new Choices($(modalID + ' .choices')[0]);
+				},
+			});
+		});
+	});
 </script>
 
 
 
-
-
-<!-- Modal -->
-<?php foreach ($agenList as $al) : ?>
-	<div class="modal fade" id="edit-<?= $al->id_cust; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="text-end me-1">
-					<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<div class="text-start ms-3">
-						<h5 class="modal-title fw-bold" id="exampleModalLabel">EDIT CUSTOMER</h5>
-						<small>Edit Status Customer</small>
-					</div>
-				</div>
-				<div class="modal-body">
-					<form action="<?= site_url('customers/edit_status') ?>" method="POST">
-
-						<input type="hidden" name="id_cust" value="<?= $al->id_cust ?>">
-						<input type="hidden" name="cust_name" value="<?= $al->cust_name ?>">
-
-						<div class="row">
-							<div class="col-4 mt-2">
-								<label for="sn">STATUS <span class="text-danger">*</span></label>
-							</div>
-							<div class="col">
-								<div class="input-group input-group-static mb-3">
-									<select class="choices form-select" id="exampleFormControlSelect1" name="status" required>
-										<option value="ACTIVE" <?= $al->status == 'ACTIVE' ? 'selected' : '' ?>>ACTIVE</option>
-										<option value="IN-ACTIVE" <?= $al->status == 'IN-ACTIVE' ? 'selected' : '' ?>>IN-ACTIVE</option>
-									</select>
-								</div>
-							</div>
-						</div>
-
-						<div class="text-end mt-3">
-							<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
-							<button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save changes</button>
-						</div>
-
-					</form>
-
-				</div>
-			</div>
-		</div>
-	</div>
-<?php endforeach; ?>
 
 <?php $this->load->view('components/footer') ?>

@@ -90,28 +90,23 @@ class PrinterDamage extends CI_Controller
                 <h6 class="mb-0 text-sm fw-normal">' . $al->no_dummy .
 			'</h6>
             </td>
-			<td class="text-center text-uppercase">
-                <h6 class="mb-0 text-sm fw-normal">' . $al->note .
-			'</h6>
             </td>
 			<td class="text-center text-uppercase">
                 <h6 class="mb-0 text-sm fw-normal">' . $al->status_pembayaran .
-			'</h6>
+				'</h6>
             </td>
 			<td class="text-center text-uppercase">
-            	<a class="mb-0 text-sm fw-normal" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#kelengkapan-'. $al->id_damage .
-			'">
+            	<a class="mb-0 text-sm fw-normal btn-kelengkapan" style="cursor: pointer;" data-bs-toggle="modal"  data-bs-target="#kelengkapan" data-modal="' . $al->id_damage . '">
             	<i class="material-icons">assignment</i>
             </a>
             </td>
 			<td class="text-center">
-            	<a class="mb-0 text-sm fw-normal" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#file-' . $al->id_damage .
-			'">
+            	<a class="mb-0 text-sm fw-normal btn-file" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#file" data-modal="'. $al->id_damage .'">
             	<i class="material-icons">cloud_upload</i>
             </a>
             </td>
 			<td class="text-center">
-            	<a class="mb-0 text-sm fw-normal" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit-' . $al->id_damage . '">
+            	<a class="mb-0 text-sm fw-normal btn-edit" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit" data-modal="' . $al->id_damage . '">
             	<i class="material-icons">edit</i>
             </a>
             </td>
@@ -189,6 +184,202 @@ class PrinterDamage extends CI_Controller
 		$this->session->set_flashdata('notifSuccess', 'Lampiran File Transaksi Berhasil Diupload!');
 		redirect('damage');
 	}
+
+	public function modal_edit()
+	{
+		$id_damage = $this->input->post('modal');
+		$data = $this->PrinterDamage_Model->read_data_by_id($id_damage);
+
+		$html = '
+    <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="text-end me-1">
+                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="text-start ms-3">
+                    <h5 class="modal-title fw-bold" id="exampleModalLabel">EDIT</h5>
+                    <small>Silahkan Edit Data Untuk Perbaikan Printer</small>
+                </div>
+                <div class="modal-body">
+                    <form action="' . site_url('printerdamage/edit') . '" method="post">
+                        <input type="hidden" name="id_damage" value="' . $data->id_damage . '">
+                        <div class="row">
+                            <div class="col-4 mt-2">
+                                <label for="biaya">BIAYA PERBAIKAN <span class="text-danger">*</span></label>
+                            </div>
+                            <div class="col">
+                                <div class="input-group input-group-dynamic mb-3">
+                                    <input type="number" class="form-control" name="biaya" value="' . $data->biaya_perbaikan . '" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4 mt-2">
+                                <label for="status_pembayaran">STATUS PEMBAYARAN <span class="text-danger">*</span></label>
+                            </div>
+                            <div class="col mt-3">
+                                <div class="row">
+                                    <div class="form-check col">
+                                        <input type="radio" name="status_pembayaran" id="sudah_bayar" value="SUDAH BAYAR" ' . ($data->status_pembayaran == "SUDAH BAYAR" ? 'checked' : '') . ' required>
+                                        <label class="form-check-label" for="sudah_bayar">SUDAH BAYAR</label>
+                                    </div>
+                                    <div class="form-check col">
+                                        <input type="radio" name="status_pembayaran" id="belum_bayar" value="BELUM BAYAR" ' . ($data->status_pembayaran == "BELUM BAYAR" ? 'checked' : '') . '>
+                                        <label class="form-check-label" for="belum_bayar">BELUM BAYAR</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end mt-3">
+                            <button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>';
+
+		echo $html;
+	}
+
+	public function modal_file()
+	{
+		$id_damage = $this->input->post('modal');
+		$data = $this->PrinterDamage_Model->read_data_by_id($id_damage);
+
+		$html = '
+        <div class="modal fade" id="file" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="text-end me-1">
+                        <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="text-start ms-3">
+                        <h5 class="modal-title fw-bold" id="exampleModalLabel">LAPORAN DARI JAKARTA</h5>
+                        <small>Lampiran Terkait Dari Jakarta</small>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mx-1 mb-4">
+                            <blockquote class="blockquote" style="max-width: 100%; margin: auto;">
+                                ' . form_open('printerdamage/upload_file', ['enctype' => 'multipart/form-data', 'class' => 'd-flex w-100 gap-2 align-items-center']) . '
+                                <input type="hidden" name="id_damage" value="' . $data->id_damage . '">
+                                <input type="hidden" name="name_file_indb" value="' . $data->file . '">
+
+                                <!-- Custom file input -->
+                                <div class="d-flex align-items-center gap-3 w-30 file-wrapper" style="cursor:pointer;">
+                                    <span class="form-text ms-2 file-name">Click! untuk upload file</span>
+                                    <input type="file" class="d-none custom-file" name="file" required>
+                                </div>
+
+                                <!-- Tombol Upload -->
+                                <div>
+                                    <button class="btn btn-info px-4 py-2 mb-0" type="submit" id="inputGroupFileAddon04">Upload</button>
+                                </div>
+                                ' . form_close() . '
+                            </blockquote>
+                        </div>';
+
+		// Logika untuk menampilkan file
+		if ($data->file != null) {
+			if (substr($data->file, -4) === ".pdf") {
+				$html .= '
+                <iframe src="' . base_url('public/file_damage/' . $data->file) . '" width="100%" height="750px"></iframe>
+            ';
+			} else {
+				$html .= '
+                <div style="max-width: 100%; max-height: 750px; overflow: auto;">
+                    <img src="' . base_url('public/file_damage/' . $data->file) . '" alt="Bukti Transaksi" class="img-fluid">
+                </div>
+            ';
+			}
+		} else {
+			$html .= '
+            <div class="d-flex align-items-center justify-content-center" style="height: 600px;">
+                <div class="text-center">
+                    <i class="bi bi-exclamation-circle" style="font-size: 3rem; color: #dc3545;"></i>
+                    <p class="mt-3 fs-4 text-danger">File belum diupload.</p>
+                </div>
+            </div>
+        ';
+		}
+
+		$html .= '
+                    </div>
+                </div>
+            </div>
+        </div>
+    ';
+
+		echo $html;
+	}
+
+	public function modal_kelengkapan()
+	{
+		$id_damage = $this->input->post('modal');
+		$data = $this->PrinterDamage_Model->read_data_by_id($id_damage);
+
+		$html = '
+        <div class="modal fade" id="kelengkapan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="text-end me-1">
+                        <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="text-start ms-3">
+                        <h5 class="modal-title fw-bold" id="exampleModalLabel">KELENGKAPAN & KERUSAKAN</h5>
+                        <small>Detail Kelengkapan Printer Yang Dibawa Ke Jakarta & Kerusakan</small>
+                        <h5 class="font-weight-normal text-info text-gradient mt-2">SN ' . $data->printer_sn . '</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mx-3">';
+
+							// Logika untuk kelengkapan
+							if ($data->kelengkapan != null) {
+								$html .= '
+                            <h6 class="font-weight-bold text-dark">KELENGKAPAN</h6>
+                            <blockquote class="blockquote mb-0">
+                                <p class="text-dark ms-3">' . $data->kelengkapan . '</p>
+                            </blockquote>';
+							} else {
+								$html .= '
+                            <h6 class="font-weight-bold text-dark">KELENGKAPAN</h6>
+                            <blockquote class="blockquote mb-0">
+                                <p class="text-dark ms-3">-</p>
+                            </blockquote>';
+							}
+
+							// Menambahkan deskripsi kerusakan
+							$html .= '
+                        </div>
+                        <div class="mx-3 mt-3">
+                            <h6 class="font-weight-bold text-dark">DESKRIPSI KERUSAKAN</h6>
+                            <blockquote class="blockquote mb-0">
+                                <p class="text-dark ms-3">' . $data->deskripsi . '</p>
+                            </blockquote>
+                        </div>
+
+                        <div class="text-end mt-3">
+                            <button type="button" class="btn bg-white shadow" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    ';
+
+		echo $html;
+	}
+
+
+
 
 	public function export_excel()
 	{
@@ -281,5 +472,19 @@ class PrinterDamage extends CI_Controller
 		$writer = new Xlsx($spreadsheet);
 		$writer->save('php://output');
 		exit; // Hentikan eksekusi skrip
+	}
+
+	public function insert_banyak()
+	{
+		for ($i = 1; $i < 740; $i++) {
+			$form = [
+				'id_printer'	=>  61,
+				'id_cust'	=> 40,
+				'date_in'	=> '30/OKT/2024',
+				'note'	=> 'RUSAK',
+				'deskripsi'	=> 'Hasil print burik',
+			];
+			$this->db->insert('printer_damage', $form);
+		}
 	}
 }

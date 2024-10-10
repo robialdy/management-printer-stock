@@ -11,9 +11,20 @@
 	function showSuccessMessage() {
 		Swal.fire({
 			icon: 'success',
-			title: 'Good job!',
-			text: '<?= $this->session->flashdata('notifSuccess') ?>!',
-			confirmButtonText: 'OK'
+			text: '<?= $this->session->flashdata('notifSuccess') ?>',
+			toast: true,
+			position: 'top-end',
+			showConfirmButton: false,
+			timer: 3500,
+			timerProgressBar: true,
+			width: 450,
+			padding: '1em',
+			iconColor: '#4CAF50', // Warna ikon success yang lebih menonjol
+			didOpen: (toast) => {
+				toast.style.borderRadius = '8px'; // Membuat sudut lebih halus
+				toast.style.boxShadow = '0px 4px 15px rgba(0, 0, 0, 0.2)'; // Efek shadow untuk floating
+				document.querySelector('.swal2-container').style.pointerEvents = 'none'; // Menghindari block area di luar toast
+			}
 		});
 	}
 </script>
@@ -132,6 +143,14 @@
 							</div>
 						</div>
 					</div>
+
+					<?php foreach ($printer_list as $pl) : ?>
+						<input type="hidden" value="<?= $pl->printer_sn ?>" name="_printer_sn">
+						<input type="hidden" value="<?= $pl->cust_id ?>" name="_cust_id">
+						<input type="hidden" value="<?= $pl->cust_name ?>" name="_cust_name">
+						<input type="hidden" value="<?= $pl->date_out ?>" name="_date_out">
+					<?php endforeach; ?>
+
 
 					<div class="row mb-2">
 						<div class="col-4 mt-2">
@@ -329,6 +348,18 @@
 	</div>
 </div>
 
+<div id="modal-container-edit">
+	<!-- modal edit -->
+</div>
+
+<div id="modal-container-file">
+	<!-- modal file -->
+</div>
+
+<div id="modal-container-kelengkapan">
+	<!-- modal kelengkapan -->
+</div>
+
 <script src="<?= base_url('public/js/jquery.min.js') ?>"></script>
 
 <!-- Script untuk mengambil dan menampilkan data -->
@@ -364,131 +395,86 @@
 			});
 		}
 	});
+
+	// menjalankan modal edit
+	$(document).ready(function() {
+		$(document).on('hidden.bs.modal', '#edit', function() {
+			$(this).remove();
+		});
+
+		$(document).on('click', '.btn-edit', function() {
+			var modalID = '#edit';
+
+			// AJAX request
+			$.ajax({
+				url: '<?= site_url('printerdamage/modal_edit') ?>',
+				type: 'POST',
+				data: {
+					modal: $(this).data('modal'),
+				},
+				success: function(response) {
+					$('#modal-container-edit').html(response);
+					$(modalID).modal('show');
+					// Inisialisasi choices
+					const choices = new Choices($(modalID + ' .choices')[0]);
+				},
+			});
+		});
+	});
+
+	$(document).ready(function() {
+		$(document).on('hidden.bs.modal', '#file', function() {
+			$(this).remove();
+		});
+
+		$(document).on('click', '.btn-file', function() {
+			var modalID = '#file';
+
+			// AJAX request
+			$.ajax({
+				url: '<?= site_url('printerdamage/modal_file') ?>',
+				type: 'POST',
+				data: {
+					modal: $(this).data('modal'),
+				},
+				success: function(response) {
+					$('#modal-container-file').html(response);
+					$(modalID).modal('show');
+					// Inisialisasi choices
+					const choices = new Choices($(modalID + ' .choices')[0]);
+				},
+			});
+		});
+	});
+
+	$(document).ready(function() {
+		$(document).on('hidden.bs.modal', '#kelengkapan', function() {
+			$(this).remove();
+		});
+
+		$(document).on('click', '.btn-kelengkapan', function() {
+			var modalID = '#kelengkapan';
+
+			// AJAX request
+			$.ajax({
+				url: '<?= site_url('printerdamage/modal_kelengkapan') ?>',
+				type: 'POST',
+				data: {
+					modal: $(this).data('modal'),
+				},
+				success: function(response) {
+					$('#modal-container-kelengkapan').html(response);
+					$(modalID).modal('show');
+					// Inisialisasi choices
+					const choices = new Choices($(modalID + ' .choices')[0]);
+				},
+			});
+		});
+	});
 </script>
 
-<!-- Modal edit-->
-<?php foreach ($damage as $dm) : ?>
-	<div class="modal fade" id="edit-<?= $dm->id_damage ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="text-end me-1">
-					<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="text-start ms-3">
-					<h5 class="modal-title fw-bold" id="exampleModalLabel">EDIT</h5>
-					<small>Silahkan Edit Data Untuk Perbaikan Printer</small>
-				</div>
-				<div class="modal-body">
-					<?= form_open('printerdamage/edit'); ?>
 
-					<input type="hidden" name="id_damage" value="<?= $dm->id_damage ?>">
-
-					<div class="row">
-						<div class="col-4 mt-2">
-							<label for="biaya">BIAYA PERBAIKAN <span class="text-danger">*</span></label>
-						</div>
-						<div class="col">
-							<div class="input-group input-group-dynamic mb-3">
-								<input type="number" class="form-control" name="biaya" value="<?= $dm->biaya_perbaikan ?>" required>
-							</div>
-						</div>
-					</div>
-
-					<div class="row">
-						<div class="col-4 mt-2">
-							<label for="status_pembayaran">STATUS PEMBAYARAN <span class="text-danger">*</span></label>
-						</div>
-						<div class="col mt-3">
-							<div class="row">
-								<div class="form-check col">
-									<input type="radio" name="status_pembayaran" id="sudah_bayar" value="SUDAH BAYAR" <?= $dm->status_pembayaran == "SUDAH BAYAR" ? 'checked' : '' ?> required>
-									<label class="form-check-label" for="sudah_bayar">
-										SUDAH BAYAR
-									</label>
-								</div>
-								<div class="form-check col">
-									<input type="radio" name="status_pembayaran" id="belum_bayar" value="BELUM BAYAR" <?= $dm->status_pembayaran == "BELUM BAYAR" ? 'checked' : '' ?>>
-									<label class="form-check-label" for="belum_bayar">
-										BELUM BAYAR
-									</label>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="text-end mt-3">
-						<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
-						<button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save changes</button>
-					</div>
-					<?= form_close(); ?>
-				</div>
-			</div>
-		</div>
-	</div>
-<?php endforeach; ?>
-
-<!-- Modal file-->
-<?php foreach ($damage as $dm) : ?>
-	<div class="modal fade" id="file-<?= $dm->id_damage ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg" role="document">
-			<div class="modal-content">
-				<div class="text-end me-1">
-					<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="text-start ms-3">
-					<h5 class="modal-title fw-bold" id="exampleModalLabel">LAPORAN DARI JAKARTA</h5>
-					<small>Lampiran Terkait Dari Jakarta</small>
-				</div>
-				<div class="modal-body">
-
-					<div class="mx-1 mb-4">
-						<blockquote class="blockquote" style="max-width: 100%; margin: auto;">
-							<?= form_open('printerdamage/upload_file', ['enctype' => 'multipart/form-data', 'class' => 'd-flex w-100 gap-2 align-items-center']); ?>
-							<input type="hidden" name="id_damage" value="<?= $dm->id_damage ?>">
-							<input type="hidden" name="name_file_indb" value="<?= $dm->file ?>">
-
-							<!-- Custom file input -->
-							<div class="d-flex align-items-center gap-3 w-30 file-wrapper" style="cursor:pointer;">
-								<span class="form-text ms-2 file-name">Click! untuk upload file</span>
-								<input type="file" class="d-none custom-file" name="file" required>
-							</div>
-
-							<!-- Tombol Upload -->
-							<div>
-								<button class="btn btn-info px-4 py-2 mb-0" type="submit" id="inputGroupFileAddon04">Upload</button>
-							</div>
-							<?= form_close(); ?>
-						</blockquote>
-					</div>
-
-					<?php if ($dm->file != null): ?>
-						<?php if (substr($dm->file, -4) === '.pdf') : ?>
-							<iframe src="<?= base_url('public/file_damage/' . $dm->file) ?>" width="100%" height="750px">
-							</iframe>
-						<?php else : ?>
-							<div style="max-width: 100%; max-height: 750px; overflow: auto;">
-								<img src="<?= base_url('public/file_damage/' . $dm->file) ?>" alt="Bukti Transaksi" class="img-fluid">
-							</div>
-						<?php endif; ?>
-					<?php else : ?>
-						<div class="d-flex align-items-center justify-content-center" style="height: 600px;">
-							<div class="text-center">
-								<i class="bi bi-exclamation-circle" style="font-size: 3rem; color: #dc3545;"></i>
-								<p class="mt-3 fs-4 text-danger">File belum diupload.</p>
-							</div>
-						</div>
-					<?php endif; ?>
-
-				</div>
-			</div>
-		</div>
-	</div>
-<?php endforeach; ?>
-
+<!-- script file -->
 <script>
 	document.addEventListener('click', function(event) {
 		// Mengecek apakah elemen yang di-klik memiliki class 'file-wrapper'
@@ -509,53 +495,6 @@
 	});
 </script>
 
-
-
-<!-- Modal kelengkapan-->
-<?php foreach ($damage as $dm) : ?>
-	<div class="modal fade" id="kelengkapan-<?= $dm->id_damage ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="text-end me-1">
-					<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="text-start ms-3">
-					<h5 class="modal-title fw-bold" id="exampleModalLabel">KELENGKAPAN & KERUSAKAN</h5>
-					<small>Detail Kelengkapan Printer Yang Dibawa Ke Jakarta & Kerusakan</small>
-					<h5 class="font-weight-normal text-info text-gradient mt-2">SN <?= $dm->printer_sn; ?></h5>
-				</div>
-				<div class="modal-body">
-					<div class="mx-3">
-						<?php if ($dm->kelengkapan != null) : ?>
-							<h6 class="font-weight-bold text-dark">KELENGKAPAN</h6>
-							<blockquote class="blockquote mb-0">
-								<p class="text-dark ms-3"><?= $dm->kelengkapan; ?></p>
-							</blockquote>
-						<?php else : ?>
-							<h6 class="font-weight-bold text-dark">KELENGKAPAN</h6>
-							<blockquote class="blockquote mb-0">
-								<p class="text-dark ms-3">-</p>
-							</blockquote>
-						<?php endif; ?>
-					</div>
-
-					<div class="mx-3 mt-3">
-						<h6 class="font-weight-bold text-dark">DESKRIPSI KERUSAKAN</h6>
-						<blockquote class="blockquote mb-0">
-							<p class="text-dark ms-3"><?= $dm->deskripsi; ?></p>
-						</blockquote>
-					</div>
-
-					<div class="text-end mt-3">
-						<button type="button" class="btn bg-white shadow" data-bs-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-<?php endforeach; ?>
 
 
 

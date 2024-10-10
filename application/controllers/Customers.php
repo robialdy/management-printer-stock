@@ -22,7 +22,8 @@ class Customers extends CI_Controller
 		if ($this->form_validation->run() == FALSE) {
 			$data = [
 				'title'		=> 'Customers',
-				'agenList'	=> $this->Customers_Model->readData(),
+				// dibawah penyebab lagging
+				// 'agenList'	=> $this->Customers_Model->readData(),
 				'jumAgen'	=> $this->Customers_Model->jumlahData(),
 				'data_user'	=> $this->data_user,
 				'dateTime'	=> $this->Customers_Model->dateTime(),
@@ -69,9 +70,9 @@ class Customers extends CI_Controller
                         </form>
                     </td>
                     <td>
-                        <a class="mb-0 text-sm fw-normal" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit-' . $al->id_cust . '">
-                            <i class="material-icons btn-tooltip">edit</i>
-                        </a>
+                        <a class="mb-0 text-sm fw-normal btn-edit" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit" data-modal="'. $al->id_cust .'">
+    						<i class="material-icons btn-tooltip">edit</i>
+						</a>
                     </td>
                 </tr>';
 		}
@@ -91,10 +92,73 @@ class Customers extends CI_Controller
 
 	public function delete($id)
 	{
-		$this->Customers_Model->delete($id);
-		$this->session->set_flashdata('notifSuccess', 'Delete Customers Successfuly!');
-		redirect('customers');
+		$func_delete = $this->Customers_Model->delete($id);
+
+		// belum jalan 10/10/2024
+		if ($func_delete) {
+			$this->Customers_Model->delete($id);
+			$this->session->set_flashdata('notifSuccess', 'Delete Customers Successfuly!');
+			redirect('customers');
+		} else {
+			$this->session->set_flashdata('notifError', 'Delete Telah Dibatalkan!');
+			redirect('customers');
+		}
+
 	}
+
+	public function modal_edit()
+	{
+		$id_cust = $this->input->post('modal');
+		$data = $this->Customers_Model->getCustomerById($id_cust);
+
+		// Menghasilkan HTML untuk modal
+		$html = '
+        <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="text-end me-1">
+                        <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <div class="text-start ms-3">
+                            <h5 class="modal-title fw-bold" id="exampleModalLabel">EDIT CUSTOMER</h5>
+                            <small>Edit Status Customer</small>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <form action="'. site_url('customers/edit_status') .'" method="POST">
+
+						<input type="hidden" name="id_cust" value="'. $data->id_cust .'">
+						<input type="hidden" name="cust_name" value="'. $data->cust_name .'">
+
+						<div class="row">
+							<div class="col-4 mt-2">
+								<label for="sn">STATUS <span class="text-danger">*</span></label>
+							</div>
+							<div class="col">
+								<div class="input-group input-group-static mb-3">
+									<select class="choices form-select" id="exampleFormControlSelect1" name="status" required>
+										<option value="ACTIVE" '. (($data->status == 'ACTIVE') ? 'selected' : '') .'>ACTIVE</option>
+										<option value="IN-ACTIVE" '. (($data->status == 'IN-ACTIVE') ? 'selected' : '') .'>IN-ACTIVE</option>
+									</select>
+								</div>
+							</div>
+						</div>
+
+						<div class="text-end mt-3">
+							<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
+							<button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save changes</button>
+						</div>
+
+					</form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    ';
+		echo $html; // Kirim HTML ke respons
+	}
+
 
 
 }

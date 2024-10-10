@@ -52,7 +52,7 @@
 			</div>
 			<div class="text-end pt-1">
 				<p class="text-sm mb-0 text-capitalize">Printer Damage</p>
-				<h4 class="mb-0">10</h4>
+				<h4 class="mb-0"><?= $jumDamage ?></h4>
 			</div>
 		</div>
 	</div>
@@ -64,7 +64,7 @@
 			</div>
 			<div class="text-end pt-1">
 				<p class="text-sm mb-0 text-capitalize">Printer Peminjaman</p>
-				<h4 class="mb-0">10</h4>
+				<h4 class="mb-0"><?= $jumList ?></h4>
 			</div>
 		</div>
 	</div>

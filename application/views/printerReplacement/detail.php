@@ -13,9 +13,20 @@
 	function showSuccessMessage() {
 		Swal.fire({
 			icon: 'success',
-			title: 'Good job!',
 			text: '<?= $this->session->flashdata('notifSuccess') ?>',
-			confirmButtonText: 'OK'
+			toast: true,
+			position: 'top-end',
+			showConfirmButton: false,
+			timer: 3500,
+			timerProgressBar: true,
+			width: 450,
+			padding: '1em',
+			iconColor: '#4CAF50', // Warna ikon success yang lebih menonjol
+			didOpen: (toast) => {
+				toast.style.borderRadius = '8px'; // Membuat sudut lebih halus
+				toast.style.boxShadow = '0px 4px 15px rgba(0, 0, 0, 0.2)'; // Efek shadow untuk floating
+				document.querySelector('.swal2-container').style.pointerEvents = 'none'; // Menghindari block area di luar toast
+			}
 		});
 	}
 </script>
@@ -145,24 +156,24 @@
 
 				<label class="form-label fw-bold fs-6">UPLOAD BUKTI TRANSAKSI</label>
 				<div class="input-group">
-						<?= form_open('printerlist/uploadProof', ['enctype' => 'multipart/form-data', 'class' => 'd-flex w-100 gap-2 align-items-center']) ?>
-						<input type="hidden" name="idrep" value="<?= $detail->id_printer_list ?>">
-						<input type="hidden" name="sn" value="<?= $detail->printer_sn ?>">
-						<input type="hidden" name="proof" value="<?= $detail->proof ?>">
+					<?= form_open('printerlist/uploadProof', ['enctype' => 'multipart/form-data', 'class' => 'd-flex w-100 gap-2 align-items-center']) ?>
+					<input type="hidden" name="idrep" value="<?= $detail->id_printer_list ?>">
+					<input type="hidden" name="sn" value="<?= $detail->printer_sn ?>">
+					<input type="hidden" name="proof" value="<?= $detail->proof ?>">
 
-						<!-- Tombol pilih file -->
-						<label class="btn btn-outline-secondary d-flex px-3 py-1" for="customFile">Pilih File</label>
+					<!-- Tombol pilih file -->
+					<label class="btn btn-outline-secondary d-flex px-3 py-1" for="customFile">Pilih File</label>
 
-						<!-- Custom file input -->
-						<div class="d-flex align-items-center gap-3 w-100" style="cursor:pointer;" id="fileWrapper">
-							<span id="fileName" class="form-text mb-3">No file chosen</span>
-							<input type="file" class="d-none" id="customFile" name="file_proof">
-						</div>
+					<!-- Custom file input -->
+					<div class="d-flex align-items-center gap-3 w-100" style="cursor:pointer;" id="fileWrapper">
+						<span id="fileName" class="form-text mb-3">No file chosen</span>
+						<input type="file" class="d-none" id="customFile" name="file_proof">
+					</div>
 
-						<!-- Tombol Upload -->
-						<div>
-							<button class="btn btn-info px-4 py-2" type="submit" id="inputGroupFileAddon04">Upload</button>
-						</div>
+					<!-- Tombol Upload -->
+					<div>
+						<button class="btn btn-info px-4 py-2" type="submit" id="inputGroupFileAddon04">Upload</button>
+					</div>
 					<?= form_close(); ?>
 				</div>
 

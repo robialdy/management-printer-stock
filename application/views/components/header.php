@@ -74,7 +74,7 @@
 						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
 							<i class="material-icons opacity-10">dashboard</i>
 						</div>
-						<span class="nav-link-text ms-1">Dashboard</span>
+						<span class="nav-link-text ms-1">DASHBOARD</span>
 					</a>
 				</li>
 
@@ -84,17 +84,17 @@
 						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
 							<i class="material-icons">format_list_bulleted</i>
 						</div>
-						<span class="sidenav-normal  ps-1"> Printer <b class="caret"></b></span>
+						<span class="sidenav-normal  ps-1"> PRINTER <b class="caret"></b></span>
 					</a>
-					<div class="collapse <?= ($this->uri->segment(1) == 'printer' || $this->uri->segment(1) == 'replacement' ||  $this->uri->segment(1) == 'damage') ? 'show' : ''; ?>" id="usersExample">
+					<div class="collapse <?= ($this->uri->segment(1) == 'printer' || $this->uri->segment(1) == 'replacement' ||  $this->uri->segment(1) == 'damage' || $this->uri->segment(1) == 'printerdetail' || $this->uri->segment(1) == 'printersummary' || $this->uri->segment(1) == 'pembelian') ? 'show' : ''; ?>" id="usersExample">
 						<ul class="nav nav-sm flex-column">
 
 							<li class="nav-item">
-								<a class="nav-link text-white <?= ($this->uri->segment(1) == 'printer') ? 'active bg-info' : ''; ?>" href="<?= site_url('printer') ?>">
+								<a class="nav-link text-white ms-3 <?= ($this->uri->segment(1) == 'printer') ? 'active bg-info' : ''; ?>" href="<?= site_url('printer') ?>">
 									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
 										<i class="bi bi-printer-fill"></i>
 									</div>
-									<span class="nav-link-text ms-1">Printer Backup List</span>
+									<span class="nav-link-text ms-1">Backup List</span>
 								</a>
 							</li>
 
@@ -103,7 +103,7 @@
 									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
 										<i class="material-icons">autorenew</i>
 									</div>
-									<span class="nav-link-text ms-1">Printer Replacement</span>
+									<span class="nav-link-text ms-1">Replacement</span>
 								</a>
 							</li>
 
@@ -112,31 +112,16 @@
 									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
 										<i class="material-icons">warning</i>
 									</div>
-									<span class="nav-link-text ms-1">Printer Damage</span>
+									<span class="nav-link-text ms-1">Damage</span>
 								</a>
 							</li>
-
-
-						</ul>
-					</div>
-				</li>
-
-				<li class="nav-item ">
-					<a class="nav-link text-white " data-bs-toggle="collapse" aria-expanded="false" href="#usersExample2">
-						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-							<i class="material-icons">format_list_bulleted</i>
-						</div>
-						<span class="sidenav-normal  ps-1">Master Data Printer List<b class="caret"></b></span>
-					</a>
-					<div class="collapse <?= ($this->uri->segment(1) == 'printerdetail' || $this->uri->segment(1) == 'printersummary') ? 'show' : ''; ?>" id="usersExample2">
-						<ul class="nav nav-sm flex-column">
 
 							<li class="nav-item">
 								<a class="nav-link text-white <?= ($this->uri->segment(1) == 'printerdetail') ? 'active bg-info' : ''; ?>" href="<?= site_url('printerdetail') ?>">
 									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
 										<i class="material-icons">description</i>
 									</div>
-									<span class="nav-link-text ms-1">Printer Detail</span>
+									<span class="nav-link-text ms-1">Printer List</span>
 								</a>
 							</li>
 
@@ -146,40 +131,60 @@
 									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
 										<i class="material-icons">summarize</i>
 									</div>
-									<span class="nav-link-text ms-1">Printer Summary</span>
+									<span class="nav-link-text ms-1">Summary</span>
 								</a>
 							</li>
+
+							<li class="nav-item">
+								<a class="nav-link text-white <?= ($this->uri->segment(1) == 'pembelian') ? 'active bg-info' : ''; ?>" href="<?= site_url('pembelian') ?>">
+									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
+										<i class="material-icons">point_of_sale</i>
+									</div>
+									<span class="nav-link-text ms-1">Pembelian</span>
+								</a>
+							</li>
+
 
 						</ul>
 					</div>
 				</li>
 
+
+				<li class="nav-item">
+					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'printerlog') ? 'active bg-info' : ''; ?>" href="<?= site_url('printerlog') ?>">
+						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+							<i class="material-icons">assignment</i>
+						</div>
+						<span class="nav-link-text ms-1">PRINTER LOG</span>
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'customers') ? 'active bg-info' : ''; ?>" href="<?= site_url('customers') ?>">
+						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+							<i class="material-icons">storage</i>
+						</div>
+						<span class="nav-link-text ms-1">M. DATA CUSTOMER</span>
+					</a>
+				</li>
+
+				<li class="nav-item">
+					<a class="nav-link text-white <?= ($this->uri->segment(1) == 'type') ? 'active bg-info' : ''; ?>" href="<?= site_url('type') ?>">
+						<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+							<i class="material-icons">storage</i>
+						</div>
+						<span class="nav-link-text ms-1">M. DATA TYPE PRINTER</span>
+					</a>
+				</li>
+
 				<?php if ($data_user['role'] === 'SUPER ADMIN'): ?>
-
-					<li class="nav-item">
-						<a class="nav-link text-white <?= ($this->uri->segment(1) == 'customers') ? 'active bg-info' : ''; ?>" href="<?= site_url('customers') ?>">
-							<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-								<i class="material-icons">business</i>
-							</div>
-							<span class="nav-link-text ms-1">Master Data Customer</span>
-						</a>
-					</li>
-
-					<li class="nav-item">
-						<a class="nav-link text-white <?= ($this->uri->segment(1) == 'type') ? 'active bg-info' : ''; ?>" href="<?= site_url('type') ?>">
-							<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-								<i class="material-icons">business</i>
-							</div>
-							<span class="nav-link-text ms-1">Master Data Type Printer</span>
-						</a>
-					</li>
 
 					<li class="nav-item">
 						<a class="nav-link text-white <?= ($this->uri->segment(1) == 'users') ? 'active bg-info' : ''; ?>" href="<?= site_url('users') ?>">
 							<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
 								<i class="material-icons">people</i>
 							</div>
-							<span class="nav-link-text ms-1">User Manage</span>
+							<span class="nav-link-text ms-1">USER MANAGE</span>
 						</a>
 					</li>
 
@@ -188,7 +193,7 @@
 							<div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
 								<i class="material-icons">assignment</i>
 							</div>
-							<span class="nav-link-text ms-1">User Log</span>
+							<span class="nav-link-text ms-1">USER LOG</span>
 						</a>
 					</li>
 				<?php endif ?>

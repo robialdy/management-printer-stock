@@ -11,9 +11,20 @@
 	function showSuccessMessage() {
 		Swal.fire({
 			icon: 'success',
-			title: 'Good job!',
 			text: '<?= $this->session->flashdata('notifSuccess') ?>',
-			confirmButtonText: 'OK'
+			toast: true,
+			position: 'top-end',
+			showConfirmButton: false,
+			timer: 3500,
+			timerProgressBar: true,
+			width: 450,
+			padding: '1em',
+			iconColor: '#4CAF50', // Warna ikon success yang lebih menonjol
+			didOpen: (toast) => {
+				toast.style.borderRadius = '8px'; // Membuat sudut lebih halus
+				toast.style.boxShadow = '0px 4px 15px rgba(0, 0, 0, 0.2)'; // Efek shadow untuk floating
+				document.querySelector('.swal2-container').style.pointerEvents = 'none'; // Menghindari block area di luar toast
+			}
 		});
 	}
 </script>
@@ -109,7 +120,7 @@
 		<div class="card my-4 border-radius-md">
 			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
 				<div class="bg-gradient-info shadow-info border-radius-md pt-4 pb-3">
-					<h6 class="text-white ps-3 fw-light">Master Data Customer</h6>
+					<h6 class="text-white ps-3 fw-light">Master Data Type Printer</h6>
 				</div>
 			</div>
 			<div class="card-body px-0 pb-2">

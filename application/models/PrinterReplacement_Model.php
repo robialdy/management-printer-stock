@@ -21,22 +21,6 @@ class PrinterReplacement_Model extends CI_Model
 		return $this->db->select('printer_sn')->from('printer_backup')->where('id_printer', $id)->get()->row();
 	}
 
-	//auto invoice no ref
-	public function autoInvoice()
-	{
-		$this->db->select_max('no_ref', 'no_ref_max');
-		$query = $this->db->get('printer_list_inagen');
-		$row = $query->row();
-
-		$kode_lama = $row->no_ref_max;
-
-		$number = (int) substr($kode_lama, 0, 3);
-		$number++; // Increment number
-
-		$kode_baru = sprintf("%03d", $number) . '/JNE/IT/BA/' . date('m/Y');
-		return $kode_baru;
-	}
-
 	// public function insertData()
 	// {
 
@@ -110,6 +94,20 @@ class PrinterReplacement_Model extends CI_Model
 			'created_at'		=> date('d F Y H:i:s'),
 		];
 		$this->db->insert('printer_replacement', $form_data_rep);
+
+		// update log
+
+		$cust = $this->db->where('id_cust', $id_cust)->get('customers')->row();
+
+		$update_log = [
+			'status'	=> 'IN CUSTOMER',
+			'cust_id'	=> $cust->cust_id,
+			'cust_name'	=> $cust->cust_name,
+			'date_out'	=> date('d/m/Y H:i:s'),
+		];
+		$this->db->where('printer_sn', $printer_sn);
+		$this->db->where('status', 'IN BACKUP');
+		$this->db->update('printer_log', $update_log);
 	}
 
 	//ngirim data ke damage
@@ -132,6 +130,15 @@ class PrinterReplacement_Model extends CI_Model
 			'deskripsi'		=> strtoupper($this->input->post('deskripsi')),
 		];
 		$this->db->insert('printer_damage', $form_del);
+
+		// diubah jadi update
+		$form_log = [
+			'status'	=> 'IN DAMAGE',
+			'returned'	=> date('d/m/Y H:i:s'),
+		];
+		$this->db->where('printer_sn', $this->input->post('printersn'));
+		$this->db->where('status', 'IN CUSTOMER');
+		$this->db->update('printer_log', $form_log);
 	}
 
 
@@ -152,7 +159,7 @@ class PrinterReplacement_Model extends CI_Model
 	{
 		if ($sn_damage == '-'){ //cek jika sn damagenya ada tidak bisa dirubah lagi
 
-		$this->db->select(' printer_list_inagen.*, printer_backup.printer_sn, type_printer.name_type, customers.cust_name');
+		$this->db->select(' printer_list_inagen.*, printer_backup.printer_sn, type_printer.name_type, customers.cust_name, customers.cust_id');
 		$this->db->from('printer_list_inagen');
 		$this->db->join('customers', 'printer_list_inagen.id_cust = customers.id_cust');
 		$this->db->join('printer_backup', 'printer_list_inagen.id_printer = printer_backup.id_printer');
@@ -162,6 +169,7 @@ class PrinterReplacement_Model extends CI_Model
 		// $this->db->where('printer_replacement.sn_damage', '-'); //nyari yang pake - doang 
 		$this->db->where_not_in('printer_list_inagen.id_printer_list', $id_list); //gak nampilin punya sendiri
 		$query = $this->db->get();
+
 		return $query->result();
 		} else {
 			return null;

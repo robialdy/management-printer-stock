@@ -11,9 +11,6 @@ class TypePrinter extends CI_Controller
 			redirect('auth');
 		};
 		$this->data_user = $this->db->get_where('users', ['username' => $this->session->userdata('data_user')])->row_array();
-		if ($this->data_user['role'] === 'ADMIN') {
-			redirect();
-		};
 		$this->load->model('Type_printer_Model');
 	}
 	

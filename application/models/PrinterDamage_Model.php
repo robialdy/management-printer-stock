@@ -14,6 +14,19 @@ class PrinterDamage_Model extends CI_Model
 		return $query->result();
 	}
 
+	public function read_data_by_id($id_damage)
+	{
+		$this->db->select('printer_damage.*, customers.origin_name, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust, type_printer.name_type');
+		$this->db->from('printer_damage');
+		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
+		$this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
+		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
+		$this->db->where('printer_damage.id_damage', $id_damage);
+		$this->db->order_by('printer_damage.date_in', 'DESC');
+		$query = $this->db->get();
+		return $query->row();
+	}
+
 	public function read_data_nodummy()
 	{
 		$this->db->select('printer_damage.*, customers.origin_name, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust, type_printer.name_type');
@@ -34,7 +47,7 @@ class PrinterDamage_Model extends CI_Model
 		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
 		$this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
 		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
-		$this->db->where('printer_damage.return_cgk', '-');
+	$this->db->where('printer_damage.return_cgk', '-');
 		$this->db->order_by('printer_damage.date_in', 'DESC');
 		$query = $this->db->get();
 		return $query->result();
@@ -85,11 +98,21 @@ class PrinterDamage_Model extends CI_Model
 		$form_del = [
 			'id_printer'	=> 	$id_printer,
 			'id_cust'		=> 	$id_cust,
-			'date_in'		=> date('d/m/Y H:i:s'),
+			'date_in'		=> date('d/m/Y H:i:s'), //sama kaya yang di log
 			'kelengkapan'	=> $kelengkapan,
 			'deskripsi'		=> strtoupper($this->input->post('deskripsi')),
 		];
 		$this->db->insert('printer_damage', $form_del);
+
+		// UPDATE LOG
+		$printer_sn = $this->db->where('id_printer', $id_printer)->get('printer_backup')->row();
+		$form_log = [
+			'status'	=> 'IN DAMAGE',
+			'returned'	=> date('d/m/Y H:i:s'),
+		];
+		$this->db->where('printer_sn', $printer_sn->printer_sn);
+		$this->db->where('status', 'IN CUSTOMER');
+		$this->db->update('printer_log', $form_log);
 
 		$this->db->delete('printer_list_inagen', ['id_printer' => $id_printer]);
 	}

@@ -12,9 +12,20 @@
 	function showSuccessMessage() {
 		Swal.fire({
 			icon: 'success',
-			title: 'Good job!',
 			text: '<?= $this->session->flashdata('notifSuccess') ?>',
-			confirmButtonText: 'OK'
+			toast: true,
+			position: 'top-end',
+			showConfirmButton: false,
+			timer: 3500,
+			timerProgressBar: true,
+			width: 450,
+			padding: '1em',
+			iconColor: '#4CAF50', // Warna ikon success yang lebih menonjol
+			didOpen: (toast) => {
+				toast.style.borderRadius = '8px'; // Membuat sudut lebih halus
+				toast.style.boxShadow = '0px 4px 15px rgba(0, 0, 0, 0.2)'; // Efek shadow untuk floating
+				document.querySelector('.swal2-container').style.pointerEvents = 'none'; // Menghindari block area di luar toast
+			}
 		});
 	}
 </script>

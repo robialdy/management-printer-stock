@@ -191,6 +191,59 @@ class PrinterList extends CI_Controller
 		echo json_encode(['html' => $html]);
 	}
 
+	public function view_data_table_summary()
+	{
+		$data = $this->PrinterList_Model->read_data_summary();
+		$type_printer = $this->PrinterList_Model->type_printer();
+
+		$html = '';
+		$i = 1;
+		foreach ($data as $pd) {
+			$html .= '
+            <tr>
+                <td class="text-center text-uppercase py-3">
+                    <h6 class="mb-0 text-md fw-normal">' . $i++ . '</h6>
+                </td>
+                <td class="text-center text-uppercase py-3">
+                    <h6 class="mb-0 text-md fw-normal">' . $pd->cust_id . '</h6>
+                </td>
+                <td class="text-center text-uppercase">
+                    <h6 class="mb-0 text-md fw-normal">' . $pd->type_cust . '</h6>
+                </td>
+                <td class="text-center text-uppercase">
+                    <h6 class="mb-0 text-md fw-normal">' . $pd->cust_name . '</h6>
+                </td>
+                <td class="text-center text-uppercase">
+                    <h6 class="mb-0 text-md fw-normal">' . $pd->system . '</h6>
+                </td>';
+
+			foreach ($type_printer as $tp) {
+				$name_type_alias = 'total_' . str_replace('-', '_', $tp->name_type);
+				$html .= '
+                <td class="text-center text-uppercase">
+                    <h6 class="mb-0 text-md fw-normal">' . $pd->$name_type_alias . '</h6>
+                </td>';
+			}
+
+			$html .= '
+                <td class="text-center text-uppercase py-3">
+                    <h6 class="mb-0 text-md fw-normal">' . $pd->total_printer . '</h6>
+                </td>
+                <td class="text-center text-uppercase">
+                    <h6 class="mb-0 text-md fw-normal">' . $pd->cn_label_status . '</h6>
+                </td>
+                <td class="text-center text-uppercase">
+                    <h6 class="mb-0 text-md fw-normal">' . $pd->origin_id . '</h6>
+                </td>
+                <td class="text-center text-uppercase">
+                    <h6 class="mb-0 text-md fw-normal">' . $pd->origin_name . '</h6>
+                </td>
+            </tr>';
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode(['html' => $html]);
+	}
 
 
 
@@ -231,7 +284,9 @@ class PrinterList extends CI_Controller
 						'cust_id' => $row['E'], 
 						'cust_name' => $row['F'], 
 						'type_cust' => $row['G'],
-						'origin_name' => $row['A'], 
+						'origin_name' => $row['A'],
+						'status'	=> $row['L'],
+						'created_at'	=> date('d F Y H:i:s'),
 					];
 
 					// cek jika datanya udah ada make pake yang ada kalo ga buat baru
@@ -249,7 +304,7 @@ class PrinterList extends CI_Controller
 
 					// Jika tipe printer tidak ada, insert ke tabel printer_types
 					if (!$existing_type) {
-						$this->db->insert('type_printer', ['name_type' => $printer_type_name]);
+						$this->db->insert('type_printer', ['name_type' => $printer_type_name, 'created_at' => date('d F Y H:i:s')]);
 						$id_type = $this->db->insert_id(); // Ambil id_type yang baru diinsert
 					} else {
 						$id_type = $existing_type->id_type; // Ambil id_type yang sudah ada
@@ -260,7 +315,8 @@ class PrinterList extends CI_Controller
 						'printer_sn' => $row['D'],
 						'id_type' => $id_type,  
 						'status' => 'REPLACEMENT',
-						'date_in' => date('d/m/Y H:i:s'), 
+						'date_in' => date('d/m/Y H:i:s'),
+						'created_at'	=> date('d F Y H:i:s'),
 					];
 
 					// cek jika datanya udah ada make pake yang ada kalo ga buat baru
@@ -278,13 +334,27 @@ class PrinterList extends CI_Controller
 						'id_cust' => $cust_id,
 						'pic_it' => $row['H'],     
 						'pic_user' => $row['I'],
-						'no_ref' => $row['J'],    
-						'status' => 'active',    
-						'date_out' => $row['K'], 
-						'status'	=> $row['L'],
+						// 'date_out' => $row['K'], 
+						'created_at' => date('d F Y H:i:s'),
 					];
-
 					$this->db->insert('printer_list_inagen', $list_data);
+
+			
+					if ($row['K']) {
+						$date_out_log = $row['K'];
+					} else {
+						$date_out_log = '-';
+					}
+
+					$log_data = [
+						'printer_sn'	=> $row['D'],
+						'cust_id'		=> $row['E'],
+						'cust_name'		=> $row['F'],
+						'date_out'		=> $date_out_log,
+						'status'		=> 'IN CUSTOMER',
+						'created_at'	=> date('d/m/Y H:i:s'),
+					];
+					$this->db->insert('printer_log', $log_data);
 				}
 			}
 

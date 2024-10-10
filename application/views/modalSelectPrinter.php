@@ -108,10 +108,15 @@
 										</small>
 									</div>
 
-									<!-- Hidden fields for printer data -->
 									<input type="hidden" value="<?= $sp->id_cust ?>" name="idcust">
 									<input type="hidden" value="<?= $sp->printer_sn ?>" name="printersn">
 									<input type="hidden" value="<?= $sp->id_printer ?>" name="idprinter">
+
+									<!-- hidden untuk upload history -->
+									<input type="hidden" value="<?= $sp->printer_sn ?>" name="_printer_sn">
+									<input type="hidden" value="<?= $sp->cust_id ?>" name="_cust_id">
+									<input type="hidden" value="<?= $sp->cust_name ?>" name="_cust_name">
+									<input type="hidden" value="<?= $sp->date_out ?>" name="_date_out">
 
 									<!-- Submit button -->
 									<button type="submit" class="btn btn-info shadow mt-2">Submit</button>

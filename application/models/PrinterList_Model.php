@@ -108,7 +108,7 @@ class PrinterList_Model extends CI_Model
 	public function printer_out()
 	{
 		// update jadi sn normal jika ada penanda inactive
-		$get_idprinter = $this->input->post('printersn');
+		$get_idprinter = $this->input->post('printersn'); //id isinya
 		$printer = $this->db->get_where('printer_backup', ['id_printer' => $get_idprinter])->row();
 		$printer_sn = $printer->printer_sn;
 		$parts = explode(' - ', $printer_sn);
@@ -137,6 +137,7 @@ class PrinterList_Model extends CI_Model
 		];
 		$this->db->insert('printer_list_inagen', $form_data_list);
 
+
 		if ($this->input->post('replacement') != 'NEW') {
 
 			$get_insert_id = $this->db->insert_id(); // ambil id yang baru di upplod
@@ -149,8 +150,19 @@ class PrinterList_Model extends CI_Model
 				'created_at'		=> date('d F Y H:i:s'),
 			];
 			$this->db->insert('printer_replacement', $form_data_rep);
-
 		}
+
+		$cust = $this->db->where('id_cust', $this->input->post('agenname', true))->get('customers')->row();
+
+		$form_log = [
+			'status'	=> 'IN CUSTOMER',
+			'cust_id'	=> $cust->cust_id,
+			'cust_name'	=> $cust->cust_name,
+			'date_out'	=> date('d/m/Y H:i:s'),
+		];
+		$this->db->where('printer_sn', $printer_sn);
+		$this->db->where('status', 'IN BACKUP');
+		$this->db->update('printer_log', $form_log);
 
 	}
 

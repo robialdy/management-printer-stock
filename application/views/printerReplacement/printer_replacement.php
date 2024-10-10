@@ -11,9 +11,20 @@
 	function showSuccessMessage() {
 		Swal.fire({
 			icon: 'success',
-			title: 'Good job!',
-			text: '<?= $this->session->flashdata('notifSuccess') ?>!',
-			confirmButtonText: 'OK'
+			text: '<?= $this->session->flashdata('notifSuccess') ?>',
+			toast: true,
+			position: 'top-end',
+			showConfirmButton: false,
+			timer: 3500,
+			timerProgressBar: true,
+			width: 450,
+			padding: '1em',
+			iconColor: '#4CAF50', // Warna ikon success yang lebih menonjol
+			didOpen: (toast) => {
+				toast.style.borderRadius = '8px'; // Membuat sudut lebih halus
+				toast.style.boxShadow = '0px 4px 15px rgba(0, 0, 0, 0.2)'; // Efek shadow untuk floating
+				document.querySelector('.swal2-container').style.pointerEvents = 'none'; // Menghindari block area di luar toast
+			}
 		});
 	}
 </script>
@@ -156,6 +167,10 @@
 	</div>
 </div>
 
+<div id="modal-container">
+	<!-- modal dimuat -->
+</div>
+
 <script>
 	$(document).ready(function() {
 		loadData(); // Memuat halaman
@@ -197,57 +212,41 @@
 	}
 </style>
 
-<?php foreach ($replacement as $rp):  ?>
-	<!-- Modal Select Printer -->
-	<div class="modal fade" id="modaldamageselect<?= $rp->id_replacement ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="text-end me-1">
-					<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-					<div class="text-start ms-3">
-						<h5 class="modal-title fw-bold" id="exampleModalLabel">SN DAMAGE</h5>
-						<small>Pilih Untuk Menambahkan SN Damage</small> <br>
-					</div>
-				</div>
-				<div class="modal-body">
-					<small>~ Printer SN <?= $rp->printer_sn ?></small>
-					<div class="overflow-auto" style="max-height: 600px" id="printerContainer">
 
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-<?php endforeach;  ?>
+
 
 
 
 <script>
 	$(document).ready(function() {
+
+		$(document).on('hidden.bs.modal', '#modaldamageselect', function() {
+			$(this).remove();
+		});
+
 		$(document).on('click', '.btn-edit', function() {
 			var custID = $(this).data('id'); //milih berdasarkan custiomer
 			var modalID = $(this).data('bs-target');
+			var showModal = '#modaldamageselect';
 			var id_list = $(this).data('idlist'); // Ambil ID Replacement
 			var snDamage = $(this).data('sndamage'); //dipake untuk pengecekan jika udh punya sn = kosong
 			var idRep = $(this).data('idreplacement');
+			var prinSn = $(this).data('prinsn');
 
 			// AJAX request
 			$.ajax({
-				url: 'PrinterReplacement/show_row_printer',
+				url: '<?= base_url('printerreplacement/modal_damage_select') ?>',
 				type: 'POST',
 				data: {
 					custID: custID, //kirim ke serve
 					id_list: id_list,
 					snDamage: snDamage,
-					idRep: idRep
+					idRep: idRep,
+					prinSn: prinSn
 				},
 				success: function(response) {
-					$(modalID + ' #printerContainer').html(response);
-
-					// Setelah respons dimasukkan, set idreplacement2 dengan nilai idReplacement
-					$(modalID + ' input[name="idreplacement2"]').val(idRep);
+					$('#modal-container').html(response);
+					$(modalID).modal('show');
 				}
 			});
 		});

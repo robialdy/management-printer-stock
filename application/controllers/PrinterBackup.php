@@ -48,13 +48,13 @@ class PrinterBackup extends CI_Controller
                 <h6 class="mb-0 text-md fw-normal">' . $al['origin'] . '</h6>
             </td>
 			<td class="text-center text-uppercase">
-                <h6 class="mb-0 text-md fw-normal">' . $al['date_in'] . '</h6>
+                <h6 class="mb-0 text-md fw-normal">' . $al['printer_sn'] . '</h6>
             </td>
 			<td class="text-center text-uppercase">
                 <h6 class="mb-0 text-md fw-normal">' . $al['name_type'] . '</h6>
             </td>
 			<td class="text-center text-uppercase">
-                <h6 class="mb-0 text-md fw-normal">' . $al['printer_sn'] . '</h6>
+                <h6 class="mb-0 text-md fw-normal">' . $al['date_in'] . '</h6>
             </td>
         </tr>';
 		}
@@ -65,19 +65,44 @@ class PrinterBackup extends CI_Controller
 
 	public function insert()
 	{
-		$prin_sn = strtoupper($this->input->post('printersn', true));
 
-		$this->form_validation->set_rules('printersn', 'PRINTER SN', 'required|is_unique[printer_backup.printer_sn]|trim');
+		$this->form_validation->set_rules('printersn', 'PRINTER SN', 'required|trim');
 		$this->form_validation->set_rules('typeprinter', 'PRINTER SN', 'required|trim');
 		$this->form_validation->set_rules('return_cgk', 'Return Cgk', 'trim');
 		if ($this->form_validation->run() == FALSE) {
 			$this->session->set_flashdata('notifError', "Printer SN $prin_sn Telah Digunakan!");
 			redirect('printer');
 		}else {
-			$this->PrinterBackup_Model->insertData();
+			$prin_sn = strtoupper($this->input->post('printersn', true));
 			
-			$this->session->set_flashdata('notifSuccess', "Printer SN $prin_sn Berhasil Ditambahkan!");
-			redirect('printer');
+		// cek printer
+			$cek_sn = $this->db->select('printer_backup.id_printer, type_printer.name_type, printer_backup.status')->from('printer_backup')->join('type_printer', 'printer_backup.id_type = type_printer.id_type')->where('printer_backup.printer_sn', $prin_sn)->get()->row();
+
+
+			if($cek_sn) {
+
+				if ($cek_sn->status != 'DAMAGE') {
+					$this->session->set_flashdata('notifError', "Printer SN $prin_sn Sedang Berada di Cust / Backup");
+					redirect('printer');
+				} else {
+					// set flashdata
+					$this->session->set_flashdata('confirm', ['sn' => $prin_sn, 'id_prin_cgk' => $this->input->post('return_cgk'), 'id_prin' => $cek_sn->id_printer, 'type_prin' => $cek_sn->name_type]);
+					redirect('printer');
+				}
+
+			} else {
+				$this->PrinterBackup_Model->insertData(); 
+				$this->session->set_flashdata('notifSuccess', "Printer SN $prin_sn Berhasil Ditambahkan!");
+				redirect('printer');
+			}
+
 		}
+	}
+
+	public function update_printer_backup()
+	{
+		$this->PrinterBackup_Model->update_printer_backup();
+		$this->session->set_flashdata('notifSuccess', 'Printer Sn '. $this->input->post('printer_sn') . ' Berhasil Ditambahkan!');
+		redirect('printerbackup');
 	}
 }

@@ -1,10 +1,11 @@
 <?php $this->load->view('components/header') ?>
 
+
 <style>
 	/* css di file sistem material-dashboard.css */
-	/* .dataTable-wrapper .dataTable-container .table tbody tr td {
+	.dataTable-wrapper .dataTable-container .table tbody tr td {
 		padding: .75rem 1.5rem
-	} */
+	}
 </style>
 
 <div id="loading" style="display: none; position: absolute; top: 120%; left: 50%; transform: translate(-50%, -50%); z-index: 10;">
@@ -17,26 +18,18 @@
 		<div class="card my-4 border-radius-md">
 			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
 				<div class="bg-gradient-info shadow-info border-radius-md pt-4 pb-3">
-					<h6 class="text-white ps-3 fw-light">Printer List Summary</h6>
+					<h6 class="text-white ps-3 fw-light">Printer Log</h6>
 				</div>
 			</div>
 			<div class="card-body px-0 pb-2">
 				<div class="table-responsive p-0">
-					<table class="table align-items-center table-hover" id="datatable">
+					<table class="table table-hover align-items-center" id="datatable">
 						<thead>
 							<tr>
-								<td class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 p-0 pb-2">NO</td>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 p-0 pb-2">CUST.ID</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 p-0 pb-2">TYPE CUST</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 p-0 pb-2">CUST NAME</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 p-0 pb-2">SYSTEM</th>
-								<?php foreach ($type_printer as $tp): ?>
-									<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 p-0 pb-2"><?= $tp->name_type; ?></th>
-								<?php endforeach; ?>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 p-0 pb-2">TOTAL</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 p-0 pb-2">CN LABEL STATUS</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 p-0 pb-2">ORIGIN ID</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 p-0 pb-2">ORIGIN NAME</th>
+								<th class="text-center text-uppercase text-info text-md font-weight-bolder opacity-7">No</th>
+								<th class="text-center text-uppercase text-info text-md font-weight-bolder opacity-7">Printer sn</th>
+								<th class="text-center text-uppercase text-info text-md font-weight-bolder opacity-7">status saat ini</th>
+								<th class="text-center text-uppercase text-info text-md font-weight-bolder opacity-7"></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -49,9 +42,13 @@
 	</div>
 </div>
 
+<div id="modal-container">
+	<!-- modal dimuat -->
+</div>
+
 <script src="<?= base_url('public/js/jquery.min.js') ?>"></script>
 
-<script type="text/javascript">
+<script>
 	$(document).ready(function() {
 		loadData(); // Memuat halaman
 
@@ -60,7 +57,7 @@
 			$('#loading').show();
 
 			$.ajax({
-				url: "<?= base_url('printerlist/view_data_table_summary') ?>",
+				url: "<?= base_url('printerlog/view_data_table') ?>",
 				type: "POST",
 				dataType: "json",
 				success: function(response) {
@@ -83,6 +80,34 @@
 			});
 		}
 	});
+
+	// menjalankan modal
+	$(document).ready(function() {
+		$(document).on('hidden.bs.modal', '#detail', function() {
+			$(this).remove();
+		});
+
+		$(document).on('click', '.btn-detail', function() {
+			var modalID = '#detail';
+
+			// AJAX request
+			$.ajax({
+				url: '<?= site_url('printerlog/modal_detail') ?>',
+				type: 'POST',
+				data: {
+					modal: $(this).data('modal'),
+				},
+				success: function(response) {
+					$('#modal-container').html(response);
+					$(modalID).modal('show');
+				},
+			});
+		});
+	});
 </script>
+
+
+
+
 
 <?php $this->load->view('components/footer') ?>

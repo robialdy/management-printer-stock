@@ -13,12 +13,24 @@
 	function showSuccessMessage() {
 		Swal.fire({
 			icon: 'success',
-			title: 'Good job!',
 			text: '<?= $this->session->flashdata('notifSuccess') ?>',
-			confirmButtonText: 'OK'
+			toast: true,
+			position: 'top-end',
+			showConfirmButton: false,
+			timer: 3500,
+			timerProgressBar: true,
+			width: 450,
+			padding: '1em',
+			iconColor: '#4CAF50', // Warna ikon success yang lebih menonjol
+			didOpen: (toast) => {
+				toast.style.borderRadius = '8px'; // Membuat sudut lebih halus
+				toast.style.boxShadow = '0px 4px 15px rgba(0, 0, 0, 0.2)'; // Efek shadow untuk floating
+				document.querySelector('.swal2-container').style.pointerEvents = 'none'; // Menghindari block area di luar toast
+			}
 		});
 	}
 </script>
+
 
 
 <?php if ($this->session->flashdata('notifError')) :  ?>
@@ -108,24 +120,26 @@
 			<div class="modal-body">
 				<?= form_open('printerbackup/insert') ?>
 
+				<!-- PRINTER S/N -->
 				<div class="row">
 					<div class="col-4 mt-2">
 						<label for="sn">PRINTER S/N <span class="text-danger">*</span></label>
 					</div>
 					<div class="col">
 						<div class="input-group input-group-dynamic mb-3">
-							<input type="text" class="form-control" aria-label="Username" placeholder="Enter printer s/n" aria-describedby="basic-addon1" id="sn" name="printersn" style="text-transform: uppercase;" required>
+							<input type="text" class="form-control" id="sn" name="printersn" style="text-transform: uppercase;" placeholder="Enter printer s/n" required>
 						</div>
 					</div>
 				</div>
 
+				<!-- TYPE PRINTER -->
 				<div class="row">
 					<div class="col-4 mt-2">
-						<label for="sn">TYPE PRINTER<span class="text-danger">*</span></label>
+						<label for="typePrinter">TYPE PRINTER <span class="text-danger">*</span></label>
 					</div>
 					<div class="col">
 						<div class="input-group input-group-static mb-2">
-							<select class="choices form-select" id="exampleFormControlSelect1" name="typeprinter" required>
+							<select class="choices form-select" id="typePrinter" name="typeprinter" required>
 								<option value="" selected disabled>ENTER TYPE PRINTER</option>
 								<?php foreach ($type_printer as $tp) : ?>
 									<option value="<?= $tp->id_type; ?>"><?= $tp->name_type; ?></option>
@@ -135,16 +149,17 @@
 					</div>
 				</div>
 
+				<!-- SN DAMAGE -->
 				<div class="row">
 					<div class="col-4 mt-2">
-						<label for="sn">SN DAMAGE <span class="text-danger">*</span></label>
+						<label for="snDamage">SN DAMAGE <span class="text-danger">*</span></label>
 					</div>
 					<div class="col">
 						<div class="input-group input-group-static mb-2">
-							<select class="choices form-select" id="exampleFormControlSelect1" name="return_cgk">
+							<select class="choices form-select" id="snDamage" name="return_cgk">
 								<option value="" selected disabled>ENTER SN DAMAGE</option>
 								<?php foreach ($sndamage as $sg) : ?>
-									<option value="<?= $sg->id_printer; ?>"><?= $sg->printer_sn; ?></option>
+									<option value="<?= $sg->printer_sn; ?>"><?= $sg->printer_sn; ?></option>
 								<?php endforeach; ?>
 							</select>
 						</div>
@@ -153,13 +168,38 @@
 
 				<div class="text-end mt-3">
 					<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save changes</button>
+					<button type="submit" class="btn bg-gradient-info text-white border-radius-sm" id="saveButton">Save changes</button>
 				</div>
+
+				<script>
+					document.addEventListener('DOMContentLoaded', function() {
+						const printerSNInput = document.getElementById('sn');
+						const snDamageSelect = document.getElementById('snDamage');
+						const saveButton = document.getElementById('saveButton');
+
+						function checkIfSame() {
+							const printerSN = printerSNInput.value.trim().toUpperCase();
+							const snDamage = snDamageSelect.options[snDamageSelect.selectedIndex].text.trim().toUpperCase();
+
+							if (printerSN === snDamage) {
+								saveButton.disabled = true;
+							} else {
+								saveButton.disabled = false;
+							}
+						}
+
+						printerSNInput.addEventListener('input', checkIfSame);
+						snDamageSelect.addEventListener('change', checkIfSame);
+					});
+				</script>
+
 				<?= form_close() ?>
 			</div>
 		</div>
 	</div>
 </div>
+
+
 
 <style>
 	/* css di file sistem material-dashboard.css */
@@ -188,9 +228,9 @@
 							<tr>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">No</th>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">Origin</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">date in</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">type printer</th>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">printer sn</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">type printer</th>
+								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">date in</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -238,5 +278,48 @@
 		}
 	});
 </script>
+
+<?php $cek_prin = $this->session->flashdata('confirm'); ?>
+
+<!-- menampilan modal ketika buka page -->
+<?php if ($cek_prin) : ?>
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			var myModal = new bootstrap.Modal(document.getElementById('modalcek'), {
+				keyboard: false
+			});
+			myModal.show();
+		});
+	</script>
+<?php endif; ?>
+
+<div class="modal fade" id="modalcek" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="text-end me-1">
+				<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="text-start ms-3">
+				<h5 class="modal-title fw-bold" id="exampleModalLabel">CONFIRM SN PRINTER</h5>
+				<small>Serial Number <?= $cek_prin['sn']; ?> Dengan Type Printer <?= $cek_prin['type_prin'] ?> Sudah Pernah Terdaftar, Apakah Anda Yakin Ingin Set Ulang Untuk Backup?</small>
+			</div>
+			<div class="modal-body">
+				<form action="<?= site_url('printerbackup/update_printer_backup'); ?>" method="POST">
+					<!-- printer mana yang mau itambahkan -->
+					<input type="hidden" name="id_prin_cgk" value="<?= $cek_prin['id_prin_cgk'] ?>">
+
+					<input type="hidden" name="printer_sn" value="<?= $cek_prin['sn'] ?>">
+					<input type="hidden" name="id_prin" value="<?= $cek_prin['id_prin'] ?>">
+
+					<div class="text-end">
+						<button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save Changes</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
 
 <?php $this->load->view('components/footer') ?>

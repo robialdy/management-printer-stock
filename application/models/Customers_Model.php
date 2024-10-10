@@ -7,6 +7,12 @@ class Customers_Model extends CI_Model
 		return $this->db->order_by('created_at', 'DESC')->get('customers')->result();
 	}
 
+	// untuk modal
+	public function getCustomerById($id_cust)
+	{
+		return $this->db->where('id_cust', $id_cust)->get('customers')->row();
+	}
+
 	public function read_data_active()
 	{
 		return $this->db->where('status', 'ACTIVE')->order_by('created_at', 'DESC')->get('customers')->result();
