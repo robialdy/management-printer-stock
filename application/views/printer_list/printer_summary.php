@@ -7,6 +7,16 @@
 	} */
 </style>
 
+<div class="row">
+	<div class="col-auto ms-auto me-5">
+		<form action="<?= site_url('printerlist/export_excel') ?>" method="POST">
+			<button type="submit" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modalInsert">
+				<i class="material-icons me-1">download</i>Download Report
+			</button>
+		</form>
+	</div>
+</div>
+
 <div id="loading" style="display: none; position: absolute; top: 120%; left: 50%; transform: translate(-50%, -50%); z-index: 10;">
 	<div class="spinner-border text-info" role="status">
 	</div>

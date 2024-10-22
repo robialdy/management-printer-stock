@@ -30,7 +30,7 @@ class Customers extends CI_Controller
 			];
 
 			$this->load->view('customers/customer', $data);
-		}else {
+		} else {
 			$this->Customers_Model->insertData();
 			$cust_name = strtoupper($this->input->post('name', true));
 			$this->session->set_flashdata('notifSuccess', "Create Customer $cust_name Succesfuly!");
@@ -70,7 +70,7 @@ class Customers extends CI_Controller
                         </form>
                     </td>
                     <td>
-                        <a class="mb-0 text-sm fw-normal btn-edit" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit" data-modal="'. $al->id_cust .'">
+                        <a class="mb-0 text-sm fw-normal btn-edit" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit" data-modal="' . $al->id_cust . '">
     						<i class="material-icons btn-tooltip">edit</i>
 						</a>
                     </td>
@@ -86,24 +86,16 @@ class Customers extends CI_Controller
 		$this->db->where('id_cust', $this->input->post('id_cust'));
 		$this->db->update('customers', ['status' => $this->input->post('status')]);
 
-		$this->session->set_flashdata('notifSuccess', $this->input->post('cust_name') . ' Sekarang '. $this->input->post('status'));
+		$this->session->set_flashdata('notifSuccess', $this->input->post('cust_name') . ' Sekarang ' . $this->input->post('status'));
 		redirect('customers');
 	}
 
 	public function delete($id)
 	{
-		$func_delete = $this->Customers_Model->delete($id);
 
-		// belum jalan 10/10/2024
-		if ($func_delete) {
-			$this->Customers_Model->delete($id);
-			$this->session->set_flashdata('notifSuccess', 'Delete Customers Successfuly!');
-			redirect('customers');
-		} else {
-			$this->session->set_flashdata('notifError', 'Delete Telah Dibatalkan!');
-			redirect('customers');
-		}
-
+		$this->Customers_Model->delete($id);
+		$this->session->set_flashdata('notifSuccess', 'Delete Customers Successfuly!');
+		redirect('customers');
 	}
 
 	public function modal_edit()
@@ -126,10 +118,10 @@ class Customers extends CI_Controller
                         </div>
                     </div>
                     <div class="modal-body">
-                        <form action="'. site_url('customers/edit_status') .'" method="POST">
+                        <form action="' . site_url('customers/edit_status') . '" method="POST">
 
-						<input type="hidden" name="id_cust" value="'. $data->id_cust .'">
-						<input type="hidden" name="cust_name" value="'. $data->cust_name .'">
+						<input type="hidden" name="id_cust" value="' . $data->id_cust . '">
+						<input type="hidden" name="cust_name" value="' . $data->cust_name . '">
 
 						<div class="row">
 							<div class="col-4 mt-2">
@@ -138,8 +130,8 @@ class Customers extends CI_Controller
 							<div class="col">
 								<div class="input-group input-group-static mb-3">
 									<select class="choices form-select" id="exampleFormControlSelect1" name="status" required>
-										<option value="ACTIVE" '. (($data->status == 'ACTIVE') ? 'selected' : '') .'>ACTIVE</option>
-										<option value="IN-ACTIVE" '. (($data->status == 'IN-ACTIVE') ? 'selected' : '') .'>IN-ACTIVE</option>
+										<option value="ACTIVE" ' . (($data->status == 'ACTIVE') ? 'selected' : '') . '>ACTIVE</option>
+										<option value="IN-ACTIVE" ' . (($data->status == 'IN-ACTIVE') ? 'selected' : '') . '>IN-ACTIVE</option>
 									</select>
 								</div>
 							</div>
@@ -158,7 +150,4 @@ class Customers extends CI_Controller
     ';
 		echo $html; // Kirim HTML ke respons
 	}
-
-
-
 }

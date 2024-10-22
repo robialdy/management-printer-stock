@@ -92,7 +92,7 @@
 							<li class="nav-item">
 								<a class="nav-link text-white ms-3 <?= ($this->uri->segment(1) == 'printer') ? 'active bg-info' : ''; ?>" href="<?= site_url('printer') ?>">
 									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
-										<i class="bi bi-printer-fill"></i>
+										<i class="material-icons">print</i>
 									</div>
 									<span class="nav-link-text ms-1">Backup List</span>
 								</a>

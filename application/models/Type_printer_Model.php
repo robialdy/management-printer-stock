@@ -9,10 +9,12 @@ class Type_printer_Model extends CI_Model
 
 
 	public function insert_data()
-	{
+	{	
+		$name_type = strtoupper($this->input->post('name_type', true));
+
 		$form_data = [
-			'name_type'		=> strtoupper($this->input->post('name_type', true)),
-			'created_at'	=> date('d F Y H:i:s'),
+			'name_type'		=> $name_type,
+			'created_at'	=> date('d/m/Y H:i:s'),
 		];	
 		$this->db->insert('type_printer', $form_data);
 	}

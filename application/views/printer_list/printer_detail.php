@@ -29,54 +29,57 @@
 	}
 </script>
 
-<div class="row">
-	<div class="col-lg-6 col-md-6 mt-3 mb-3">
-		<div class="card border-radius-md z-index-2 " style="height: 200px;">
-			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-				<div class="bg-gradient-info shadow-info border-radius-sm py-3 pe-1 text-center">
-					<span class="text-white fs-1 fw-light"><?= $jum_printer ?></span>
-				</div>
-			</div>
-			<div class="card-body text-center">
-				<p class="text-md fw-normal">Total Printer Backup</p>
-				<hr class="dark horizontal">
-				<div class="d-flex ">
-					<i class="material-icons text-sm my-auto me-1">schedule</i>
-					<p class="mb-0 text-sm">
-						<?php if (empty($dateTimeB->created_at) || $jum_printer == 0): ?>
-							null
-						<?php else: ?>
-							<?= $dateTimeB->created_at ?>
-						<?php endif; ?>
-					</p>
-				</div>
-			</div>
+<div class="row justify-content-center gap-4 mb-2">
+
+	<div class="card w-30">
+		<div class="card-body text-center">
+			<h1 class="text-gradient text-info"><span id="status2" countto="<?= $jum_data ?>"><?= $jum_data ?></span> <span class="text-lg ms-n2">Pcs</span></h1>
+			<h6 class="mb-0 font-weight-bolder">Printer List</h6>
+			<p class="opacity-8 mb-0 text-sm">
+				<?php if (empty($time->date_out) || $jum_data == 0): ?>
+					null
+				<?php else: ?>
+					<?= $time->date_out ?>
+				<?php endif; ?>
+			</p>
 		</div>
 	</div>
-	<div class="col-lg-6 col-md-6 mt-3 mb-3">
-		<div class="card border-radius-md z-index-2 " style="height: 200px;">
-			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-				<div class="bg-gradient-info shadow-info border-radius-sm py-3 pe-1 text-center">
-					<span class="text-white fs-1 fw-light"><?= $jum_data ?></span>
-				</div>
-			</div>
-			<div class="card-body text-center">
-				<p class="text-md fw-normal">Total Printer List</p>
-				<hr class="dark horizontal">
-				<div class="d-flex ">
-					<i class="material-icons text-sm my-auto me-1">schedule</i>
-					<p class="mb-0 text-sm">
-						<?php if (empty($time->date_out) || $jum_data == 0): ?>
-							null
-						<?php else: ?>
-							<?= $time->date_out ?>
-						<?php endif; ?>
-					</p>
-				</div>
-			</div>
+
+	<div class="card w-30">
+		<div class="card-body text-center">
+			<h1 class="text-gradient text-info"><span id="status1" countto="<?= $jum_printer ?>"><?= $jum_printer ?></span> <span class="text-lg ms-n2">Pcs</span></h1>
+			<h6 class="mb-0 font-weight-bolder">Printer Backup</h6>
+			<p class="opacity-8 mb-0 text-sm">
+				<?php if (!empty($dateTimeP->created_at)): ?>
+					<?= $dateTimeP->created_at ?>
+				<?php else: ?>
+					null
+				<?php endif; ?>
+			</p>
 		</div>
 	</div>
 </div>
+
+<!-- animasi count -->
+<script src="<?= base_url() ?>public/js/plugins/countup.min.js"></script>
+<script>
+	if (document.getElementById('status1')) {
+		const countUp = new CountUp('status1', document.getElementById("status1").getAttribute("countTo"));
+		if (!countUp.error) {
+			countUp.start();
+		} else {
+			console.error(countUp.error);
+		}
+	}
+	if (document.getElementById('status2')) {
+		const countUp = new CountUp('status2', document.getElementById("status2").getAttribute("countTo"));
+		if (!countUp.error) {
+			countUp.start();
+		} else {
+			console.error(countUp.error);
+		}
+	}
+</script>
 
 <div class="row justify-content-end">
 	<div class="col-auto">

@@ -8,6 +8,8 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 class PrinterDamage extends CI_Controller
 {
 	public function __construct()
@@ -18,6 +20,7 @@ class PrinterDamage extends CI_Controller
 		};
 		$this->load->model('PrinterDamage_Model');
 		$this->load->model('PrinterList_Model');
+		$this->load->model('PrinterPembelian_Model');
 		$this->data_user = $this->db->get_where('users', ['username' => $this->session->userdata('data_user')])->row_array();
 	}
 
@@ -27,11 +30,13 @@ class PrinterDamage extends CI_Controller
 		$data = [
 			'title' => 'Printer Damage',
 			'data_user'	=> $this->data_user,
+			'printer_pembelian' => $this->PrinterPembelian_Model->read_data_by_damage(),
 			'damage'	=> $this->PrinterDamage_Model->read_data(),
-			'sum_damage'=> $this->PrinterDamage_Model->sum_damage(),
+			'sum_damage' => $this->PrinterDamage_Model->sum_damage(),
+			'read_dummy' => $this->PrinterDamage_Model->read_data_dummy(),
 			'date_time'	=> $this->PrinterDamage_Model->date_time(),
 			'no_dummy'	=> $this->PrinterDamage_Model->read_data_nodummy(),
-			'printer_list'=> $this->PrinterList_Model->read_data(),
+			'printer_list' => $this->PrinterList_Model->read_data(),
 		];
 		$this->load->view('printerDamage/printer_damage', $data);
 	}
@@ -74,11 +79,15 @@ class PrinterDamage extends CI_Controller
                 <h6 class="mb-0 text-sm fw-normal">' . $al->type_cust . '</h6>
             </td>
 			<td class="text-center text-uppercase">
-                <h6 class="mb-0 text-sm fw-normal">' ;
+                <h6 class="mb-0 text-sm fw-normal">' . $al->no_dummy .
+				'</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">';
 
 			if ($al->biaya_perbaikan != null) {
 				$html .= '
-					Rp.' . number_format($al->biaya_perbaikan, 2, ',', '.') .'
+					Rp.' . number_format($al->biaya_perbaikan, 2, ',', '.') . '
 				';
 			} else {
 				$html .= '-';
@@ -86,14 +95,14 @@ class PrinterDamage extends CI_Controller
 
 			$html .= '</h6>
             </td>
-			<td class="text-center text-uppercase">
-                <h6 class="mb-0 text-sm fw-normal">' . $al->no_dummy .
-			'</h6>
-            </td>
             </td>
 			<td class="text-center text-uppercase">
                 <h6 class="mb-0 text-sm fw-normal">' . $al->status_pembayaran .
 				'</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $al->status . '
+				</h6>
             </td>
 			<td class="text-center text-uppercase">
             	<a class="mb-0 text-sm fw-normal btn-kelengkapan" style="cursor: pointer;" data-bs-toggle="modal"  data-bs-target="#kelengkapan" data-modal="' . $al->id_damage . '">
@@ -101,7 +110,7 @@ class PrinterDamage extends CI_Controller
             </a>
             </td>
 			<td class="text-center">
-            	<a class="mb-0 text-sm fw-normal btn-file" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#file" data-modal="'. $al->id_damage .'">
+            	<a class="mb-0 text-sm fw-normal btn-file" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#file" data-modal="' . $al->id_damage . '">
             	<i class="material-icons">cloud_upload</i>
             </a>
             </td>
@@ -140,7 +149,6 @@ class PrinterDamage extends CI_Controller
 		$this->PrinterDamage_Model->add_damage();
 		$this->session->set_flashdata('notifSuccess', 'Printer Damage Berhasil ditambahkan');
 		redirect('damage');
-
 	}
 
 	public function edit()
@@ -156,6 +164,13 @@ class PrinterDamage extends CI_Controller
 			$this->session->set_flashdata('notifSuccess', 'Printer berhasil di edit');
 			redirect('damage');
 		}
+	}
+
+	public function edit_status()
+	{
+		$this->PrinterDamage_Model->edit_status();
+		$this->session->set_flashdata('notifSuccess', 'Status Sekarang Jadi ' . $this->input->post('return_cgk'));
+		redirect('damage');
 	}
 
 	public function upload_file()
@@ -199,11 +214,10 @@ class PrinterDamage extends CI_Controller
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="text-start ms-3">
-                    <h5 class="modal-title fw-bold" id="exampleModalLabel">EDIT</h5>
-                    <small>Silahkan Edit Data Untuk Perbaikan Printer</small>
-                </div>
                 <div class="modal-body">
+				<div class="text-start">
+                    <h5 class="modal-title fw-bold" id="exampleModalLabel">BIAYA PERBAIKAN</h5>
+                </div>
                     <form action="' . site_url('printerdamage/edit') . '" method="post">
                         <input type="hidden" name="id_damage" value="' . $data->id_damage . '">
                         <div class="row">
@@ -230,6 +244,25 @@ class PrinterDamage extends CI_Controller
                                         <input type="radio" name="status_pembayaran" id="belum_bayar" value="BELUM BAYAR" ' . ($data->status_pembayaran == "BELUM BAYAR" ? 'checked' : '') . '>
                                         <label class="form-check-label" for="belum_bayar">BELUM BAYAR</label>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-end mt-3">
+                            <button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save changes</button>
+                        </div>
+                    </form>
+					<div class="text-start">
+                    	<h5 class="modal-title fw-bold" id="exampleModalLabel">Edit Status</h5>
+                	</div>
+					<form action="' . site_url('printerdamage/edit_status') . '" method="post">
+                        <input type="hidden" name="id_damage" value="' . $data->id_damage . '">
+                        <div class="row">
+                            <div class="col-4 mt-2">
+                                <label for="biaya">STATUS <span class="text-danger">*</span></label>
+                            </div>
+                            <div class="col">
+                                <div class="input-group input-group-dynamic mb-3">
+                                    <input type="text" class="form-control" name="return_cgk" value="' . $data->status . '" placeholder="EDIT STATUS" required>
                                 </div>
                             </div>
                         </div>
@@ -341,23 +374,23 @@ class PrinterDamage extends CI_Controller
                     <div class="modal-body">
                         <div class="mx-3">';
 
-							// Logika untuk kelengkapan
-							if ($data->kelengkapan != null) {
-								$html .= '
+		// Logika untuk kelengkapan
+		if ($data->kelengkapan != null) {
+			$html .= '
                             <h6 class="font-weight-bold text-dark">KELENGKAPAN</h6>
                             <blockquote class="blockquote mb-0">
                                 <p class="text-dark ms-3">' . $data->kelengkapan . '</p>
                             </blockquote>';
-							} else {
-								$html .= '
+		} else {
+			$html .= '
                             <h6 class="font-weight-bold text-dark">KELENGKAPAN</h6>
                             <blockquote class="blockquote mb-0">
                                 <p class="text-dark ms-3">-</p>
                             </blockquote>';
-							}
+		}
 
-							// Menambahkan deskripsi kerusakan
-							$html .= '
+		// Menambahkan deskripsi kerusakan
+		$html .= '
                         </div>
                         <div class="mx-3 mt-3">
                             <h6 class="font-weight-bold text-dark">DESKRIPSI KERUSAKAN</h6>
@@ -383,15 +416,23 @@ class PrinterDamage extends CI_Controller
 
 	public function export_excel()
 	{
+
 		$from_raw = $this->input->post('from'); // Format: 2024-09-18
 		$until_raw = $this->input->post('until'); // Format: 2024-09-30
 
-		
-		// Konversi ke format 'Y-m-d H:i:s'
-		$from = date('d/m/Y', strtotime($from_raw));
-		$until = date('d/m/Y', strtotime($until_raw));
+		if ($from_raw && $until_raw) {
 
-		$data = $this->PrinterDamage_Model->export_excel_filter($from, $until);
+			// Konversi ke format 'Y-m-d H:i:s'
+			$from = date('d/m/Y', strtotime($from_raw));
+			$until = date('d/m/Y', strtotime($until_raw));
+
+			$data = $this->PrinterDamage_Model->export_excel_by_date($from, $until);
+		} else {
+			$no_dummy = $this->input->post('no_dummy');
+			
+			$data = $this->PrinterDamage_Model->export_excel_by_dummy($no_dummy);
+		}
+
 
 
 		// Membuat objek spreadsheet baru
@@ -399,8 +440,8 @@ class PrinterDamage extends CI_Controller
 		$sheet = $spreadsheet->getActiveSheet();
 
 		// Mengisi header kolom
-		$headers = ['NO.', 'NO. DUMMY', 'TANGGAL', 'ORIGIN', 'CUST.ID', 'CUST.NAME', 'TYPE PRINTER', 'SN', 'DESCRIPTION', 'KELENGKAPAN'];
-		$columnNames = range('A', 'J');
+		$headers = ['NO.', 'NO. DUMMY', 'TANGGAL', 'ORIGIN', 'CUST.ID', 'CUST.NAME', 'TYPE PRINTER', 'SN', 'DESCRIPTION', 'KELENGKAPAN', ''];
+		$columnNames = range('A', 'K');
 
 		// Mengatur panjang sesuai keinginan
 		$sheet->getColumnDimension('A')->setWidth(5);
@@ -413,6 +454,7 @@ class PrinterDamage extends CI_Controller
 		$sheet->getColumnDimension('H')->setWidth(15);
 		$sheet->getColumnDimension('I')->setWidth(40);
 		$sheet->getColumnDimension('J')->setWidth(90);
+		$sheet->getColumnDimension('K')->setWidth(20);
 
 
 		// mengatur desain header
@@ -439,15 +481,16 @@ class PrinterDamage extends CI_Controller
 		foreach ($data as $dm) {
 			// mengisi data
 			$sheet->setCellValue('A' . $row, $i++);
-			$sheet->setCellValueExplicit('B' . $row, $dm->no_dummy, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);  
-			$sheet->setCellValue('C' . $row, date('d-M-Y'));   
-			$sheet->setCellValue('D' . $row, $dm->origin_name);  
-			$sheet->setCellValue('E' . $row, $dm->cust_id);   
+			$sheet->setCellValueExplicit('B' . $row, $dm->no_dummy, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
+			$sheet->setCellValue('C' . $row, $dm->date_pengiriman);
+			$sheet->setCellValue('D' . $row, $dm->origin_name);
+			$sheet->setCellValue('E' . $row, $dm->cust_id);
 			$sheet->setCellValue('F' . $row, $dm->cust_name);
-			$sheet->setCellValue('G' . $row, $dm->name_type); 
+			$sheet->setCellValue('G' . $row, $dm->name_type);
 			$sheet->setCellValue('H' . $row, $dm->printer_sn);
 			$sheet->setCellValue('I' . $row, $dm->deskripsi);
-			$sheet->setCellValue('J' . $row, $dm->kelengkapan);  
+			$sheet->setCellValue('J' . $row, $dm->kelengkapan);
+			$sheet->setCellValue('K' . $row, $dm->status);
 			foreach ($columnNames as $column) {
 				// Mengeedit desain data nya excel
 				$sheet->getStyle($column . $row)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
@@ -474,17 +517,116 @@ class PrinterDamage extends CI_Controller
 		exit; // Hentikan eksekusi skrip
 	}
 
-	public function insert_banyak()
+	public function import_excel()
 	{
-		for ($i = 1; $i < 740; $i++) {
-			$form = [
-				'id_printer'	=>  61,
-				'id_cust'	=> 40,
-				'date_in'	=> '30/OKT/2024',
-				'note'	=> 'RUSAK',
-				'deskripsi'	=> 'Hasil print burik',
-			];
-			$this->db->insert('printer_damage', $form);
+		ini_set('memory_limit', '2048M'); // Meningkatkan batas memori
+
+
+		// Konfigurasi untuk upload file
+		$config['upload_path'] = FCPATH . 'public/import_excel/';
+		$config['allowed_types'] = 'xls|xlsx';
+		$config['max_size'] = 100000;
+		$this->load->library('upload', $config);
+
+		// Jika upload berhasil
+		if ($this->upload->do_upload('excel_file')) {
+			// Ambil informasi file yang di-upload
+			$path_unlink = $this->upload->data('file_name');
+			$fileData = $this->upload->data();
+			$inputFileName = $fileData['full_path'];
+
+			try {
+				$spreadsheet = IOFactory::load($inputFileName);
+			} catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
+				die('Error loading file "' . pathinfo($inputFileName, PATHINFO_BASENAME) . '": ' . $e->getMessage());
+			}
+
+			$sheet = $spreadsheet->getActiveSheet();
+			$data = $sheet->toArray(null, true, true, true);
+
+			foreach (array_slice($data, 1) as $row) {
+				if (empty($orw['L']) && empty($row['M'])) {
+
+					if ($row['E'] === null) {
+						$cust_id = '-';
+					} else {
+						$cust_id = $row['E'];
+					}
+
+					$cust_data = [
+						'cust_id' => $cust_id,
+						'cust_name'	=> $row['F'],
+						'origin_name' => $row['D'],
+						'created_at' => date('d F Y H:i:s'),
+					];
+
+					$existing_cust = $this->db->get_where('customers', ['cust_id' => $cust_data['cust_id'], 'cust_name' => $cust_data['cust_name']])->row();
+					if (!$existing_cust) {
+						$this->db->insert('customers', $cust_data);
+						$cust_id = $this->db->insert_id();
+					} else {
+						$cust_id = $existing_cust->id_cust;
+					}
+
+					// Ambil atau insert tipe printer
+					$printer_type_name = $row['G'];
+					$existing_type = $this->db->get_where('type_printer', ['name_type' => $printer_type_name])->row();
+
+					// Jika tipe printer tidak ada, insert ke tabel printer_types
+					if (!$existing_type) {
+						$this->db->insert('type_printer', ['name_type' => $printer_type_name, 'created_at' => date('d F Y H:i:s')]);
+						$id_type = $this->db->insert_id(); // Ambil id_type yang baru diinsert
+					} else {
+						$id_type = $existing_type->id_type; // Ambil id_type yang sudah ada
+					}
+
+					// insert printer backup
+					$printer_data = [
+						'printer_sn' => $row['H'],
+						'id_type' => $id_type,
+						'status' => 'DAMAGE',
+						'date_in' => date('d/m/Y H:i:s'),
+						'created_at'	=> date('d F Y H:i:s'),
+					];
+
+					// cek jika datanya udah ada make pake yang ada kalo ga buat baru
+					$existing_printer = $this->db->get_where('printer_backup', ['printer_sn' => $printer_data['printer_sn']])->row();
+					if (!$existing_printer) {
+						$this->db->insert('printer_backup', $printer_data);
+						$id_printer = $this->db->insert_id();
+					} else {
+						$id_printer = $existing_printer->id_printer;
+					}
+
+					$printer_damage = [
+						'id_printer'	=> $id_printer,
+						'id_cust'		=> $cust_id,
+						'date_in'		=> date('d/m/Y H:i:s'),
+						'kelengkapan'	=> $row['J'],
+						'deskripsi'		=> $row['I'],
+					];
+					$this->db->insert('printer_damage', $printer_damage);
+
+					$log_data = [
+						'printer_sn'	=> $row['H'],
+						'cust_id'		=> $cust_id,
+						'cust_name'		=> $row['F'],
+						'date_out'		=> '*MASTER DATA',
+						'returned'		=> '*MASTER DATA',
+						'status'		=> 'IN DAMAGE',
+						'created_at'	=> date('d/m/Y H:i:s'),
+					];
+					$this->db->insert('printer_log', $log_data);
+				}
+			}
+
+			$unlink = FCPATH . 'public/import_excel/' . $path_unlink;
+			unlink($unlink);
+			$this->session->set_flashdata('notifSucces');
+			redirect('printerdamage');
+		} else {
+			// Jika upload gagal, tampilkan error
+			redirect('printerdamage');
 		}
 	}
 }

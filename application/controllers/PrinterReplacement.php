@@ -81,8 +81,10 @@ class PrinterReplacement extends CI_Controller
 		$no_ref = $this->session->userdata('noref');
 		$kelengkapan = $this->session->userdata('kelengkapan');
 
-
+		// delete list
 		$this->db->delete('printer_list_inagen', ['id_printer' => $this->input->post('idprinter', true)]);
+		// delete summary
+		$this->db->delete('printer_summary', ['id_printer' => $this->input->post('idprinter', true)]);
 
 		//send to damage
 		$this->PrinterReplacement_Model->insertToDamage();

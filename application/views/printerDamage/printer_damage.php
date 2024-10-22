@@ -29,34 +29,44 @@
 	}
 </script>
 
-<div class="row">
-	<div class="col-lg-6 col-md-6 mt-3 mb-3">
-		<div class="card border-radius-md z-index-2 " style="height: 200px;">
-			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-				<div class="bg-gradient-info shadow-info border-radius-sm py-3 pe-1 text-center">
-					<span class="text-white fs-1 fw-light"><?= $sum_damage ?></span>
-				</div>
-			</div>
-			<div class="card-body text-center">
-				<p class="text-md fw-normal">Total Damage Backup</p>
-				<hr class="dark horizontal">
-				<div class="d-flex ">
-					<i class="material-icons text-sm my-auto me-1">schedule</i>
-					<p class="mb-0 text-sm">
-						<?php if (empty($date_time->created_at) || $sum_damage == 0): ?>
-							null
-						<?php else: ?>
-							<?= $date_time->created_at ?>
-						<?php endif; ?>
-					</p>
-					</p>
-				</div>
-			</div>
+<div class="row mb-2 ms-5">
+
+	<div class="card w-30">
+		<div class="card-body text-center">
+			<h1 class="text-gradient text-info"><span id="status1" countto="<?= $sum_damage ?>"><?= $sum_damage ?></span> <span class="text-lg ms-n2">Pcs</span></h1>
+			<h6 class="mb-0 font-weight-bolder">Printer Damage</h6>
+			<p class="opacity-8 mb-0 text-sm">
+				<?php if (empty($date_time->date_in) || $sum_damage == 0): ?>
+					null
+				<?php else: ?>
+					<?= $date_time->date_in ?>
+				<?php endif; ?>
+			</p>
 		</div>
 	</div>
 </div>
 
+<!-- animasi count -->
+<script src="<?= base_url() ?>public/js/plugins/countup.min.js"></script>
+<script>
+	if (document.getElementById('status1')) {
+		const countUp = new CountUp('status1', document.getElementById("status1").getAttribute("countTo"));
+		if (!countUp.error) {
+			countUp.start();
+		} else {
+			console.error(countUp.error);
+		}
+	}
+</script>
+
 <div class="row justify-content-end">
+	<div class="col-auto">
+		<form action="<?= base_url('printerdamage/import_excel') ?>" method="post" enctype="multipart/form-data">
+			<label for="file">Pilih File Excel:</label>
+			<input type="file" name="excel_file" accept=".xlsx" required>
+			<input type="submit" value="Upload">
+		</form>
+	</div>
 	<div class="col-auto">
 		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#add_damage">
 			<i class="material-icons me-2">warning</i>ADD DAMAGE
@@ -67,17 +77,20 @@
 			<i class="material-icons me-2">confirmation_number</i>ADD NO DUMMY
 		</button>
 	</div>
-	<div class="col-auto">
-		<div class="col-auto me-5">
-			<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#excel">
-				<i class="material-icons me-2">assignment</i>DOWNLOAD EXCEL
-			</button>
-		</div>
+	<div class="col-auto ">
+		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#excel">
+			<i class="material-icons me-2">assignment</i>DOWNLOAD BY DUMMY
+		</button>
+	</div>
+	<div class="col-auto me-5">
+		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#excel_all">
+			<i class="material-icons me-2">assignment</i>DOWNLOAD BY DATE
+		</button>
 	</div>
 </div>
 
 <!-- modal download excel -->
-<div class="modal fade" id="excel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="excel_all" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-" role="document">
 		<div class="modal-content">
 			<div class="text-end me-1">
@@ -112,6 +125,48 @@
 	</div>
 </div>
 
+<!-- modal download excel -->
+<div class="modal fade" id="excel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-" role="document">
+		<div class="modal-content">
+			<div class="text-end me-1">
+				<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+				<div class="text-start ms-3">
+					<h5 class="modal-title fw-bold" id="exampleModalLabel">DOWNLOAD EXCEL</h5>
+					<small>Silahkan Pilih Berdasarkan No Dummy</small>
+				</div>
+			</div>
+			<div class="modal-body">
+				<form action="<?= base_url('printerdamage/export_excel') ?>" method="POST">
+
+					<div class="row">
+						<div class="col-4 mt-2">
+							<label for="sn">NO DUMMY <span class="text-danger">*</span></label>
+						</div>
+						<div class="col">
+							<div class="input-group input-group-static mb-3">
+								<select class="choices form-select" id="exampleFormControlSelect1" name="no_dummy" required>
+									<option value="" selected disabled>PILIH NO DUMMY</option>
+									<?php foreach ($read_dummy as $rd) : ?>
+										<option value="<?= $rd->no_dummy; ?>"><?= $rd->no_dummy; ?></option>
+									<?php endforeach; ?>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="text-end mt-4">
+						<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
+						<button type="submit" class="btn bg-gradient-info text-white border-radius-sm">Save changes</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
 <!-- modal add damage -->
 <div class="modal fade" id="add_damage" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-" role="document">
@@ -122,7 +177,7 @@
 				</button>
 				<div class="text-start ms-3">
 					<h5 class="modal-title fw-bold" id="exampleModalLabel">ADD DAMAGE</h5>
-					<small>Silahkan Input No SN Printer List</small>
+					<small>Silahkan Menginput Data Printer</small>
 				</div>
 			</div>
 			<div class="modal-body">
@@ -251,14 +306,20 @@
 			<div class="modal-body">
 				<?= form_open('printerdamage/add_nodummy'); ?>
 
-				<label for="sn" class="text-dark">PRINTER S/N <span class="text-danger">*</span></label>
-				<div class="input-group">
-					<select class="form-select" id="printersn" name="idprinter[]" multiple required>
-						<option value="" disabled>Select Printer Sn</option>
-						<?php foreach ($no_dummy as $nd) : ?>
-							<option value="<?= $nd->id_printer; ?>"><?= $nd->printer_sn; ?></option>
-						<?php endforeach; ?>
-					</select>
+				<div class="row mt-3">
+					<div class="col-4 mt-2">
+						<label for="sn">PRINTER S/N <span class="text-danger">*</span></label>
+					</div>
+					<div class="col">
+						<div class="input-group">
+							<select class="form-select" id="printersn" name="idprinter[]" multiple>
+								<option value="" disabled>PILIH PRINTER</option>
+								<?php foreach ($no_dummy as $nd) : ?>
+									<option value="<?= $nd->id_printer; ?>"><?= $nd->printer_sn; ?></option>
+								<?php endforeach; ?>
+							</select>
+						</div>
+					</div>
 				</div>
 
 				<script>
@@ -273,12 +334,16 @@
 					});
 				</script>
 
-				<label for="sn" class="text-dark">NO DUMMY <span class="text-danger">*</span></label>
-				<div class="input-group input-group-dynamic mb-3">
-					<input type="int" class="form-control" name="nodummy" placeholder="ENTER NO DUMMY" required>
+				<div class="row mb-2">
+					<div class="col-4 mt-2">
+						<label for="typep">NO DUMMY <span class="text-danger">*</span></label>
+					</div>
+					<div class="col">
+						<div class="input-group input-group-dynamic mb-4">
+							<input type="text" class="form-control" aria-label="Username" placeholder="ENTER NO DUMMY" id="typep" name="nodummy" style="text-transform: uppercase;" required>
+						</div>
+					</div>
 				</div>
-
-
 
 
 				<div class="text-end mt-3">
@@ -329,10 +394,10 @@
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">cust id</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">cust name</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">type cust</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">biaya</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">no dummy</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">note</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">status</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">biaya</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">payment status</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">status </th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2"></th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2"></th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2"></th>

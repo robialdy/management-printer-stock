@@ -25,10 +25,10 @@ class Customers_Model extends CI_Model
 			'cust_id'	=> $this->input->post('custid', true),
 			'cust_name'	=> $cust_name,
 			'type_cust'	=> $this->input->post('typecust', true),
-			'origin_id'	=> $this->input->post('originid', true),
+			'origin_id'	=> strtoupper($this->input->post('originid', true)),
 			'origin_name'	=> $this->input->post('originname', true),
 			'status'	=> 'ACTIVE',
-			'created_at'=> date('d F Y H:i:s'),
+			'created_at' => date('d/m/Y H:i:s'),
 		];
 		$this->db->insert('customers', $form_data);
 	}

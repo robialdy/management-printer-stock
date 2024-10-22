@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
 class PrinterBackup extends CI_Controller
 {
 	//dibawah ini hmm

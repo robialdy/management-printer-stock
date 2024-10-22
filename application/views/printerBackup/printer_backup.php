@@ -52,29 +52,18 @@
 	}
 </script>
 
-
-<div class="row">
-	<div class="col-lg-6 col-md-6 mt-3 mb-3">
-		<div class="card border-radius-md z-index-2" style="height: 200px;">
-			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-				<div class="bg-gradient-info shadow-info border-radius-sm py-3 pe-1 text-center">
-					<span class="text-white fs-1 fw-light"><?= $totalPrinter ?></span>
-				</div>
-			</div>
-			<div class="card-body text-center">
-				<p class="text-md fw-normal">Total Printer Backup</p>
-				<hr class="dark horizontal">
-				<div class="d-flex ">
-					<i class="material-icons text-sm my-auto me-1">schedule</i>
-					<p class="mb-0 text-sm">
-						<?php if (empty($dateTime->created_at) || $totalPrinter == 0): ?>
-							null
-						<?php else: ?>
-							<?= $dateTime->created_at ?>
-						<?php endif; ?>
-					</p>
-				</div>
-			</div>
+<div class="row mb-2 ms-5">
+	<div class="card w-30">
+		<div class="card-body text-center">
+			<h1 class="text-gradient text-info"><span id="status1" countto="<?= $totalPrinter ?>"><?= $totalPrinter ?></span> <span class="text-lg ms-n2">Pcs</span></h1>
+			<h6 class="mb-0 font-weight-bolder">Printer Backup</h6>
+			<p class="opacity-8 mb-0 text-sm">
+				<?php if (empty($dateTime->date_in) || $totalPrinter == 0): ?>
+					null
+				<?php else: ?>
+					<?= $dateTime->date_in ?>
+				<?php endif; ?>
+			</p>
 		</div>
 	</div>
 
@@ -95,14 +84,29 @@
 			</div>
 		</div>
 	</div>
+	
+	<!-- animasi count -->
+	<script src="<?= base_url() ?>public/js/plugins/countup.min.js"></script>
+	<script>
+		if (document.getElementById('status1')) {
+			const countUp = new CountUp('status1', document.getElementById("status1").getAttribute("countTo"));
+			if (!countUp.error) {
+				countUp.start();
+			} else {
+				console.error(countUp.error);
+			}
+		}
+	</script>
 </div>
 
-<!-- Button trigger modal -->
-<div class="text-end me-5">
-	<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modalInsert">
-		<i class="bi bi-printer-fill me-2"></i>Printer IN
-	</button>
+<div class="row">
+	<div class="col-auto ms-auto me-5">
+		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modalInsert">
+			<i class="bi bi-printer-fill me-2"></i>Printer IN
+		</button>
+	</div>
 </div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="modalInsert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -159,7 +163,7 @@
 							<select class="choices form-select" id="snDamage" name="return_cgk">
 								<option value="" selected disabled>ENTER SN DAMAGE</option>
 								<?php foreach ($sndamage as $sg) : ?>
-									<option value="<?= $sg->printer_sn; ?>"><?= $sg->printer_sn; ?></option>
+									<option value="<?= $sg->id_printer; ?>"><?= $sg->printer_sn; ?></option>
 								<?php endforeach; ?>
 							</select>
 						</div>
@@ -321,5 +325,6 @@
 		</div>
 	</div>
 </div>
+
 
 <?php $this->load->view('components/footer') ?>

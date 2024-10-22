@@ -90,7 +90,7 @@ class PrinterLog extends CI_Controller
 				$html .= '
             <div class="timeline-block mb-3">
                 <span class="timeline-step bg-dark p-3 d-flex justify-content-center align-items-center">
-                    <i class="material-icons text-white text-sm opacity-10 ps-4">printer</i>
+                    <i class="material-icons text-white text-sm opacity-10">print</i>
                 </span>
                 <div class="timeline-content pt-1">
                     <h6 class="text-dark text-sm font-weight-bold mb-0">' . $log_detail->cust_name;

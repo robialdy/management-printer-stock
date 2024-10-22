@@ -56,7 +56,7 @@ class PrinterList_Model extends CI_Model
         printer_backup.origin,
         printer_backup.date_in,
         type_printer.name_type,
-		printer_list_inagen.*
+		printer_summary.*
     ');
 
 		foreach ($printer_types as $type) {
@@ -73,12 +73,12 @@ class PrinterList_Model extends CI_Model
 		$sum_expression = implode(' + ', $sum_parts);
 		$this->db->select("($sum_expression) as total_printer");
 
-		$this->db->from('printer_list_inagen');
-		$this->db->join('customers', 'printer_list_inagen.id_cust = customers.id_cust');
-		$this->db->join('printer_backup', 'printer_list_inagen.id_printer = printer_backup.id_printer');
+		$this->db->from('printer_summary');
+		$this->db->join('customers', 'printer_summary.id_cust = customers.id_cust');
+		$this->db->join('printer_backup', 'printer_summary.id_printer = printer_backup.id_printer');
 		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
-		$this->db->group_by('customers.cust_id');
-		$this->db->order_by('printer_list_inagen.date_out', 'DESC');
+		$this->db->group_by('customers.cust_name');
+		$this->db->order_by('printer_summary.date_out', 'DESC');
 		$query = $this->db->get();
 		return $query->result();
 	}
@@ -89,6 +89,30 @@ class PrinterList_Model extends CI_Model
 	{
 		return $this->db->select('type_printer.name_type')->from('type_printer')->get()->result();
 	}
+	public function read_data_summary_2()
+	{
+		// Pilih kolom dengan spesifik untuk menghindari konflik nama dan kesalahan syntax.
+		$this->db->select('
+        printer_summary.*,
+        printer_list_inagen.*,
+        customers.*,
+        printer_backup.*,
+        type_printer.name_type
+    ');
+
+		// Mulai dari printer_summary dan lakukan join secara berurutan.
+		$this->db->from('printer_summary');
+		$this->db->join('printer_list_inagen', 'printer_list_inagen.id_printer_list = printer_summary.id_printer_list');
+		$this->db->join('customers', 'printer_summary.id_cust = customers.id_cust');
+		$this->db->join('printer_backup', 'printer_list_inagen.id_printer = printer_backup.id_printer');
+		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
+		$this->db->order_by('printer_list_inagen.date_out', 'DESC');
+		$query = $this->db->get();
+
+		return $query->result();
+	}
+
+
 
 	public function autoInvoice()
 	{
@@ -112,7 +136,7 @@ class PrinterList_Model extends CI_Model
 		$printer = $this->db->get_where('printer_backup', ['id_printer' => $get_idprinter])->row();
 		$printer_sn = $printer->printer_sn;
 		$parts = explode(' - ', $printer_sn);
-		$sn = $parts[0]; 
+		$sn = $parts[0];
 		$this->db->where('id_printer', $get_idprinter);
 		$this->db->update('printer_backup', ['printer_sn' => $sn]);
 
@@ -137,12 +161,25 @@ class PrinterList_Model extends CI_Model
 		];
 		$this->db->insert('printer_list_inagen', $form_data_list);
 
+		// update summary
+		$printer_summary = $this->db->where('id_cust', $this->input->post('agenname', true))->get('printer_summary')->result();
 
+		foreach ($printer_summary as $ps) {
+			$printer_backup = $this->db->where('id_printer', $ps->id_printer)->get('printer_backup')->row();
+			if ($printer_backup->status == 'DAMAGE') {
+				$this->db->delete('printer_summary', ['id_printer' => $ps->id_printer]);
+				break;
+			}
+		}
+
+		$this->db->insert('printer_summary', $form_data_list);
+
+		
+		
 		if ($this->input->post('replacement') != 'NEW') {
-
 			$get_insert_id = $this->db->insert_id(); // ambil id yang baru di upplod
-			// mengambil printer sn untuk di upload di rep
-			$printer_sn = $this->db->select('printer_sn')->from('printer_backup')->where('id_printer',$this->input->post('printersn', true))->get()->row()->printer_sn;
+
+			$printer_sn = $this->db->select('printer_sn')->from('printer_backup')->where('id_printer', $this->input->post('printersn', true))->get()->row()->printer_sn;
 
 			$form_data_rep = [
 				'id_printer_list'	=> $get_insert_id,
@@ -163,7 +200,6 @@ class PrinterList_Model extends CI_Model
 		$this->db->where('printer_sn', $printer_sn);
 		$this->db->where('status', 'IN BACKUP');
 		$this->db->update('printer_log', $form_log);
-
 	}
 
 	public function jumlah_data()
@@ -173,10 +209,9 @@ class PrinterList_Model extends CI_Model
 
 	public function date_time()
 	{
-		$this->db->order_by('created_at', 'DESC');
+		$this->db->order_by('date_out', 'DESC');
 		$this->db->limit(1);
 		$query = $this->db->get('printer_list_inagen');
 		return $query->row();
 	}
-
 }

@@ -21,41 +21,6 @@ class PrinterReplacement_Model extends CI_Model
 		return $this->db->select('printer_sn')->from('printer_backup')->where('id_printer', $id)->get()->row();
 	}
 
-	// public function insertData()
-	// {
-
-	// 	// update data printer backup
-	// 	$status['status'] = 'BORROWING';
-	// 	$this->db->where('id_printer', $this->input->post('printersn'));
-	// 	$this->db->update('printer_backup', $status);
-
-	// 	$take_kelengkapan = $this->input->post('kelengkapan');
-	// 	$kelengkapan = implode(', ', $take_kelengkapan);
-
-	// 	$form_data_list = [
-	// 		'id_printer'	=> $this->input->post('printersn', true),
-	// 		'id_cust'		=> $this->input->post('agenname', true), // id isinya
-	// 		'pic_it'		=> $this->input->post('picit', true),
-	// 		'pic_user'		=> $this->input->post('picuser', true),
-	// 		'no_ref'		=> $this->autoInvoice(),
-	// 		'date_out'		=> date('d/m/Y H:i:s'),
-	// 		'kelengkapan'	=> $kelengkapan,
-	// 	];
-	// 	$this->db->insert('printer_list_inagen', $form_data_list);
-
-
-	// 	$last_insert_id = $this->db->insert_id(); //mengambil id yang baru di upload yaitu id list
-	// 	// mengambil printer sn untuk di upload di rep
-	// 	$printer_sn = $this->db->select('printer_sn')->from('printer_backup')->where('id_printer', $this->input->post('printersn', true))->get()->row()->printer_sn;
-
-	// 	$form_data_rep = [
-	// 		'id_printer_list'	=> $last_insert_id,
-	// 		'printer_sn_rep'	=> $printer_sn,
-	// 		'created_at'	=> date('d F Y H:i:s'),
-	// 	];
-	// 	$this->db->insert('printer_replacement', $form_data_rep);
-	// }
-
 	public function insertNew($id_printer,$id_cust,$pic_it,$pic_user,$no_ref, $kelengkapan, $sn_damage)
 	{
 		// update jadi sn normal jika ada penanda inactive
@@ -80,23 +45,25 @@ class PrinterReplacement_Model extends CI_Model
 			'no_ref'		=> $no_ref,
 			'date_out'		=> date('d/m/Y H:i:s'),
 			'kelengkapan'	=> $kelengkapan,
+			'created_at'	=> date('d F Y H:i:s')
 		];
 		$this->db->insert('printer_list_inagen', $form_data_list);
+		$get_id_list = $this->db->insert_id(); //mengambil id yang baru di upload yaitu id list
 
-		$last_insert_id = $this->db->insert_id(); //mengambil id yang baru di upload yaitu id list
+		$this->db->insert('printer_summary', $form_data_list);
+
 		// mengambil printer sn untuk di upload di rep
 		$printer_sn = $this->db->select('printer_sn')->from('printer_backup')->where('id_printer', $id_printer)->get()->row()->printer_sn;
 
 		$form_data_rep = [
-			'id_printer_list'	=> $last_insert_id,
+			'id_printer_list'	=> $get_id_list,
 			'printer_sn_rep'	=> $printer_sn,
 			'sn_damage'			=> $sn_damage,
-			'created_at'		=> date('d F Y H:i:s'),
+			'created_at'		=> date('d/m/Y H:i:s'),
 		];
 		$this->db->insert('printer_replacement', $form_data_rep);
 
 		// update log
-
 		$cust = $this->db->where('id_cust', $id_cust)->get('customers')->row();
 
 		$update_log = [

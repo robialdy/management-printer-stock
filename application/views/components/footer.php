@@ -3,7 +3,7 @@
 		© <script>
 			document.write(new Date().getFullYear())
 		</script>,
-		Made with <span style="color: #e25555;">♥</span> by <strong>IT Project & PKL</strong>
+		Made with <span style="color: #e25555;">♥</span> by <strong>IT Project & PKL</strong> V.1.0.0
 	</p>
 </footer>
 
@@ -32,9 +32,7 @@
 <script src="<?= base_url() ?>public/select_search/choices.js"></script>
 <script src="<?= base_url() ?>public/select_search/form-element-select.js"></script>
 
-<!-- datatable dari sbadmin -->
-<!-- <script src="<?= base_url() ?>/public/datatables/jquery.dataTables.min.js"></script>
-<script src="<?= base_url() ?>/public/datatables/dataTables.bootstrap4.min.js"></script> -->
+
 
 <script>
 	const dataTableSearch = new simpleDatatables.DataTable("#datatable-search", {
@@ -48,7 +46,6 @@
 		sortable: false,
 		perPage: 30,
 	});
-	
 </script>
 
 

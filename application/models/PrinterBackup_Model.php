@@ -32,7 +32,7 @@ class PrinterBackup_Model extends CI_Model
 		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
 		$this->db->where('printer_backup.status', 'READY');
 		$this->db->group_by('type_printer.name_type'); // Group by untuk mendapatkan total per type
-		$this->db->order_by('printer_backup.created_at', 'DESC');
+		$this->db->order_by('printer_backup.date_in', 'DESC');
 
 		$query = $this->db->get();
 		return $query->result_array();
@@ -52,7 +52,7 @@ class PrinterBackup_Model extends CI_Model
 
 		//update return_cgk damage
 		$form_data ['return_cgk'] = $printer_sn;
-		$this->db->where('id_printer', $return_cgk);
+		$this->db->where('id_printer', $return_cgk); //isinya id printer
 		$this->db->update('printer_damage', $form_data);
 
 
@@ -62,7 +62,6 @@ class PrinterBackup_Model extends CI_Model
 			'origin'		=> 'BANDUNG',
 			'date_in'		=> date('d/m/Y H:i:s'),
 			'status'		=> 'READY',
-			'created_at' 	=> date('d F Y H:i:s'),
 		];
 		$this->db->insert('printer_backup', $form_data);
 
@@ -94,7 +93,6 @@ class PrinterBackup_Model extends CI_Model
 		$printer_update = [
 			'status'	=> 'READY',
 			'date_in'	=> date('d/m/Y H:i:s'),
-			'created_at'=> date('d F Y H:i:s'),
 		];
 		$this->db->where('id_printer', $id_prin);
 		$this->db->update('printer_backup', $printer_update);
@@ -145,7 +143,7 @@ class PrinterBackup_Model extends CI_Model
 
 	public function dateTime()
 	{
-		$this->db->order_by('created_at', 'DESC');
+		$this->db->order_by('date_in', 'DESC');
 		$this->db->limit(1);
 		$query = $this->db->get('printer_backup');
 		return $query->row();

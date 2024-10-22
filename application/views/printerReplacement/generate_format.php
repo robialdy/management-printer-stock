@@ -2310,9 +2310,9 @@
 					<div class="t m0 x3 h4 y4 ff2 fs2 fc0 sc0 ls2 wsa">NO :<?= $data->no_ref; ?></div>
 					<div class="t m0 x4 h5 y5 ff2 fs3 fc0 sc0 ls2 wsa">Terhitung tang<span class="_ _0"></span>gal <span class="ls4 ws2"><?= $tgl ?></span> , bulan <span class="ls5 ws3"><?= $bln ?><span class="_ _0"></span><span class="ls2 wsa"> , tahun <span class="_ _0"></span><?= $thn ?> telah di pinj<span class="_ _0"></span>amkan Unit P<span class="_ _0"></span>rinter Connot<span class="_ _0"></span>e Label, seban<span class="_ _0"></span>yak <span class="ff3 fc1">1 </span><span class="ls6 ws4">unit</span> kepa<span class="_ _0"></span>da </span></span></div>
 					<div class="t m0 x4 h5 y6 ff2 fs3 fc0 sc0 ls2 wsa"> </div>
-					<div class="t m0 x4 h5 y7 ff2 fs3 fc0 sc0 ls2 wsa">Nama Pelangg<span class="_ _0"></span>an <span class="ff3">(Customer <span class="_ _0"></span>Name)<span class="ff2"> <span class="_ _1"> </span>: <?= $data->pic_user; ?> </span></span></div>
+					<div class="t m0 x4 h5 y7 ff2 fs3 fc0 sc0 ls2 wsa">Nama Pelangg<span class="_ _0"></span>an <span class="ff3">(Customer <span class="_ _0"></span>Name)<span class="ff2"> <span class="_ _1"> </span>: <?= $data->cust_name; ?> </span></span></div>
 					<div class="t m0 x4 h5 y8 ff2 fs3 fc0 sc0 ls2 wsa">Nomor ID P<span class="_ _0"></span>elanggan <span class="ff3">(Custo<span class="_ _0"></span>mer ID)<span class="ff2"> <span class="_ _1"> </span>:<span class="_ _2"></span> <?= $data->cust_id; ?><span class="fc1"> </span></span></span></div>
-					<div class="t m0 x4 h5 y9 ff2 fs3 fc0 sc0 ls2 wsa">Nama Cabang<span class="_ _0"></span> Utama <span class="_ _3"> </span> <span class="_ _4"> </span> <span class="_ _4"> </span>: <?= $data->cust_name; ?><span class="_ _0"></span> </div>
+					<div class="t m0 x4 h5 y9 ff2 fs3 fc0 sc0 ls2 wsa">Nama Cabang<span class="_ _0"></span> Utama <span class="_ _3"> </span> <span class="_ _4"> </span> <span class="_ _4"> </span>: <span class="_ _0"></span> </div>
 					<div class="t m0 x4 h5 ya ff2 fs3 fc0 sc0 ls2 wsa"> </div>
 					<div class="t m0 x4 h6 yb ff1 fs3 fc0 sc0 ls2 wsa">Dengan Rinc<span class="_ _0"></span>ian dan Spes<span class="_ _0"></span>ifikasi seba<span class="_ _0"></span>gai beriku<span class="_ _0"></span>t : </div>
 					<div class="t m0 x4 h5 yc ff2 fs3 fc0 sc0 ls2 wsa"> </div>
@@ -2400,7 +2400,7 @@
 					<div class="t m0 x18 h6 y36 ff1 fs3 fc0 sc0 ls2 wsa"> </div>
 					<div class="t m0 x18 h6 y37 ff1 fs3 fc0 sc0 ls2 wsa"> </div>
 					<div class="t m0 x18 h6 y38 ff1 fs3 fc0 sc0 ls2 wsa"> </div>
-					<div class="t m0 x19 h6 y39 ff1 fs3 fc0 sc0 ls2 wsa">( <span class="_ _0">                                         </span> )<span class="_ _0"></span> </div>
+					<div class="t m0 x19 h6 y39 ff1 fs3 fc0 sc0 ls2 wsa">(		<?= $data->pic_it; ?>		)<span class="_ _0"></span> </div>
 				</div>
 				<div class="c x1a y31 wa he">
 					<div class="t m0 x1b h6 y32 ff1 fs3 fc0 sc0 ls2 wsa">PIHAK PEMI<span class="_ _0"></span>NJAM </div>
@@ -2410,7 +2410,7 @@
 					<div class="t m0 x1c h6 y36 ff1 fs3 fc0 sc0 ls2 wsa"> </div>
 					<div class="t m0 x1c h6 y37 ff1 fs3 fc0 sc0 ls2 wsa"> </div>
 					<div class="t m0 x1c h6 y38 ff1 fs3 fc0 sc0 ls2 wsa"> </div>
-					<div class="t m0 x7 h6 y39 ff8 fs3 fc0 sc0 ls2 ws9">(…………………<span class="_ _0"></span>……………………<span class="_ _0"></span>………..)<span class="ff1 wsa"> </span></div>
+					<div class="t m0 x19 h6 y39 ff1 fs3 fc0 sc0 ls2 wsa">      (		  <?= $data->pic_user; ?>		)<span class="_ _0"></span> </div>
 				</div>
 				<div class="c x0 y1 w2 h0">
 					<div class="t m0 x4 hf y3a ff2 fs2 fc0 sc0 ls2 wsa"> </div>
