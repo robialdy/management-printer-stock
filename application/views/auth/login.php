@@ -37,7 +37,8 @@
 							</div>
 							<div class="card-body">
 
-								<form role="form" class="text-start" method="POST" action="<?= site_url() ?>auth">
+								<form role="form" class="text-start" method="POST" action="<?= site_url('auth') ?>">
+									<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
 									<div class="input-group input-group-outline my-3">
 										<input type="text" class="form-control" placeholder="Username" name="username" required autofocus>
 									</div>

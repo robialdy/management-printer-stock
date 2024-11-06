@@ -3,9 +3,6 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class PrinterReplacement extends CI_Controller
 {
-	
-	//dibawah ini hmm ngubah tanda aja biar ga merah hehe
-	public $PrinterReplacement_Model, $PrinterBackup_Model, $Customers_Model, $form_validation, $session, $data_user, $PrinterList_Model;
 	public function __construct()
 	{
 		parent::__construct();
@@ -25,9 +22,9 @@ class PrinterReplacement extends CI_Controller
 			'title'			=> 'Printer Replacement',
 			'replacement'	=> $this->PrinterReplacement_Model->readData(),
 			'printer'		=> $this->PrinterBackup_Model->read_data_backup(),
-			'cust'			=> $this->PrinterList_Model->read_data_cust(), 
+			'cust'			=> $this->Customers_Model->read_data_cust_replc(),
 			'jumPrinter'	=> $this->PrinterBackup_Model->jumlahData(),
-			'jumReplacement'=> $this->PrinterReplacement_Model->jumlahData(),
+			'jumReplacement' => $this->PrinterReplacement_Model->jumlahData(),
 			'data_user'		=> $this->data_user,
 			'dateTimeP'		=> $this->PrinterReplacement_Model->dateTime(),
 			'dateTimeB'		=> $this->PrinterBackup_Model->dateTime(),
@@ -40,32 +37,34 @@ class PrinterReplacement extends CI_Controller
 	public function insert()
 	{
 
-		
 		// tangkap inputnya
-			$printer_sn = $this->input->post('printersn', true); //idprinter
-			$agen_name = $this->input->post('agenname', true);
-			$pic_it = $this->input->post('picit', true);
-			$pic_user = $this->input->post('picuser', true);
-			$no_ref = $this->PrinterList_Model->autoInvoice();
+		$printer_sn = $this->input->post('printersn', true); //idprinter
+		$agen_name = $this->input->post('agenname', true); //id
+		$pic_it = $this->input->post('picit', true);
+		$pic_user = $this->input->post('picuser', true);
+		$no_ref = $this->PrinterList_Model->autoInvoice();
+		$take_kelengkapan = $this->input->post('kelengkapan', true);
+		$kelengkapan = implode(', ', $take_kelengkapan);
 
-			$take_kelengkapan = $this->input->post('kelengkapan', true);
-			$kelengkapan = implode(', ', $take_kelengkapan);
+		//simpan data si session
+		$this->session->set_userdata('printersn', $printer_sn); //id_printer
+		$this->session->set_userdata('agenname', $agen_name); //id
+		$this->session->set_userdata('picit', $pic_it);
+		$this->session->set_userdata('picuser', $pic_user);
+		$this->session->set_userdata('noref', $no_ref);
+		$this->session->set_userdata('kelengkapan', $kelengkapan);
 
-			//simpan data si session
-			$this->session->set_userdata('printersn', $printer_sn); //id_printer
-			$this->session->set_userdata('agenname', $agen_name);
-			$this->session->set_userdata('picit', $pic_it);
-			$this->session->set_userdata('picuser', $pic_user);
-			$this->session->set_userdata('noref', $no_ref);
-			$this->session->set_userdata('kelengkapan', $kelengkapan);
-			
+		if ($this->input->post('snlama', true) == 'DIKETAHUI') {
 			// mengeluarkan modal
-			$query = $this->PrinterReplacement_Model->modalSelectJoin();
-			$printerselect = $query->result();
-
+			$printerselect = $this->PrinterReplacement_Model->modalSelectJoin();
 			$this->session->set_flashdata('printerselect', $printerselect);
 			redirect('replacement');
-
+		} else {
+			// INSERT TANPA SN DAMAGE
+			$this->PrinterReplacement_Model->insertNew($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $kelengkapan, '-');
+			$this->session->set_flashdata('notifSuccess', 'Printer Berhasil Ditambahkan');
+			redirect('replacement');
+		}
 	}
 
 
@@ -73,23 +72,22 @@ class PrinterReplacement extends CI_Controller
 	public function insertWithDamage()
 	{
 
-		// penangan printer out
-		$printer_sn = $this->session->userdata('printersn'); //idprinter
-		$agen_name = $this->session->userdata('agenname');
+		$printer_sn = $this->session->userdata('printersn'); //ID PRINTER
+		$agen_name = $this->session->userdata('agenname'); //ID AGEN
 		$pic_it = $this->session->userdata('picit');
 		$pic_user = $this->session->userdata('picuser');
 		$no_ref = $this->session->userdata('noref');
 		$kelengkapan = $this->session->userdata('kelengkapan');
 
-		// delete list
+		// DELETE DATA LIST
 		$this->db->delete('printer_list_inagen', ['id_printer' => $this->input->post('idprinter', true)]);
-		// delete summary
+		// DELETE DATA SUMMARY
 		$this->db->delete('printer_summary', ['id_printer' => $this->input->post('idprinter', true)]);
 
-		//send to damage
+		//KIRIM DAMAGE
 		$this->PrinterReplacement_Model->insertToDamage();
-		
-		//send ke replacement
+
+		//KIRIM REPLACEMENT
 		$sn_lama = $this->input->post('printersn', true);
 		$this->PrinterReplacement_Model->insertNew($printer_sn, $agen_name, $pic_it, $pic_user, $no_ref, $kelengkapan, $sn_lama);
 
@@ -97,27 +95,24 @@ class PrinterReplacement extends CI_Controller
 		redirect('replacement');
 	}
 
-
-	//kirim damage saja
+	//MENAMBAHKAN SN DAMAGE
 	public function insertDamage()
 	{
-		
+
 		// mengupdate status sn damage di replacement
 		$idreplacement = $this->input->post('idreplacement', true);
 		$printersn = $this->input->post('printersn', true);
-		
-		$form_data ['sn_damage'] = $printersn;
+
+		$form_data['sn_damage'] = $printersn;
 		$this->db->where('id_replacement', $idreplacement);
 		$this->db->update('printer_replacement', $form_data);
-
-		// update status trans
-		$form_data_status['status_transaksi'] = 'NEW';
-		$this->db->where('id_printer_list', $this->input->post('_id_list'));
-		$this->db->update('printer_list_inagen', $form_data_status);
 
 
 		//delete data sebelumnya udh include dua tabel karena master dari foreignkey nya di delete
 		$this->db->delete('printer_list_inagen', ['id_printer_list' => $this->input->post('idlist', true)]);
+
+		// delete summary nya
+		$this->db->delete('printer_summary', ['id_printer' => $this->input->post('idprinter', true)]);
 
 		//mengiriim data ke damage
 		$this->PrinterReplacement_Model->insertToDamage();
@@ -188,7 +183,7 @@ class PrinterReplacement extends CI_Controller
                 	data-idlist="' . $al->id_printer_list . '"
                 	data-idreplacement="' . $al->id_replacement . '"
                 	data-sndamage="' . $al->sn_damage . '"
-					data-prinsn="'. $al->printer_sn .'">
+					data-prinsn="' . $al->printer_sn . '">
                 <i class="material-icons">edit</i>
             	</a>
 			</td>
@@ -196,7 +191,10 @@ class PrinterReplacement extends CI_Controller
 		}
 
 		header('Content-Type: application/json');
-		echo json_encode(['html' => $html]);
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash() //update token setelah request tabel
+		]);
 	}
 
 	//menampilkan list printer di modal edit
@@ -209,7 +207,7 @@ class PrinterReplacement extends CI_Controller
 		$id_list = $this->input->post('id_list', true);
 		$id_rep = $this->input->post('idRep', true);
 		// printer sn label
-		$prinsn = $this->input->post('prinSn');
+		$prinsn = $this->input->post('prinSn', true);
 
 
 		$printers = $this->PrinterReplacement_Model->get_printer_by_id($custId, $id_list, $sn_damage);
@@ -229,11 +227,11 @@ class PrinterReplacement extends CI_Controller
                         <small>Pilih Untuk Menambahkan SN Damage</small> <br>
                     </div>
                     <div class="modal-body">
-                        <small>~ Printer SN '. $prinsn .'</small>
+                        <small>~ Printer SN ' . $prinsn . '</small>
                         <div class="overflow-auto" style="max-height: 600px">
         ';
 
-			foreach ($printers as $printer) {
+			foreach ($printers as $index => $printer) {
 
 				// Cek apakah date_out kosong atau tidak
 				if (empty($printer->date_out)) {
@@ -244,6 +242,7 @@ class PrinterReplacement extends CI_Controller
 
 				$html .= '
             <form method="POST" action="' . site_url('printerreplacement/insertDamage') . '">
+				<input type="hidden" name="'. $this->security->get_csrf_token_name() .'" value="'. $this->security->get_csrf_hash() .'">
                 <div class="card mb-3 mx-2">
                     <div class="d-flex align-items-center p-3 border-radius-md">
                         <span class="avatar text-bg-info avatar-lg fs-5">
@@ -259,21 +258,22 @@ class PrinterReplacement extends CI_Controller
 
                         <input type="hidden" name="idreplacement" value="' . $id_rep . '">
                         <input type="hidden" name="printersn" value="' . $printer->printer_sn . '">
-                        <input type="hidden" name="idlist" value="' . $printer->id_printer_list . '">
                         <input type="hidden" name="idprinter" value="' . $printer->id_printer . '">
                         <input type="hidden" name="idcust" value="' . $printer->id_cust . '">
-                        <input type="hidden" name="_id_list" value="' . $id_list . '">
+						<input type="hidden" name="loan_file" value="' . $printer->proof . '">
+						<input type="hidden" name="idlist" value="' . $printer->id_printer_list . '">
 
-                        <button type="button" class="btn text-muted fs-3 ms-auto my-auto" data-bs-toggle="collapse" data-bs-target="#collapse-'. $printer->id_printer_list . '">
+                        <button type="button" class="btn text-muted fs-3 ms-auto my-auto" data-bs-toggle="collapse" data-bs-target="#collapse-' . $printer->id_printer_list . '">
                             <i class="bi bi-plus-lg"></i>
                         </button>
                     </div>
-					<div class="collapse" id="collapse-'. $printer->id_printer_list .'">
-								<div class="card card-body">
+					<div class="collapse" id="collapse-' . $printer->id_printer_list . '">
+							<div class="card card-body">
+
 
 									<div class="row mb-2">
 										<div class="col-3 mt-2">
-											<label for="typep">DESKRIPSI:</label>
+											<label for="typep">DESKRIPSI <span class="text-danger">*</span></label>
 										</div>
 										<div class="col">
 											<div class="input-group input-group-dynamic mb-4">
@@ -284,29 +284,29 @@ class PrinterReplacement extends CI_Controller
 
 									<div class="row mb-1">
 										<div class="form-check col">
-											<input class="childCheckbox" type="checkbox" name="kelengkapan_ker[]" id="dus" value="DUS">
-											<label class="form-check-label" for="dus">
+											<input type="checkbox" name="kelengkapan_ker[]" id="dus'. $index .'" value="DUS">
+											<label class="form-check-label" for="dus'. $index .'">
 												DUS
 											</label>
 										</div>
 										<div class="form-check col">
-											<input class="childCheckbox" type="checkbox" name="kelengkapan_ker[]" id="usb" value="KABEL USB">
-											<label class="form-check-label" for="usb">
-												KABEL USB
-											</label>
+											<input type="checkbox" name="kelengkapan_ker[]" id="usb'. $index .'" value="KABEL USB">
+											<label class="form-check-label" for="usb'. $index .'">KABEL USB</label>
 										</div>
 									</div>
 
+									
+
 									<div class="row mb-1">
 										<div class="form-check col">
-											<input class="childCheckbox" type="checkbox" name="kelengkapan_ker[]" id="corelabel" value="CORE LABEL 1">
-											<label class="form-check-label" for="corelabel">
+											<input type="checkbox" name="kelengkapan_ker[]" id="corelabel'. $index .'" value="CORE LABEL 1">
+											<label class="form-check-label" for="corelabel'. $index .'">
 												CORE LABEL 1
 											</label>
 										</div>
 										<div class="form-check col">
-											<input class="childCheckbox" type="checkbox" name="kelengkapan_ker[]" id="adaptor" value="ADAPTOR">
-											<label class="form-check-label" for="adaptor">
+											<input type="checkbox" name="kelengkapan_ker[]" id="adaptor'. $index .'" value="ADAPTOR">
+											<label class="form-check-label" for="adaptor'. $index .'">
 												ADAPTOR
 											</label>
 										</div>
@@ -314,14 +314,14 @@ class PrinterReplacement extends CI_Controller
 
 									<div class="row mb-1">
 										<div class="form-check col">
-											<input class="childCheckbox" type="checkbox" name="kelengkapan_ker[]" id="coreribbon" value="CORE RIBBON 2">
-											<label class="form-check-label" for="coreribbon">
+											<input type="checkbox" name="kelengkapan_ker[]" id="coreribbon'. $index .'" value="CORE RIBBON 2">
+											<label class="form-check-label" for="coreribbon'. $index .'">
 												CORE RIBBON 2
 											</label>
 										</div>
 										<div class="form-check col">
-											<input class="childCheckbox" type="checkbox" name="kelengkapan_ker[]" id="kuping" value="KUPING CORE 2">
-											<label class="form-check-label" for="kuping">
+											<input type="checkbox" name="kelengkapan_ker[]" id="kuping'. $index .'" value="KUPING CORE 2">
+											<label class="form-check-label" for="kuping'. $index .'">
 												KUPING CORE 2
 											</label>
 										</div>
@@ -329,8 +329,8 @@ class PrinterReplacement extends CI_Controller
 
 									<div class="row mb-1">
 										<div class="form-check col">
-											<input class="childCheckbox" type="checkbox" name="kelengkapan_ker[]" id="power" value="KABEL POWER">
-											<label class="form-check-label" for="power">
+											<input type="checkbox" name="kelengkapan_ker[]" id="power'. $index .'" value="KABEL POWER">
+											<label class="form-check-label" for="power'. $index .'">
 												KABEL POWER
 											</label>
 										</div>
@@ -382,11 +382,10 @@ class PrinterReplacement extends CI_Controller
         </div>';
 		}
 
-		echo $html;
+		header('Content-Type: application/json');
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash(),
+		]);
 	}
-
-
-
-
-
 }

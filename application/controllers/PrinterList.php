@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+// SATU CONTROLLER DENGAN YANG SUMMARY
+
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -40,9 +42,9 @@ class PrinterList extends CI_Controller
 	}
 
 	public function summary()
-	{	
+	{
 		$data = [
-			'title'			=> 'Dashboard',
+			'title'			=> 'Printer Summary',
 			'data_user'		=> $this->data_user,
 			'printer_summary' => $this->PrinterList_Model->read_data_summary(),
 			'type_printer'	=> $this->PrinterList_Model->type_printer(),
@@ -51,9 +53,11 @@ class PrinterList extends CI_Controller
 		$this->load->view('printer_list/printer_summary', $data);
 	}
 
+	// UNTUK MENGIRIM KEMBALI KE PRINTER BACKUP => INACTIVE
 	public function send_to_backup()
 	{
 		$this->db->delete('printer_list_inagen', ['id_printer' => $this->input->post('id_printer', true)]);
+		$this->db->delete('printer_summary', ['id_printer' => $this->input->post('id_printer', true)]);
 
 		$this->db->where('id_printer', $this->input->post('id_printer', true));
 		$this->db->update('printer_backup', ['status' => 'READY', 'printer_sn' => $this->input->post('printer_sn', true) . ' - IN-ACTIVE']);
@@ -62,6 +66,7 @@ class PrinterList extends CI_Controller
 		redirect('printerdetail');
 	}
 
+	// PRINTER OUT DI PRINTER LIST
 	public function printer_out()
 	{
 		$this->form_validation->set_rules('printersn', 'PRINTER SN', 'required|trim');
@@ -73,12 +78,13 @@ class PrinterList extends CI_Controller
 			redirect('printerdetail');
 		} else {
 			$this->PrinterList_Model->printer_out();
-			$sn = $this->PrinterList_Model->search_sn($this->input->post('printersn'));
+			$sn = $this->PrinterList_Model->search_sn($this->input->post('printersn', true));
 			$this->session->set_flashdata('notifSuccess', 'Printer SN ' . $sn->printer_sn . ' Berhasil Ditambahkan');
 			redirect('printerdetail');
 		}
 	}
 
+	// DETAIL PRINTER
 	public function detail_($sn)
 	{
 		// var_dump($this->PrinterReplacement_Model->read_data_detail($sn));
@@ -93,16 +99,57 @@ class PrinterList extends CI_Controller
 		$this->load->view('printerreplacement/detail', $data);
 	}
 
+	// DOWNLOAD GAMBAR DI FITUR DETAIL
+	public function download_proof()
+	{
+		// Ambil nama file dari input POST
+		$image_name = trim($this->input->post('name_proof', true));
+
+		// Gunakan garis miring untuk path
+		$file_path = FCPATH . 'public/proof_replacement/' . $image_name;
+
+		// Cek apakah file ada
+		if (file_exists($file_path)) {
+			// Dapatkan tipe konten menggunakan finfo
+			$finfo = finfo_open(FILEINFO_MIME_TYPE);
+			$content_type = finfo_file($finfo, $file_path);
+			finfo_close($finfo);
+
+			// Atur header untuk download file
+			header('Content-Description: File Transfer');
+			header('Content-Type: ' . $content_type);
+			header('Content-Disposition: attachment; filename="' . basename($file_path) . '"');
+			header('Expires: 0');
+			header('Cache-Control: must-revalidate');
+			header('Pragma: public');
+			header('Content-Length: ' . filesize($file_path));
+
+			// Bersihkan output buffer untuk menghindari output tambahan
+			ob_clean();
+			flush();
+
+			// Baca file dan kirim ke output
+			readfile($file_path);
+			exit;
+		} else {
+			// Tampilkan error jika file tidak ditemukan
+			log_message('error', 'File not found: ' . $file_path);
+			show_404();
+		}
+	}
+
+
+	// UPLOAD BUKTI DI FITUR DETAIL
 	public function uploadProof()
 	{
-		if ($this->input->post('proof')) {
-			$path = FCPATH . 'public/proof_replacement/' . $this->input->post('proof');
+		if ($this->input->post('proof', true)) {
+			$path = FCPATH . 'public/proof_replacement/' . $this->input->post('proof', true);
 			unlink($path);
 		}
 
 
 		$config['upload_path'] = FCPATH . 'public/proof_replacement/';
-		$config['allowed_types'] = 'pdf|jpg|jpeg|png';
+		$config['allowed_types'] = 'pdf|jpg|jpeg|png|';
 		$config['max_size'] = 30000; // Batas ukuran file (da lam KB)
 
 		$this->load->library('upload', $config);
@@ -111,15 +158,15 @@ class PrinterList extends CI_Controller
 		if ($this->upload->do_upload('file_proof')) {
 			$new_file = $this->upload->data('file_name');
 		} else {
-			redirect('printerdetail/' . $this->input->post('sn'));
+			redirect('printerdetail/' . $this->input->post('sn', true));
 		}
 
-		$id = $this->input->post('idrep');
+		$id = $this->input->post('idrep', true);
 		$this->db->where('id_printer_list', $id);
 		$this->db->update('printer_list_inagen', ['proof' => $new_file]);
 
 		$this->session->set_flashdata('notifSuccess', 'Bukti Transaksi Berhasil Diupload!');
-		redirect('printerdetail/' . $this->input->post('sn'));
+		redirect('printerdetail/' . $this->input->post('sn', true));
 	}
 
 	public function view_data_table()
@@ -193,8 +240,12 @@ class PrinterList extends CI_Controller
 		}
 
 		header('Content-Type: application/json');
-		echo json_encode(['html' => $html]);
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash(),
+		]);
 	}
+
 
 	public function view_data_table_summary()
 	{
@@ -232,7 +283,7 @@ class PrinterList extends CI_Controller
 
 			$html .= '
                 <td class="text-center text-uppercase py-3">
-                    <h6 class="mb-0 text-md fw-normal">' . $pd->total_printer . '</h6>
+                    <a class="mb-0 text-md fw-normal btn-detail fw-bold" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#detail" data-modal="' . $pd->id_cust . '">' . $pd->total_printer . '</a>
                 </td>
                 <td class="text-center text-uppercase">
                     <h6 class="mb-0 text-md fw-normal">' . $pd->cn_label_status . '</h6>
@@ -247,11 +298,81 @@ class PrinterList extends CI_Controller
 		}
 
 		header('Content-Type: application/json');
-		echo json_encode(['html' => $html]);
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash(),
+	]);
+	}
+
+	// MODAL TOTAL PRINTER DI SUMMARY
+	public function modal_detail_summary()
+	{
+		$id_cust = $this->input->post('modal', true);
+		$data = $this->PrinterList_Model->modal_detail_summary($id_cust);
+
+		$html =
+			'
+			   <div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="text-end me-1">
+                        <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="text-start ms-3">
+                        <h5 class="modal-title fw-bold" id="exampleModalLabel">Detail Printer Customer ' . $data[0]->cust_name . '</h5>
+                        <small>Printer Aktif Yang Sedang Berada di Customer</small>';
+
+		// Ambil data pertama untuk mendapatkan printer_sn
+		$html .= '
+                    </div>
+                    <div class="modal-body">
+                        <div class="timeline timeline-one-side" data-timeline-axis-style="dotted">
+        ';
+
+		// Looping untuk setiap log printer
+		foreach ($data as $d) {
+			$html .= '
+            <div class="timeline-block mb-3">
+                <span class="timeline-step bg-dark p-3 d-flex justify-content-center align-items-center">
+                    <i class="material-icons text-white text-sm opacity-10">print</i>
+                </span>
+                <div class="timeline-content pt-1">
+                    <h6 class="text-dark text-md font-weight-bold mt-1 mb-0">' . $d->printer_sn;
+
+			if ($d->status === 'BORROWING') {
+				$html .= '<span class="badge badge-warning ms-2">IN ' . $d->cust_name . '</span>';
+			} else if ($d->status === 'DAMAGE') {
+				$html .= '<span class="badge badge-danger ms-2">IN DAMAGE</span><small class="fw-light"> (Belum Dapat Pengganti!)</small>';
+			}
+
+
+			$html .= '
+                    </h6>
+					<p class="text-secondary text-xs mb-0">' . $d->name_type . '</p>
+                </div>
+            </div>
+            ';
+		}
+
+		$html .= '
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+		';
+
+		header('Content-Type: application/json');
+		echo json_encode([
+			'html' => $html, // HTML yang akan dimasukkan ke dalam modal
+			'token' => $this->security->get_csrf_hash(), // CSRF token baru
+		]);
 	}
 
 
-	// import excel
+	// IMPORT DATA
 	public function import_excel()
 	{
 		// Konfigurasi untuk upload file
@@ -295,6 +416,12 @@ class PrinterList extends CI_Controller
 						$origin_id = 'BDO21200';
 					}
 
+					if (!$row['J']) {
+						$status = 'ACTIVE';
+					} else {
+						$status = $row['J'];
+					}
+
 					// insert customers
 					$cust_data = [
 						'cust_id' => $row['E'],
@@ -302,7 +429,7 @@ class PrinterList extends CI_Controller
 						'type_cust' => $row['G'],
 						'origin_id' => $origin_id,
 						'origin_name' => $row['A'],
-						'status'	=> $row['L'],
+						'status'	=> $status,
 						'created_at'	=> date('d F Y H:i:s'),
 					];
 
@@ -331,9 +458,8 @@ class PrinterList extends CI_Controller
 					$printer_data = [
 						'printer_sn' => $row['D'],
 						'id_type' => $id_type,
-						'status' => 'REPLACEMENT',
+						'status' => 'BORROWING',
 						'date_in' => date('d/m/Y H:i:s'),
-						'created_at'	=> date('d F Y H:i:s'),
 					];
 
 					// cek jika datanya udah ada make pake yang ada kalo ga buat baru
@@ -349,25 +475,21 @@ class PrinterList extends CI_Controller
 					$list_data = [
 						'id_printer' => $id_printer,
 						'id_cust' => $cust_id,
-						'pic_it' => $row['H'],
-						'pic_user' => $row['I'],
+						// 'pic_it' => $row['H'],
+						'pic_user' => $row['H'],
 						'date_out' => date('d/m/Y H:i:s'),
 						'created_at' => date('d F Y H:i:s'),
 					];
 					$this->db->insert('printer_list_inagen', $list_data);
+					// UPLOAD SUMMARY
+					$this->db->insert('printer_summary', $list_data);
 
-
-					if ($row['K']) {
-						$date_out_log = $row['K'];
-					} else {
-						$date_out_log = '-';
-					}
 
 					$log_data = [
 						'printer_sn'	=> $row['D'],
 						'cust_id'		=> $row['E'],
 						'cust_name'		=> $row['F'],
-						'date_out'		=> $date_out_log,
+						'date_out'		=> '-',
 						'status'		=> 'IN CUSTOMER',
 						'created_at'	=> date('d/m/Y H:i:s'),
 					];
@@ -385,6 +507,7 @@ class PrinterList extends CI_Controller
 		}
 	}
 
+	// EXPORT DATA
 	public function export_excel()
 	{
 		$this->load->model('Type_Printer_Model');

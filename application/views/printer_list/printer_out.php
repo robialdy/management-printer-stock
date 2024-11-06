@@ -141,30 +141,6 @@
 					</div>
 				</div>
 
-				<div class="row">
-					<div class="col-4 mt-2">
-						<label>STATUS</label>
-					</div>
-					<div class="col mt-2">
-
-						<div class="row mb-1">
-							<div class="form-check col">
-								<input type="radio" name="replacement" id="new" value="NEW" required>
-								<label class="form-check-label" for="new">
-									NEW
-								</label>
-							</div>
-							<div class="form-check col">
-								<input type="radio" name="replacement" id="repl" value="REPLACEMENT">
-								<label class="form-check-label" for="repl">
-									REPLACEMENT
-								</label>
-							</div>
-						</div>
-
-					</div>
-				</div>
-
 
 
 				<script>

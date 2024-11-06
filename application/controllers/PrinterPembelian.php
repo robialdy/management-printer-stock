@@ -81,6 +81,9 @@ class PrinterPembelian extends CI_Controller
                 <h6 class="mb-0 text-sm fw-normal">' . $i++ . '</h6>
             </td>
             <td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $al->origin_name . '</h6>
+            </td>
+            <td class="text-center text-uppercase">
                 <h6 class="mb-0 text-sm fw-normal">' . $al->cust_id . '</h6>
             </td>
             <td class="text-center text-uppercase">
@@ -96,83 +99,84 @@ class PrinterPembelian extends CI_Controller
                 <h6 class="mb-0 text-sm fw-normal">' . $al->printer_sn . '</h6>
             </td>
 			<td class="text-center text-uppercase">
-                <h6 class="mb-0 text-sm fw-normal">' . $al->name_type . '</h6>
+                <h6 class="mb-0 text-sm fw-normal">' . $al->type_printer . '</h6>
             </td>
             <td class="text-center text-uppercase">
                 <h6 class="mb-0 text-sm fw-normal">' . $al->date_out . '</h6>
             </td>
-			<td class="text-center text-uppercase">
-                <h6 class="mb-0 text-sm fw-normal">
-                    <span class="' . ($al->status != null ? 'badge badge-warning' : '') . '">
-                        ' . $al->status . '
-                    </span>
-                </h6>
-            </td>
-			<td class="text-center text-uppercase">
-                <h6 class="mb-0 text-sm fw-normal">' . $al->pic_it_perbaikan . '</h6>
-            </td>
-			<td class="text-center text-uppercase">
-                <h6 class="mb-0 text-sm fw-normal">' . $al->pic_user_perbaikan . '</h6>
-            </td>
-			<td class="text-center text-uppercase">
-                <h6 class="mb-0 text-sm fw-normal text-decoration-underline">' . $al->sn_temporary . '</h6>
-            </td>';
+			<td class="text-center text-uppercase">';
 
-			if ($al->status) {
-
-            $html .= '<td class="text-center text-uppercase">
-                <a class="mb-0 text-sm fw-normal btn-confirm" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#confirm" data-modal="'. $al->id_printer_pembelian .'">
-                    <i class="material-icons" style="font-size:30px;">check</i>
-                </a>
-            </td>';
-
-			}
+				if ($al->status != null) {
+					$html .= '
+					<button type="button" class="btn btn-sm btn-outline-warning border-radius-xl mb-0 btn-perbaikan" data-modal="' . $al->id_printer_pembelian . '">
+						Perbaikan
+					</button>
+					';
+				}
+            $html .= '</td>';
 
 			$html .= '</tr>';
 		}
 
 		header('Content-Type: application/json');
-		echo json_encode(['html' => $html]);
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash(),
+		]);
 	}
 
-	public function modal_confirm()
+	public function modal_perbaikan()
 	{
-		$idpem = $this->input->post('modal');
+
+		$idpem = $this->input->post('modal', true);
 		$data = $this->PrinterPembelian_Model->getPrinterById($idpem);
 
 		$html = '
-    <div class="modal fade" id="confirm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="text-end me-1">
-                    <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="text-start ms-3">
-                    <h5 class="modal-title fw-bold" id="exampleModalLabel">CONFIRM PRINTER TELAH SELESAI?</h5>
-					<small>Konfirmasi lagi jika printer sudah selesai</small>';
+	<div class="modal fade" id="perbaikan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="text-end me-1">
+					<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="text-start ms-3">
+					<h5 class="modal-title fw-bold" id="exampleModalLabel">DETAIL PRINTER PERBAIKAN</h5>
+					<small>SN PRINTER '. $data->printer_sn .'</small>
+				</div>
+				<div class="modal-body">
+				<div class="mx-3">
+					<small class="text-dark font-weight-bold">SN TEMPORARY</small>
+                    <blockquote class="blockquote mb-0">
+                        <p class="text-dark ms-2">'. ($data->sn_temporary == null ? 'TANPA SN BACKUP*' : $data->sn_temporary) . '</p>
+                    </blockquote>
+					<small class="text-dark font-weight-bold">PIC IT</small>
+                    <blockquote class="blockquote mb-0">
+                        <p class="text-dark ms-2">'. $data->pic_it_perbaikan . '</p>
+                    </blockquote>
+					<small class="text-dark font-weight-bold">PIC USERS</small>
+                    <blockquote class="blockquote mb-0">
+                        <p class="text-dark ms-2">'. $data->pic_user_perbaikan . '</p>
+                    </blockquote>';
 
-		if (!empty($data->sn_temporary)) {
-			$html .= '
-                    <h5 class="font-weight-normal text-info text-gradient mt-2">SN ' . $data->sn_temporary . '</h5>
-                </div>
-                <div class="modal-body">
-                    <form action="' . site_url('printerpembelian/set_default_backup') . '" method="POST">
+					if (!empty($data->sn_temporary)) {
+						$html .= '<div class="text-end mt-2">
+									<form action="' . site_url('printerpembelian/set_default_backup') . '" method="POST">
+										<input type="hidden" name="' . $this->security->get_csrf_token_name() . '" value="' . $this->security->get_csrf_hash() . '">
 
-						<input type="hidden" name="id_printer" value="' . $data->id_printer . '">
-                        <input type="hidden" name="sn_backup" value="' . $data->sn_temporary . '">
-                        <input type="hidden" name="cust_id" value="' . $data->cust_id . '">
-
-                        <div class="row">
-                            <div class="col-4 mt-2">
-                                <label class="text-dark fs-6">KONDISI :</label>
+										<input type="hidden" name="printersn" value="' . $data->printer_sn . '">
+                        				<input type="hidden" name="id_pem" value="' . $data->id_printer_pembelian . '">
+										<input type="hidden" name="sn_backup" value="' . $data->sn_temporary . '">
+			
+						<div class="row">
+                            <div class="col-1 mt-2">
+                                <label class="text-dark fs-6">KONDISI</label>
                             </div>
                             <div class="col mt-2">
                                 <div class="row mb-1">
                                     <div class="form-check col">
-                                        <input type="radio" name="condition" id="baru" value="BARU" required>
-                                        <label class="form-check-label" for="baru">BARU</label>
+                                        <input type="radio" name="condition" id="bagus" value="BAGUS" required>
+                                        <label class="form-check-label" for="bagus">BAGUS</label>
                                     </div>
                                     <div class="form-check col">
                                         <input type="radio" name="condition" id="rusak" value="RUSAK">
@@ -184,7 +188,7 @@ class PrinterPembelian extends CI_Controller
 
                         <div id="collapseSection" class="collapse">
                             <div class="row mb-2">
-                                <div class="col-4 mt-2">
+                                <div class="col-4 mt-2 text-start">
                                     <label for="typep">DESKRIPSI</label>
                                 </div>
                                 <div class="col">
@@ -193,88 +197,49 @@ class PrinterPembelian extends CI_Controller
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-4 mt-2"><label for="typep">KELENGKAPAN</label></div>
-                                <div class="col mt-2">
-                                    <div class="row mb-1">
-                                        <div class="form-check col">
-                                            <input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="dus" value="DUS">
-                                            <label class="form-check-label" for="dus">DUS</label>
-                                        </div>
-                                        <div class="form-check col">
-                                            <input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="usb" value="KABEL USB">
-                                            <label class="form-check-label" for="usb">KABEL USB</label>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-1">
-                                        <div class="form-check col">
-                                            <input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="corelabel" value="CORE LABEL 1">
-                                            <label class="form-check-label" for="corelabel">CORE LABEL 1</label>
-                                        </div>
-                                        <div class="form-check col">
-                                            <input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="adaptor" value="ADAPTOR">
-                                            <label class="form-check-label" for="adaptor">ADAPTOR</label>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-1">
-                                        <div class="form-check col">
-                                            <input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="coreribbon" value="CORE RIBBON 2">
-                                            <label class="form-check-label" for="coreribbon">CORE RIBBON 2</label>
-                                        </div>
-                                        <div class="form-check col">
-                                            <input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="kuping" value="KUPING CORE 2">
-                                            <label class="form-check-label" for="kuping">KUPING CORE 2</label>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-1">
-                                        <div class="form-check col">
-                                            <input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="power" value="KABEL POWER">
-                                            <label class="form-check-label" for="power">KABEL POWER</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-
-                        <div class="text-end mt-2">
-                            <button type="submit" class="btn bg-gradient-info text-white border-radius-sm">SEND</button>
+						<div class="text-end mt-2">
+                            <button type="submit" class="btn bg-gradient-info text-white border-radius-sm">SELESAI</button>
                         </div>
-                    </form>
-                </div>';
-		} else {
-			$html .= '
-		<form action="' . site_url('printerpembelian/set_default_backup') . '" method="POST">
-		<input type="hidden" name="id_printer" value="' . $data->id_printer . '">
-			<input type="hidden" name="sn_backup" value="' . $data->sn_temporary . '">
-			<input type="hidden" name="id_pembelian" value="' . $data->id_printer_pembelian . '">
+									</form>
+								</div>
+								
+								<script>
+        						document.querySelectorAll("input[name=\'condition\']").forEach(function(radio) {
+            						radio.addEventListener("change", function() {
+                						if (this.value === "RUSAK") {
+                    						document.getElementById("collapseSection").classList.add("show");
+                						} else {
+                    						document.getElementById("collapseSection").classList.remove("show");
+                						}
+            						});
+        						});
+    						</script>
+								';
+					} else {
+						$html .='<div class="text-end mt-2">
+									<form action="'. site_url('printerpembelian/set_default_backup') .'" method="POST">
+										<input type="hidden" name="' . $this->security->get_csrf_token_name() . '" value="' . $this->security->get_csrf_hash() . '">
+			
+										<input type="hidden" name="printersn" value="' . $data->printer_sn . '">
+										<input type="hidden" name="id_pembelian" value="' . $data->id_printer_pembelian . '">
+								
+										<button type="submit" class="btn bg-gradient-info text-white border-radius-sm">SELESAI</button>
+									</form>
+								</div>';
+					}
 
-			<div class="modal-body">
-                <div class="text-end mt-2">
-                    <button type="submit" class="btn bg-gradient-info text-white border-radius-sm">SEND</button>
-                </div>
+			$html .='</div>
+				</div>
 			</div>
-		</form>';
-		}
+		</div>
+	</div>
+		';
 
-		$html .= '
-            </div>
-        </div>
-    </div>
-
-    <script>
-        document.querySelectorAll("input[name=\'condition\']").forEach(function(radio) {
-            radio.addEventListener("change", function() {
-                if (this.value === "RUSAK") {
-                    document.getElementById("collapseSection").classList.add("show");
-                } else {
-                    document.getElementById("collapseSection").classList.remove("show");
-                }
-            });
-        });
-    </script>';
-
-
-		echo $html;
+		header('Content-Type: application/json');
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash(),
+		]);
 	}
-
 }

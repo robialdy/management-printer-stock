@@ -34,7 +34,7 @@
 <div class="row mb-3 ms-5">
 	<div class="card w-30">
 		<div class="card-body text-center">
-			<h1 class="text-gradient text-info"><span id="status1" countto="<?= $sum_data ?>"><?= $sum_data ?></span> <span class="text-lg ms-n2">Pcs</span></h1>
+			<h1 class="text-gradient text-info"><?= $sum_data ?> <span class="text-lg ms-n2">Pcs</span></h1>
 			<h6 class="mb-0 font-weight-bolder">Printer Pembelian</h6>
 			<p class="opacity-8 mb-0 text-sm">
 				<?php if (empty($date_time->date_out) || $sum_data == 0): ?>
@@ -46,18 +46,6 @@
 		</div>
 	</div>
 </div>
-<!-- animasi count -->
-<script src="<?= base_url() ?>public/js/plugins/countup.min.js"></script>
-<script>
-	if (document.getElementById('status1')) {
-		const countUp = new CountUp('status1', document.getElementById("status1").getAttribute("countTo"));
-		if (!countUp.error) {
-			countUp.start();
-		} else {
-			console.error(countUp.error);
-		}
-	}
-</script>
 
 
 <!-- Button trigger modal -->
@@ -89,6 +77,7 @@
 			</div>
 			<div class="modal-body">
 				<form action="<?= site_url('printerpembelian/insert') ?>" method="POST">
+					<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
 
 					<!-- CUSTOMERS -->
 					<div class="row">
@@ -128,7 +117,7 @@
 								<select class="choices form-select" id="cust" name="type_printer" required>
 									<option value="" selected disabled>ENTER TYPE PRINTER</option>
 									<?php foreach ($type_printers as $type_printer) : ?>
-										<option value="<?= $type_printer->id_type; ?>"><?= $type_printer->name_type; ?></option>
+										<option value="<?= $type_printer->name_type; ?>"><?= $type_printer->name_type; ?></option>
 									<?php endforeach; ?>
 								</select>
 							</div>
@@ -182,6 +171,7 @@
 			</div>
 			<div class="modal-body">
 				<form action="<?= site_url('printerpembelian/damage') ?>" method="POST">
+					<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
 
 					<input type="hidden" name="cust_name" val ue="">
 
@@ -229,7 +219,7 @@
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-4">
-								<input type="text" class="form-control" aria-label="Username" placeholder="Enter pic user" aria-describedby="basic-addon1" id="typep" name="deskripsi" style="text-transform: uppercase;" required>
+								<input type="text" class="form-control" aria-label="Username" placeholder="enter deskripsi" aria-describedby="basic-addon1" id="typep" name="deskripsi" style="text-transform: uppercase;" required>
 							</div>
 						</div>
 					</div>
@@ -246,73 +236,10 @@
 									<select class="choices form-select" id="cust" name="printer_sn_temp">
 										<option value="" selected disabled>ENTER SN PENGGANTI</option>
 										<?php foreach ($printer_backup as $pb) : ?>
-											<option value="<?= $pb['printer_sn']; ?>"><?= $pb['printer_sn']; ?></option>
+											<option value="<?= $pb['printer_sn']; ?>"><?= $pb['printer_sn']; ?> - <?= $pb['name_type']; ?></option>
 										<?php endforeach; ?>
 									</select>
 								</div>
-							</div>
-						</div>
-
-						<div class="row">
-							<div class="col-4 mt-2">
-								<label for="typep">KELENGKAPAN</label>
-							</div>
-							<div class="col mt-2">
-
-								<div class="row mb-1">
-									<div class="form-check col">
-										<input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="dus" value="DUS">
-										<label class="form-check-label" for="dus">
-											DUS
-										</label>
-									</div>
-									<div class="form-check col">
-										<input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="usb" value="KABEL USB">
-										<label class="form-check-label" for="usb">
-											KABEL USB
-										</label>
-									</div>
-								</div>
-
-								<div class="row mb-1">
-									<div class="form-check col">
-										<input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="corelabel" value="CORE LABEL 1">
-										<label class="form-check-label" for="corelabel">
-											CORE LABEL 1
-										</label>
-									</div>
-									<div class="form-check col">
-										<input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="adaptor" value="ADAPTOR">
-										<label class="form-check-label" for="adaptor">
-											ADAPTOR
-										</label>
-									</div>
-								</div>
-
-								<div class="row mb-1">
-									<div class="form-check col">
-										<input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="coreribbon" value="CORE RIBBON 2">
-										<label class="form-check-label" for="coreribbon">
-											CORE RIBBON 2
-										</label>
-									</div>
-									<div class="form-check col">
-										<input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="kuping" value="KUPING CORE 2">
-										<label class="form-check-label" for="kuping">
-											KUPING CORE 2
-										</label>
-									</div>
-								</div>
-
-								<div class="row mb-1">
-									<div class="form-check col">
-										<input class="childCheckbox" type="checkbox" name="kelengkapan[]" id="power" value="KABEL POWER">
-										<label class="form-check-label" for="power">
-											KABEL POWER
-										</label>
-									</div>
-								</div>
-
 							</div>
 						</div>
 					</div>
@@ -356,6 +283,7 @@
 					<table class="table align-items-center table-hover" id="datatable">
 						<thead>
 							<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">No</th>
+							<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">ORIGIN</th>
 							<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">CUST ID</th>
 							<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">CUST NAME</th>
 							<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">PIC IT</th>
@@ -364,10 +292,6 @@
 							<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">TYPE</th>
 							<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">date out</th>
 							<th class="text-center text-uppercase text-dark text-sm font-weight-bolder opacity-7 pb-2">status</th>
-							<th class="text-center text-uppercase text-dark text-sm font-weight-bolder opacity-7 pb-2">pic it</th>
-							<th class="text-center text-uppercase text-dark text-sm font-weight-bolder opacity-7 pb-2">pic user</th>
-							<th class="text-center text-uppercase text-dark text-sm font-weight-bolder opacity-7 pb-2">SN BACKUP</th>
-							</>
 						</thead>
 						<tbody>
 
@@ -380,6 +304,10 @@
 </div>
 
 <div id="modal-container">
+
+</div>
+
+<div id="modal-perbaikan">
 
 </div>
 
@@ -397,11 +325,17 @@
 			$.ajax({
 				url: "<?= base_url('printerpembelian/view_data_table') ?>",
 				type: "POST",
+				data: {
+					'<?= $this->security->get_csrf_token_name() ?>': '<?= $this->security->get_csrf_hash() ?>'
+				},
 				dataType: "json",
 				success: function(response) {
 					const tableBody = $('#datatable tbody');
 					tableBody.empty(); // Kosongkan tabel 
 					tableBody.append(response.html);
+
+					// Update CSRF token setelah data dimuat
+					$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
 
 					const dataTable = new simpleDatatables.DataTable("#datatable", {
 						sortable: false,
@@ -419,25 +353,29 @@
 		}
 	});
 
-	// menjalankan modal
 	$(document).ready(function() {
-		$(document).on('hidden.bs.modal', '#confirm', function() {
+		$(document).on('hidden.bs.modal', '#perbaikan', function() {
 			$(this).remove();
 		});
 
-		$(document).on('click', '.btn-confirm', function() {
-			var modalID = '#confirm';
+		$(document).on('click', '.btn-perbaikan', function() {
+			var modalID = '#perbaikan';
 
 			// AJAX request
 			$.ajax({
-				url: '<?= site_url('printerpembelian/modal_confirm') ?>',
+				url: '<?= site_url('printerpembelian/modal_perbaikan') ?>',
 				type: 'POST',
 				data: {
 					modal: $(this).data('modal'),
+					'<?= $this->security->get_csrf_token_name() ?>': $('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val()
 				},
 				success: function(response) {
+					// Update CSRF token dan tampilkan modal
+					if (response.token) {
+						$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
+					}
 					// console.log(response); // Debug: lihat isi respons
-					$('#modal-container').html(response);
+					$('#modal-perbaikan').html(response.html);
 					$(modalID).modal('show');
 					// // Inisialisasi choices
 					const choices = new Choices($(modalID + ' .choices')[0]);

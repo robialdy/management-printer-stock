@@ -22,7 +22,7 @@ class Users extends CI_Controller
 		$this->form_validation->set_rules('username', 'Username', 'required|trim|is_unique[users.username]');
 		$this->form_validation->set_rules('password1', 'Password', 'required|trim');
 
-		if ($this->form_validation->run() == FALSE) {			
+		if ($this->form_validation->run() == FALSE) {
 			$data = [
 				'title'	=> 'User Manage',
 				'data_user'	=> $this->data_user,
@@ -78,7 +78,11 @@ class Users extends CI_Controller
 			$output .= '</tr>';
 		}
 
-		echo $output; 
+		header('Content-Type: application/json');
+		echo json_encode([
+			'html' => $output,
+			'token' => $this->security->get_csrf_hash(),
+		]);
 	}
 
 	public function delete($username)
@@ -87,5 +91,4 @@ class Users extends CI_Controller
 		$this->session->set_flashdata('notifSuccess', 'User Berhasil Dihapus!');
 		redirect('users');
 	}
-
 }

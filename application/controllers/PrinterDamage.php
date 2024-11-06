@@ -55,13 +55,13 @@ class PrinterDamage extends CI_Controller
                 <h6 class="mb-0 text-sm fw-normal">' . $i++ . '</h6>
             </td>
             <td class="text-center text-uppercase">
-                <h6 class="mb-0 text-sm fw-normal">' . $al->origin_name . '</h6>
+                <h6 class="mb-0 text-sm fw-normal">' . $al->origin . '</h6>
             </td>
 			<td class="text-center text-uppercase">
                 <h6 class="mb-0 text-sm fw-normal">' . $al->date_in . '</h6>
             </td>
 			<td class="text-center text-uppercase">
-                <h6 class="mb-0 text-sm fw-normal">' . $al->name_type . '</h6>
+                <h6 class="mb-0 text-sm fw-normal">' . $al->type_printer . '</h6>
             </td>
 			<td class="text-center text-uppercase">
                 <h6 class="mb-0 text-sm fw-normal">' . $al->printer_sn . '</h6>
@@ -80,6 +80,10 @@ class PrinterDamage extends CI_Controller
             </td>
 			<td class="text-center text-uppercase">
                 <h6 class="mb-0 text-sm fw-normal">' . $al->no_dummy .
+				'</h6>
+            </td>
+			<td class="text-center text-uppercase">
+                <h6 class="mb-0 text-sm fw-normal">' . $al->date_pengiriman .
 				'</h6>
             </td>
 			<td class="text-center text-uppercase">
@@ -111,19 +115,27 @@ class PrinterDamage extends CI_Controller
             </td>
 			<td class="text-center">
             	<a class="mb-0 text-sm fw-normal btn-file" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#file" data-modal="' . $al->id_damage . '">
-            	<i class="material-icons">cloud_upload</i>
+            	<i class="material-icons">upload_file</i>
+            </a>
+            </td>
+			<td class="text-center">
+            	<a class="mb-0 text-sm fw-normal btn-loan-file" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#loan_file" data-modal="' . $al->id_damage . '">
+            	<i class="material-icons">collections</i>
             </a>
             </td>
 			<td class="text-center">
             	<a class="mb-0 text-sm fw-normal btn-edit" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#edit" data-modal="' . $al->id_damage . '">
-            	<i class="material-icons">edit</i>
+            	<i class="material-icons">edit_note</i>
             </a>
             </td>
         </tr>';
 		}
 
 		header('Content-Type: application/json');
-		echo json_encode(['html' => $html]);
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash(),
+		]);
 	}
 
 	public function add_nodummy()
@@ -134,8 +146,8 @@ class PrinterDamage extends CI_Controller
 		if ($this->form_validation->run() == FALSE) {
 			redirect('damage');
 		} else {
-			$nodummy = $this->input->post('nodummy');
-			$idprinter = $this->input->post('idprinter'); //array
+			$nodummy = $this->input->post('nodummy', true);
+			$idprinter = $this->input->post('printersn', true); //array
 
 
 			$this->PrinterDamage_Model->add_nodummy($idprinter, $nodummy);
@@ -169,14 +181,14 @@ class PrinterDamage extends CI_Controller
 	public function edit_status()
 	{
 		$this->PrinterDamage_Model->edit_status();
-		$this->session->set_flashdata('notifSuccess', 'Status Sekarang Jadi ' . $this->input->post('return_cgk'));
+		$this->session->set_flashdata('notifSuccess', 'Status Sekarang Jadi ' . $this->input->post('return_cgk', true));
 		redirect('damage');
 	}
 
 	public function upload_file()
 	{
-		if ($this->input->post('name_file_indb')) {
-			$path = FCPATH . 'public/file_damage/' . $this->input->post('name_file_indb');
+		if ($this->input->post('name_file_indb', true)) {
+			$path = FCPATH . 'public/file_damage/' . $this->input->post('name_file_indb', true);
 			unlink($path);
 		}
 
@@ -192,7 +204,7 @@ class PrinterDamage extends CI_Controller
 			redirect('damage');
 		}
 
-		$id = $this->input->post('id_damage');
+		$id = $this->input->post('id_damage', true);
 		$this->db->where('id_damage', $id);
 		$this->db->update('printer_damage', ['file' => $new_file]);
 
@@ -202,7 +214,7 @@ class PrinterDamage extends CI_Controller
 
 	public function modal_edit()
 	{
-		$id_damage = $this->input->post('modal');
+		$id_damage = $this->input->post('modal', true);
 		$data = $this->PrinterDamage_Model->read_data_by_id($id_damage);
 
 		$html = '
@@ -219,6 +231,7 @@ class PrinterDamage extends CI_Controller
                     <h5 class="modal-title fw-bold" id="exampleModalLabel">BIAYA PERBAIKAN</h5>
                 </div>
                     <form action="' . site_url('printerdamage/edit') . '" method="post">
+						<input type="hidden" name="' . $this->security->get_csrf_token_name() . '" value="' . $this->security->get_csrf_hash() . '">
                         <input type="hidden" name="id_damage" value="' . $data->id_damage . '">
                         <div class="row">
                             <div class="col-4 mt-2">
@@ -255,6 +268,7 @@ class PrinterDamage extends CI_Controller
                     	<h5 class="modal-title fw-bold" id="exampleModalLabel">Edit Status</h5>
                 	</div>
 					<form action="' . site_url('printerdamage/edit_status') . '" method="post">
+						<input type="hidden" name="' . $this->security->get_csrf_token_name() . '" value="' . $this->security->get_csrf_hash() . '">
                         <input type="hidden" name="id_damage" value="' . $data->id_damage . '">
                         <div class="row">
                             <div class="col-4 mt-2">
@@ -276,12 +290,77 @@ class PrinterDamage extends CI_Controller
         </div>
     </div>';
 
-		echo $html;
+		header('Content-Type: application/json');
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash(),
+		]);
 	}
+
+	public function modal_loan_file()
+	{
+		$id_damage = $this->input->post('modal', true);
+		$data = $this->PrinterDamage_Model->read_data_by_id($id_damage); // Perbaiki variabel $data menjadi $detail
+
+		$html = '
+    <div class="modal fade" id="loan_file" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Bukti Transaksi</h5>';
+
+		if (substr($data->loan_file, -4) != ".pdf") {
+			$html .= '
+							<form action="' . site_url("printerlist/download_proof") . '" method="POST">
+							<input type="hidden" name="' . $this->security->get_csrf_token_name() . '" value="' . $this->security->get_csrf_hash() . '">
+								<input type="hidden" name="name_proof" value="' . $data->loan_file . '">
+								<button type="submit" class="btn p-0 mb-1 text-dark">
+									<i class="material-icons ms-2">download</i>
+								</button>
+							</form>';
+		}
+
+		$html .= '
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body text-center">';
+
+		if ($data->loan_file) {
+			if (substr($data->loan_file, -4) === ".pdf") {
+				$html .= '
+					<iframe src="' . base_url("public/proof_replacement/" . $data->loan_file) . '" 
+							width="100%" height="700px"></iframe>';
+			} else {
+				$html .= '
+					<div style="max-width: 100%; max-height: 700px; overflow: auto;">
+						<img src="' . base_url("public/proof_replacement/" . $data->loan_file) . '" 
+							 alt="Bukti Transaksi" class="img-fluid">
+					</div>';
+			}
+		} else {
+			$html .= '
+			<div class="text-dark fs-5"><i class="bi bi-exclamation-circle"></i> Tidak Ada Bukti Diupload Saat Peminjaman</div>
+        ';
+		}
+
+
+		$html .= '
+                </div>
+            </div>
+        </div>
+    </div>';
+
+		header('Content-Type: application/json');
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash(),
+		]);
+	}
+
 
 	public function modal_file()
 	{
-		$id_damage = $this->input->post('modal');
+		$id_damage = $this->input->post('modal', true);
 		$data = $this->PrinterDamage_Model->read_data_by_id($id_damage);
 
 		$html = '
@@ -349,12 +428,16 @@ class PrinterDamage extends CI_Controller
         </div>
     ';
 
-		echo $html;
+		header('Content-Type: application/json');
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash(),
+		]);
 	}
 
 	public function modal_kelengkapan()
 	{
-		$id_damage = $this->input->post('modal');
+		$id_damage = $this->input->post('modal', true);
 		$data = $this->PrinterDamage_Model->read_data_by_id($id_damage);
 
 		$html = '
@@ -408,7 +491,11 @@ class PrinterDamage extends CI_Controller
         </div>
     ';
 
-		echo $html;
+		header('Content-Type: application/json');
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash(),
+		]);
 	}
 
 
@@ -417,19 +504,19 @@ class PrinterDamage extends CI_Controller
 	public function export_excel()
 	{
 
-		$from_raw = $this->input->post('from'); // Format: 2024-09-18
-		$until_raw = $this->input->post('until'); // Format: 2024-09-30
+		$from_raw = $this->input->post('from', true); // Format: 2024-09-18
+		$until_raw = $this->input->post('until', true); // Format: 2024-09-30
 
 		if ($from_raw && $until_raw) {
 
 			// Konversi ke format 'Y-m-d H:i:s'
-			$from = date('d/m/Y', strtotime($from_raw));
-			$until = date('d/m/Y', strtotime($until_raw));
+			$from = date('d/m/y', strtotime($from_raw));
+			$until = date('d/m/y', strtotime($until_raw));
 
 			$data = $this->PrinterDamage_Model->export_excel_by_date($from, $until);
 		} else {
-			$no_dummy = $this->input->post('no_dummy');
-			
+			$no_dummy = $this->input->post('no_dummy', true);
+
 			$data = $this->PrinterDamage_Model->export_excel_by_dummy($no_dummy);
 		}
 
@@ -483,10 +570,10 @@ class PrinterDamage extends CI_Controller
 			$sheet->setCellValue('A' . $row, $i++);
 			$sheet->setCellValueExplicit('B' . $row, $dm->no_dummy, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
 			$sheet->setCellValue('C' . $row, $dm->date_pengiriman);
-			$sheet->setCellValue('D' . $row, $dm->origin_name);
+			$sheet->setCellValue('D' . $row, $dm->origin);
 			$sheet->setCellValue('E' . $row, $dm->cust_id);
 			$sheet->setCellValue('F' . $row, $dm->cust_name);
-			$sheet->setCellValue('G' . $row, $dm->name_type);
+			$sheet->setCellValue('G' . $row, $dm->type_printer);
 			$sheet->setCellValue('H' . $row, $dm->printer_sn);
 			$sheet->setCellValue('I' . $row, $dm->deskripsi);
 			$sheet->setCellValue('J' . $row, $dm->kelengkapan);
@@ -586,33 +673,30 @@ class PrinterDamage extends CI_Controller
 						'id_type' => $id_type,
 						'status' => 'DAMAGE',
 						'date_in' => date('d/m/Y H:i:s'),
-						'created_at'	=> date('d F Y H:i:s'),
 					];
+					$this->db->insert('printer_backup', $printer_data);
 
-					// cek jika datanya udah ada make pake yang ada kalo ga buat baru
-					$existing_printer = $this->db->get_where('printer_backup', ['printer_sn' => $printer_data['printer_sn']])->row();
-					if (!$existing_printer) {
-						$this->db->insert('printer_backup', $printer_data);
-						$id_printer = $this->db->insert_id();
-					} else {
-						$id_printer = $existing_printer->id_printer;
-					}
 
-					$printer_damage = [
-						'id_printer'	=> $id_printer,
-						'id_cust'		=> $cust_id,
-						'date_in'		=> date('d/m/Y H:i:s'),
+					$form_damage = [
+						'type_printer'	=> $row['G'],
+						'printer_sn'	=> $row['H'],
+						'origin'		=> $row['D'],
+						'type_cust'		=> '-',
+						'no_dummy'		=> $row['B'],
+						'cust_id'		=> $row['E'],
+						'cust_name'		=> $row['F'],
+						'date_in'		=> date('d/m/Y H:i:s'), //sama kaya yang di log
 						'kelengkapan'	=> $row['J'],
 						'deskripsi'		=> $row['I'],
 					];
-					$this->db->insert('printer_damage', $printer_damage);
+					$this->db->insert('printer_damage', $form_damage);
 
 					$log_data = [
 						'printer_sn'	=> $row['H'],
 						'cust_id'		=> $cust_id,
 						'cust_name'		=> $row['F'],
-						'date_out'		=> '*MASTER DATA',
-						'returned'		=> '*MASTER DATA',
+						'date_out'		=> '-',
+						'returned'		=> '-',
 						'status'		=> 'IN DAMAGE',
 						'created_at'	=> date('d/m/Y H:i:s'),
 					];

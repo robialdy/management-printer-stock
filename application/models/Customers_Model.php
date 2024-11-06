@@ -18,6 +18,17 @@ class Customers_Model extends CI_Model
 		return $this->db->where('status', 'ACTIVE')->order_by('created_at', 'DESC')->get('customers')->result();
 	}
 
+	public function read_data_cust_replc()
+	{
+		$this->db->select('printer_list_inagen.*, customers.*');
+		$this->db->from('printer_list_inagen');
+		$this->db->join('customers', 'customers.id_cust = printer_list_inagen.id_cust');
+		$this->db->where('customers.status', 'ACTIVE');
+		$this->db->group_by('customers.cust_name');
+		$query = $this->db->get();
+		return $query->result();
+	}
+
 	public function insertData()
 	{
 		$cust_name = strtoupper($this->input->post('name', true));
@@ -50,5 +61,6 @@ class Customers_Model extends CI_Model
 	{
 		$this->db->where('id_cust', $id);
 		$this->db->delete('customers');
+
 	}
 }

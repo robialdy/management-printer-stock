@@ -4,88 +4,79 @@ class PrinterPembelian_Model extends CI_Model
 {
 	public function read_data()
 	{
-		return $this->db->select('printer_pembelian.*, printer_backup.printer_sn, type_printer.name_type')->from('printer_pembelian')->join('printer_backup', 'printer_backup.id_printer = printer_pembelian.id_printer')->join('type_printer', 'printer_backup.id_type = type_printer.id_type')->order_by('date_out', 'DESC')->get()->result();
+		return $this->db->order_by('date_out', 'DESC')->get('printer_pembelian')->result();
 	}
 
 	public function read_data_damage()
 	{
-		return $this->db->select('printer_pembelian.*, printer_backup.printer_sn, type_printer.name_type')->from('printer_pembelian')->join('printer_backup', 'printer_backup.id_printer = printer_pembelian.id_printer')->join('type_printer', 'printer_backup.id_type = type_printer.id_type')->where('printer_pembelian.status', null)->get()->result();
+		return $this->db->where('status', null)->get('printer_pembelian')->result();
 	}
 
 	public function read_data_by_damage()
 	{
-		return $this->db->select('printer_pembelian.*, printer_backup.printer_sn, type_printer.name_type')->from('printer_pembelian')->join('printer_backup', 'printer_backup.id_printer = printer_pembelian.id_printer')->join('type_printer', 'printer_backup.id_type = type_printer.id_type')->where('printer_pembelian.status !=', null)->get()->result();
-		// return $this->db->where('status !=', null)->get('printer_pembelian')->result();
+		return $this->db->where('status !=', null)->get('printer_pembelian')->result();
 	}
 
 	public function insert()
 	{
-		$form_backup = [
-			'printer_sn' => $this->input->post('printer_sn'),
-			'id_type' => $this->input->post('type_printer'),
-			'origin' => 'BANDUNG',
-			'date_in' => date('d/m/Y H:i:s'),
-			'status' => 'BUYING',
-		];
-		$this->db->insert('printer_backup', $form_backup);
-
-		$id_backup = $this->db->insert_id();
-		$customer = $this->db->where('id_cust', $this->input->post('customer'))->get('customers')->row();
+		$customer = $this->db->where('id_cust', $this->input->post('customer', true))->get('customers')->row();
 
 		$form = [
-			'id_printer'	=> $id_backup,
+			'type_printer'	=> $this->input->post('type_printer', true),
+			'printer_sn'	=> $this->input->post('printer_sn', true),
 			'cust_id'		=> $customer->cust_id,
 			'cust_name'		=> $customer->cust_name,
+			'origin_name'	=> $customer->origin_name,
+			'type_cust'		=> $customer->type_cust,
 			'date_out'		=> date('d/m/Y H:i:s'),
-			'pic_it'		=> strtoupper($this->input->post('picit')),
-			'pic_user'		=> strtoupper($this->input->post('picuser')),
+			'pic_it'		=> strtoupper($this->input->post('picit', true)),
+			'pic_user'		=> strtoupper($this->input->post('picuser', true)),
 		];
 		$this->db->insert('printer_pembelian', $form);
 	}
 
 	public function damage()
 	{
-		$form_backup ['status'] = 'TEMPORARY REPLACEMENT';
-		$this->db->where('printer_sn', $this->input->post('printer_sn_temp'));
-		$this->db->update('printer_backup', $form_backup);
-
-		if ($this->input->post('picit') != null) {
-			$sn_temporary = strtoupper($this->input->post('picit'));
-		} else {
-			$sn_temporary = 'Tanpa Backup';
-		}
 
 		$form_pemb = [
 			'status'	=> 'PERBAIKAN',
-			'sn_temporary'	=> $this->input->post('printer_sn_temp'),
-			'pic_it_perbaikan' => $sn_temporary,
-			'pic_user_perbaikan' => strtoupper($this->input->post('picuser')),
+			'sn_temporary'	=> $this->input->post('printer_sn_temp', true),
+			'pic_it_perbaikan' => strtoupper($this->input->post('picit', true)),
+			'pic_user_perbaikan' => strtoupper($this->input->post('picuser', true)),
 		];
-		$this->db->where('id_printer_pembelian', $this->input->post('id_pembelian'));
+		$this->db->where('id_printer_pembelian', $this->input->post('id_pembelian', true));
 		$this->db->update('printer_pembelian', $form_pemb);
 
-		$data_pembelian = $this->db->get_where('printer_pembelian', ['id_printer_pembelian' => $this->input->post('id_pembelian')])->row();
+		$status['status'] = 'BORROWED BY BUYER';
+		$this->db->where('printer_sn', $this->input->post('printer_sn_temp', true));
+		$this->db->update('printer_backup', $status);
 
-		// customer
-		$cust = $this->db->get_where('customers', ['cust_name' => $data_pembelian->cust_name])->row();
-		// printer
+		// buat keperluan nyari data di tabel pembeliannya
+		$data_pem = $this->db->get_where('printer_pembelian', ['id_printer_pembelian' => $this->input->post('id_pembelian', true)])->row();
+
 
 		$form_damage = [
-			'id_printer' => $data_pembelian->id_printer,
-			'id_cust' => $cust->id_cust,
+			'type_printer'	=> $data_pem->type_printer,
+			'printer_sn'	=> $data_pem->printer_sn,
+			'origin'		=> $data_pem->origin_name,
+			'type_cust'		=> $data_pem->type_cust,
+			'cust_id'		=> $data_pem->cust_id,
+			'cust_name'		=> $data_pem->cust_name,
 			'date_in' => date('d/m/Y H:i:s'),
 			'kelengkapan' => '-',
-			'deskripsi' => $this->input->post('deskripsi'),
+			'deskripsi' => $this->input->post('deskripsi', true),
 			'status' => 'PEMBELIAN',
 		];
 		$this->db->insert('printer_damage', $form_damage);
+
+
 	}
 
 	public function set_default_backup()
 	{
-		if ($this->input->post('sn_backup') != null) {
+		if ($this->input->post('sn_backup', true) != null) {
 
-			if ($this->input->post('condition') == 'BARU') {
+			if ($this->input->post('condition', true) == 'BAGUS') {
 
 				$form = [
 					'status'	=> null,
@@ -93,16 +84,54 @@ class PrinterPembelian_Model extends CI_Model
 					'pic_it_perbaikan' => null,
 					'pic_user_perbaikan' => null,
 				];
-				$this->db->where('sn_temporary', $this->input->post('sn_backup'));
+				$this->db->where('sn_temporary', $this->input->post('sn_backup', true));
 				$this->db->update('printer_pembelian', $form);
-				
-				$this->db->delete('printer_damage', ['id_printer' => $this->input->post('id_printer')]);
 
 				$status['status'] = 'READY';
-				$this->db->where('printer_sn', $this->input->post('sn_backup'));
+				$this->db->where('printer_sn', $this->input->post('sn_backup', true));
 				$this->db->update('printer_backup', $status);
 
+				$this->db->delete('printer_damage', ['printer_sn' => $this->input->post('printersn', true)]);
 			} else {
+				$status['status'] = 'DAMAGE';
+				$this->db->where('printer_sn', $this->input->post('sn_backup', true));
+				$this->db->update('printer_backup', $status);
+
+				// masuk pembelian
+				$data_pembelian = $this->db->get_where('printer_pembelian', ['id_printer_pembelian' => $this->input->post('id_pem', true)])->row();
+
+				// masuk prnter_backup
+				$printer_backup = $this->db->select('printer_sn, name_type')->from('printer_backup')->join('type_printer', 'printer_backup.id_type = type_printer.id_type')->where('printer_backup.printer_sn', $this->input->post('sn_backup', true))->get()->row();
+
+				// menyatukan array
+				$kelengkapan = $this->input->post('kelengkapan', true);
+				$kelengkapan = implode(', ', $kelengkapan);
+
+				$form_damage = [
+					'type_printer'	=> $printer_backup->name_type,
+					'printer_sn'	=> $printer_backup->printer_sn,
+					'origin'		=> $data_pembelian->origin_name,
+					'type_cust'		=> $data_pembelian->type_cust,
+					'cust_id'		=> $data_pembelian->cust_id,
+					'cust_name'		=> $data_pembelian->cust_name,
+					'date_in'		=> date('d/m/Y H:i:s'), //sama kaya yang di log
+					'kelengkapan'	=> $kelengkapan,
+					'deskripsi'		=> strtoupper($this->input->post('deskripsi', true)),
+				];
+				$this->db->insert('printer_damage', $form_damage);
+
+				// update log
+				$form_log = [
+					'cust_id' => $data_pembelian->cust_id,
+					'cust_name' => $data_pembelian->cust_name,
+					'status'	=> 'IN DAMAGE',
+					'date_out'	=> '-',
+					'returned'	=> date('d/m/Y H:i:s'),
+				];
+				$this->db->where('printer_sn', $printer_backup->printer_sn);
+				$this->db->where('status', 'IN BACKUP'); //SEMENTARA
+				$this->db->update('printer_log', $form_log);
+
 
 				$form = [
 					'status'	=> null,
@@ -110,32 +139,12 @@ class PrinterPembelian_Model extends CI_Model
 					'pic_it_perbaikan' => null,
 					'pic_user_perbaikan' => null,
 				];
-				$this->db->where('sn_temporary', $this->input->post('sn_backup'));
+				$this->db->where('sn_temporary', $this->input->post('sn_backup', true));
 				$this->db->update('printer_pembelian', $form);
 
-				$status['status'] = 'DAMAGE';
-				$this->db->where('printer_sn', $this->input->post('sn_backup'));
-				$this->db->update('printer_backup', $status);
 
-				$cust = $this->db->where('cust_id', $this->input->post('cust_id'))->get('customers')->row();
-				$printer = $this->db->where('printer_sn', $this->input->post('sn_backup'))->get('printer_backup')->row();
-
-				// menyatukan array
-				$kelengkapan = $this->input->post('kelengkapan');
-				$kelengkapan = implode(', ', $kelengkapan);
-
-				$form_dam = [
-					'id_printer'	=> 	$printer->id_printer,
-					'id_cust'		=> 	$cust->id_cust,
-					'date_in'		=> date('d/m/Y H:i:s'),
-					'kelengkapan'	=> $kelengkapan,
-					'deskripsi'		=> strtoupper($this->input->post('deskripsi')),
-				];
-				$this->db->insert('printer_damage', $form_dam);
-
-				$this->db->delete('printer_damage', ['id_printer' => $this->input->post('id_printer')]);
+				$this->db->delete('printer_damage', ['printer_sn' => $this->input->post('printersn', true)]);
 			}
-
 		} else {
 			$form = [
 				'status'	=> null,
@@ -143,12 +152,11 @@ class PrinterPembelian_Model extends CI_Model
 				'pic_it_perbaikan' => null,
 				'pic_user_perbaikan' => null,
 			];
-			$this->db->where('id_printer_pembelian', $this->input->post('id_pembelian'));
+			$this->db->where('id_printer_pembelian', $this->input->post('id_pembelian', true));
 			$this->db->update('printer_pembelian', $form);
 
-			$this->db->delete('printer_damage', ['id_printer' => $this->input->post('id_printer')]);
+			$this->db->delete('printer_damage', ['printer_sn' => $this->input->post('printersn', true)]);
 		}
-
 	}
 
 	public function getPrinterById($id)
@@ -168,5 +176,4 @@ class PrinterPembelian_Model extends CI_Model
 		$query = $this->db->get('printer_pembelian');
 		return $query->row();
 	}
-
 }

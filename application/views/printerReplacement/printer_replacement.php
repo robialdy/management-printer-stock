@@ -47,7 +47,7 @@
 
 	<div class="card w-30">
 		<div class="card-body text-center">
-			<h1 class="text-gradient text-info"><span id="status2" countto="<?= $jumPrinter ?>"><?= $jumPrinter ?></span> <span class="text-lg ms-n2">Pcs</span></h1>
+			<h1 class="text-gradient text-info"><?= $jumPrinter ?> <span class="text-lg ms-n2">Pcs</span></h1>
 			<h6 class="mb-0 font-weight-bolder">Printer Backup</h6>
 			<p class="opacity-8 mb-0 text-sm">
 				<?php if (empty($dateTimeB->date_in) || $jumPrinter == 0): ?>
@@ -59,27 +59,6 @@
 		</div>
 	</div>
 </div>
-
-<!-- animasi count -->
-<script src="<?= base_url() ?>public/js/plugins/countup.min.js"></script>
-<script>
-	if (document.getElementById('status1')) {
-		const countUp = new CountUp('status1', document.getElementById("status1").getAttribute("countTo"));
-		if (!countUp.error) {
-			countUp.start();
-		} else {
-			console.error(countUp.error);
-		}
-	}
-	if (document.getElementById('status2')) {
-		const countUp = new CountUp('status2', document.getElementById("status2").getAttribute("countTo"));
-		if (!countUp.error) {
-			countUp.start();
-		} else {
-			console.error(countUp.error);
-		}
-	}
-</script>
 
 <!-- Button trigger modal -->
 <div class="row justify-content-end">
@@ -110,10 +89,10 @@
 <?php endif; ?>
 
 <!-- modal select printer -->
-<?php $this->load->view('modalSelectPrinter', ['printerselect' => $printerselect]) ?>
+<?php $this->load->view('printerreplacement/modalSelectPrinter', ['printerselect' => $printerselect]) ?>
 
 <!-- modal printer out -->
-<?php $this->load->view('modalPrinterOut')  ?>
+<?php $this->load->view('printerreplacement/modalPrinterOut')  ?>
 
 
 
@@ -161,7 +140,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<!-- lewat json boss biar ketika data banyak ga ada delay gaje -->
+
 						</tbody>
 					</table>
 				</div>
@@ -174,6 +153,7 @@
 	<!-- modal dimuat -->
 </div>
 
+<!-- SCRIPT TABLE -->
 <script>
 	$(document).ready(function() {
 		loadData(); // Memuat halaman
@@ -185,11 +165,17 @@
 			$.ajax({
 				url: "<?= base_url('printerreplacement/view_data_table') ?>",
 				type: "POST",
+				data: {
+					'<?= $this->security->get_csrf_token_name() ?>': '<?= $this->security->get_csrf_hash() ?>'
+				},
 				dataType: "json",
 				success: function(response) {
 					const tableBody = $('#datatable tbody');
 					tableBody.empty(); // Kosongkan tabel 
 					tableBody.append(response.html);
+
+					// Update CSRF token setelah data dimuat
+					$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
 
 					const dataTable = new simpleDatatables.DataTable("#datatable", {
 						sortable: false,
@@ -216,39 +202,42 @@
 </style>
 
 
+<!-- masih masalah karena csrf token -->
 
-
-
-
+<!-- SCRIPT SELECT PRINTER -->
 <script>
 	$(document).ready(function() {
-
 		$(document).on('hidden.bs.modal', '#modaldamageselect', function() {
 			$(this).remove();
 		});
 
 		$(document).on('click', '.btn-edit', function() {
-			var custID = $(this).data('id'); //milih berdasarkan custiomer
+			var custID = $(this).data('id');
 			var modalID = $(this).data('bs-target');
-			var showModal = '#modaldamageselect';
-			var id_list = $(this).data('idlist'); // Ambil ID Replacement
-			var snDamage = $(this).data('sndamage'); //dipake untuk pengecekan jika udh punya sn = kosong
+			var id_list = $(this).data('idlist');
+			var snDamage = $(this).data('sndamage');
 			var idRep = $(this).data('idreplacement');
 			var prinSn = $(this).data('prinsn');
 
-			// AJAX request
+			// AJAX request with CSRF token
 			$.ajax({
 				url: '<?= base_url('printerreplacement/modal_damage_select') ?>',
 				type: 'POST',
 				data: {
-					custID: custID, //kirim ke serve
+					custID: custID,
 					id_list: id_list,
 					snDamage: snDamage,
 					idRep: idRep,
-					prinSn: prinSn
+					prinSn: prinSn,
+					'<?= $this->security->get_csrf_token_name() ?>': $('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val()
 				},
+				dataType: "json",
 				success: function(response) {
-					$('#modal-container').html(response);
+					// Update CSRF token dan tampilkan modal
+					if (response.token) {
+						$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
+					}
+					$('#modal-container').html(response.html);
 					$(modalID).modal('show');
 				}
 			});

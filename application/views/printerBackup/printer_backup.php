@@ -84,19 +84,7 @@
 			</div>
 		</div>
 	</div>
-	
-	<!-- animasi count -->
-	<script src="<?= base_url() ?>public/js/plugins/countup.min.js"></script>
-	<script>
-		if (document.getElementById('status1')) {
-			const countUp = new CountUp('status1', document.getElementById("status1").getAttribute("countTo"));
-			if (!countUp.error) {
-				countUp.start();
-			} else {
-				console.error(countUp.error);
-			}
-		}
-	</script>
+
 </div>
 
 <div class="row">
@@ -110,7 +98,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="modalInsert" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-dialog-centered" role="document">
+	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="text-end me-1">
 				<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
@@ -122,82 +110,83 @@
 				</div>
 			</div>
 			<div class="modal-body">
-				<?= form_open('printerbackup/insert') ?>
+				<form action="<?= site_url('printerbackup/insert') ?>" method="POST">
+					<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
 
-				<!-- PRINTER S/N -->
-				<div class="row">
-					<div class="col-4 mt-2">
-						<label for="sn">PRINTER S/N <span class="text-danger">*</span></label>
-					</div>
-					<div class="col">
-						<div class="input-group input-group-dynamic mb-3">
-							<input type="text" class="form-control" id="sn" name="printersn" style="text-transform: uppercase;" placeholder="Enter printer s/n" required>
+					<!-- PRINTER S/N -->
+					<div class="row">
+						<div class="col-4 mt-2">
+							<label for="sn">PRINTER S/N <span class="text-danger">*</span></label>
+						</div>
+						<div class="col">
+							<div class="input-group input-group-dynamic mb-3">
+								<input type="text" class="form-control" id="sn" name="printersn" style="text-transform: uppercase;" placeholder="Enter printer s/n" required>
+							</div>
 						</div>
 					</div>
-				</div>
 
-				<!-- TYPE PRINTER -->
-				<div class="row">
-					<div class="col-4 mt-2">
-						<label for="typePrinter">TYPE PRINTER <span class="text-danger">*</span></label>
-					</div>
-					<div class="col">
-						<div class="input-group input-group-static mb-2">
-							<select class="choices form-select" id="typePrinter" name="typeprinter" required>
-								<option value="" selected disabled>ENTER TYPE PRINTER</option>
-								<?php foreach ($type_printer as $tp) : ?>
-									<option value="<?= $tp->id_type; ?>"><?= $tp->name_type; ?></option>
-								<?php endforeach; ?>
-							</select>
+					<!-- TYPE PRINTER -->
+					<div class="row">
+						<div class="col-4 mt-2">
+							<label for="typePrinter">TYPE PRINTER <span class="text-danger">*</span></label>
+						</div>
+						<div class="col">
+							<div class="input-group input-group-static mb-2">
+								<select class="choices form-select" id="typePrinter" name="typeprinter" required>
+									<option value="" selected disabled>ENTER TYPE PRINTER</option>
+									<?php foreach ($type_printer as $tp) : ?>
+										<option value="<?= $tp->id_type; ?>"><?= $tp->name_type; ?></option>
+									<?php endforeach; ?>
+								</select>
+							</div>
 						</div>
 					</div>
-				</div>
 
-				<!-- SN DAMAGE -->
-				<div class="row">
-					<div class="col-4 mt-2">
-						<label for="snDamage">SN DAMAGE <span class="text-danger">*</span></label>
-					</div>
-					<div class="col">
-						<div class="input-group input-group-static mb-2">
-							<select class="choices form-select" id="snDamage" name="return_cgk">
-								<option value="" selected disabled>ENTER SN DAMAGE</option>
-								<?php foreach ($sndamage as $sg) : ?>
-									<option value="<?= $sg->id_printer; ?>"><?= $sg->printer_sn; ?></option>
-								<?php endforeach; ?>
-							</select>
+					<!-- SN DAMAGE -->
+					<div class="row">
+						<div class="col-4 mt-2">
+							<label for="snDamage">SN DAMAGE <span class="text-danger">*</span></label>
+						</div>
+						<div class="col">
+							<div class="input-group input-group-static mb-2">
+								<select class="choices form-select" id="snDamage" name="sn_damage">
+									<option value="" selected disabled>ENTER SN DAMAGE</option>
+									<?php foreach ($sndamage as $sg) : ?>
+										<option value="<?= $sg->id_damage; ?>"><?= $sg->printer_sn; ?> - <?= $sg->cust_name; ?></option>
+									<?php endforeach; ?>
+								</select>
+							</div>
 						</div>
 					</div>
-				</div>
 
-				<div class="text-end mt-3">
-					<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
-					<button type="submit" class="btn bg-gradient-info text-white border-radius-sm" id="saveButton">Save changes</button>
-				</div>
+					<div class="text-end mt-3">
+						<button type="button" class="btn bg-white" data-bs-dismiss="modal">Close</button>
+						<button type="submit" class="btn bg-gradient-info text-white border-radius-sm" id="saveButton">Save changes</button>
+					</div>
 
-				<script>
-					document.addEventListener('DOMContentLoaded', function() {
-						const printerSNInput = document.getElementById('sn');
-						const snDamageSelect = document.getElementById('snDamage');
-						const saveButton = document.getElementById('saveButton');
+					<script>
+						document.addEventListener('DOMContentLoaded', function() {
+							const printerSNInput = document.getElementById('sn');
+							const snDamageSelect = document.getElementById('snDamage');
+							const saveButton = document.getElementById('saveButton');
 
-						function checkIfSame() {
-							const printerSN = printerSNInput.value.trim().toUpperCase();
-							const snDamage = snDamageSelect.options[snDamageSelect.selectedIndex].text.trim().toUpperCase();
+							function checkIfSame() {
+								const printerSN = printerSNInput.value.trim().toUpperCase();
+								const snDamage = snDamageSelect.options[snDamageSelect.selectedIndex].text.trim().toUpperCase();
 
-							if (printerSN === snDamage) {
-								saveButton.disabled = true;
-							} else {
-								saveButton.disabled = false;
+								if (printerSN === snDamage) {
+									saveButton.disabled = true;
+								} else {
+									saveButton.disabled = false;
+								}
 							}
-						}
 
-						printerSNInput.addEventListener('input', checkIfSame);
-						snDamageSelect.addEventListener('change', checkIfSame);
-					});
-				</script>
+							printerSNInput.addEventListener('input', checkIfSame);
+							snDamageSelect.addEventListener('change', checkIfSame);
+						});
+					</script>
 
-				<?= form_close() ?>
+				</form>
 			</div>
 		</div>
 	</div>
@@ -231,7 +220,6 @@
 						<thead>
 							<tr>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">No</th>
-								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">Origin</th>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">printer sn</th>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">type printer</th>
 								<th class="text-center text-uppercase text-info text-sm font-weight-bolder opacity-7 pb-2">date in</th>
@@ -260,11 +248,17 @@
 			$.ajax({
 				url: "<?= base_url('printerbackup/view_data_table') ?>",
 				type: "POST",
+				data: {
+					'<?= $this->security->get_csrf_token_name() ?>': '<?= $this->security->get_csrf_hash() ?>'
+				},
 				dataType: "json",
 				success: function(response) {
 					const tableBody = $('#datatable tbody');
 					tableBody.empty(); // Kosongkan tabel 
 					tableBody.append(response.html);
+
+					// Update CSRF token setelah data dimuat
+					$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
 
 					const dataTable = new simpleDatatables.DataTable("#datatable", {
 						sortable: false,
@@ -283,9 +277,9 @@
 	});
 </script>
 
+<!-- menampilan modal ketika buka page -->
 <?php $cek_prin = $this->session->flashdata('confirm'); ?>
 
-<!-- menampilan modal ketika buka page -->
 <?php if ($cek_prin) : ?>
 	<script>
 		document.addEventListener('DOMContentLoaded', function() {
@@ -297,6 +291,7 @@
 	</script>
 <?php endif; ?>
 
+<!-- DATANYA DISISIPKAN LEWAT FLASHDATA PERIKSA DI INSERT JIKA MAU LIHAT -->
 <div class="modal fade" id="modalcek" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered" role="document">
 		<div class="modal-content">
@@ -311,8 +306,9 @@
 			</div>
 			<div class="modal-body">
 				<form action="<?= site_url('printerbackup/update_printer_backup'); ?>" method="POST">
+					<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
 					<!-- printer mana yang mau itambahkan -->
-					<input type="hidden" name="id_prin_cgk" value="<?= $cek_prin['id_prin_cgk'] ?>">
+					<input type="hidden" name="sn_damage" value="<?= $cek_prin['sn_damage'] ?>">
 
 					<input type="hidden" name="printer_sn" value="<?= $cek_prin['sn'] ?>">
 					<input type="hidden" name="id_prin" value="<?= $cek_prin['id_prin'] ?>">

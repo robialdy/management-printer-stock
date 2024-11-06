@@ -29,29 +29,38 @@
 	}
 </script>
 
+<?php if ($this->session->flashdata('notifError')) :  ?>
+	<script>
+		window.onload = function() {
+			showErrorMessage();
+		};
+	</script>
+<?php endif; ?>
+
+<script>
+	function showErrorMessage() {
+		Swal.fire({
+			icon: 'error',
+			title: 'Oops...',
+			text: '<?= $this->session->flashdata('notifError') ?>',
+			confirmButtonText: 'OK'
+		});
+	}
+</script>
+
 
 <div class="row">
-	<div class="col-lg-6 col-md-6 mt-3 mb-3">
-		<div class="card border-radius-md z-index-2" style="height: 200px;">
-			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-				<div class="bg-gradient-info shadow-info border-radius-sm py-3 pe-1 text-center">
-					<span class="text-white fs-1 fw-light"><?= $jumlah_data ?></span>
-				</div>
-			</div>
-			<div class="card-body text-center">
-				<p class="text-md fw-normal">Total Master Data Type Printer</p>
-				<hr class="dark horizontal">
-				<div class="d-flex ">
-					<i class="material-icons text-sm my-auto me-1">schedule</i>
-					<p class="mb-0 text-sm">
-						<?php if (!empty($date_time->created_at)): ?>
-							<?= $date_time->created_at ?>
-						<?php else: ?>
-							null
-						<?php endif; ?>
-					</p>
-				</div>
-			</div>
+	<div class="card w-30 ms-5">
+		<div class="card-body text-center">
+			<h1 class="text-gradient text-info"><?= $jumlah_data ?> <span class="text-lg ms-n2">Pcs</span></h1>
+			<h6 class="mb-0 font-weight-bolder">Type Printer</h6>
+			<p class="opacity-8 mb-0 text-sm">
+				<?php if (!empty($date_time->created_at)): ?>
+					<?= $date_time->created_at ?>
+				<?php else: ?>
+					null
+				<?php endif; ?>
+			</p>
 		</div>
 	</div>
 </div>
@@ -157,11 +166,17 @@
 			$.ajax({
 				url: "<?= base_url('typeprinter/view_data_table') ?>",
 				type: "POST",
+				data: {
+					'<?= $this->security->get_csrf_token_name() ?>': '<?= $this->security->get_csrf_hash() ?>'
+				},
 				dataType: "json",
 				success: function(response) {
 					const tableBody = $('#datatable tbody');
 					tableBody.empty(); // Kosongkan tabel 
 					tableBody.append(response.html);
+
+					// Update CSRF token setelah data dimuat
+					$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
 
 					const dataTable = new simpleDatatables.DataTable("#datatable", {
 						sortable: false,

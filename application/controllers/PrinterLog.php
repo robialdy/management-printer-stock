@@ -5,7 +5,7 @@ class PrinterLog extends CI_Controller
 {
 	public $data_user, $Auth_Model;
 	public function __construct()
-{
+	{
 		parent::__construct();
 		if (!$this->session->userdata('data_user')) {
 			redirect('auth');
@@ -57,15 +57,18 @@ class PrinterLog extends CI_Controller
 		}
 
 		header('Content-Type: application/json');
-		echo json_encode(['html' => $html]);
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash(),
+		]);
 	}
 
 	public function modal_detail()
 	{
-		$printer_sn = $this->input->post('modal');
+		$printer_sn = $this->input->post('modal', true);
 		$data = $this->Printer_Log_Model->read_data($printer_sn);
 
-			$html = '
+		$html = '
         <div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -78,16 +81,16 @@ class PrinterLog extends CI_Controller
                         <h5 class="modal-title fw-bold" id="exampleModalLabel">History Printer SN</h5>
                         <small>Detail Tentang Printer, Pernah Digunakan Siapa Saja</small>';
 
-			// Ambil data pertama untuk mendapatkan printer_sn
-			$html .= '<h5 class="font-weight-normal text-info text-gradient mt-2">SN ' . $data[0]->printer_sn . '</h5>
+		// Ambil data pertama untuk mendapatkan printer_sn
+		$html .= '<h5 class="font-weight-normal text-info text-gradient mt-2">SN ' . $data[0]->printer_sn . '</h5>
                     </div>
                     <div class="modal-body">
                         <div class="timeline timeline-one-side" data-timeline-axis-style="dotted">
         ';
 
-			// Looping untuk setiap log printer
-			foreach ($data as $log_detail) {
-				$html .= '
+		// Looping untuk setiap log printer
+		foreach ($data as $log_detail) {
+			$html .= '
             <div class="timeline-block mb-3">
                 <span class="timeline-step bg-dark p-3 d-flex justify-content-center align-items-center">
                     <i class="material-icons text-white text-sm opacity-10">print</i>
@@ -95,11 +98,11 @@ class PrinterLog extends CI_Controller
                 <div class="timeline-content pt-1">
                     <h6 class="text-dark text-sm font-weight-bold mb-0">' . $log_detail->cust_name;
 
-				if ($log_detail->status != '-') {
-					$html .= '<span class="badge badge-' . ($log_detail->status == 'IN DAMAGE' ? 'danger' : ($log_detail->status == 'IN CUSTOMER' ? 'warning' : 'success')) . '">' . $log_detail->status . '</span>';
-				}
+			if ($log_detail->status != '-') {
+				$html .= '<span class="badge badge-' . ($log_detail->status == 'IN DAMAGE' ? 'danger' : ($log_detail->status == 'IN CUSTOMER' ? 'warning' : 'success')) . '">' . $log_detail->status . '</span>';
+			}
 
-				$html .= '
+			$html .= '
                     </h6>
                     <p class="text-secondary text-xs mb-0">' . $log_detail->cust_id . '</p>
                     <p class="text-sm text-dark mt-3 mb-2">
@@ -108,9 +111,9 @@ class PrinterLog extends CI_Controller
                 </div>
             </div>
             ';
-			}
+		}
 
-			$html .= '
+		$html .= '
                         </div>
                     </div>
                 </div>
@@ -118,10 +121,10 @@ class PrinterLog extends CI_Controller
         </div>
         ';
 
-			echo $html;
-		}
+		header('Content-Type: application/json');
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash(),
+		]);
 	}
-
-
-
-
+}

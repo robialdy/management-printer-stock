@@ -4,12 +4,12 @@ class Users_Model extends CI_Model
 {
 	public function readData_a($username)
 	{
-		return $this->db->where('role', 'Admin')->where_not_in('username', $username)->order_by('created_at', 'DESC')->get('users')->result_array();
+		return $this->db->where('role', 'Admin')->order_by('created_at', 'DESC')->get('users')->result_array();
 	}
 
 	public function readData_m($username)
 	{
-		return $this->db->where('role', 'SUPER ADMIN')->where_not_in('username', $username)->order_by('created_at', 'DESC')->get('users')->result_array();
+		return $this->db->where('role', 'SUPER ADMIN')->order_by('created_at', 'DESC')->get('users')->result_array();
 	}
 
 	public function insert()

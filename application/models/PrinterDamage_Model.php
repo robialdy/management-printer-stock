@@ -4,132 +4,57 @@ class PrinterDamage_Model extends CI_Model
 {
 	public function read_data()
 	{
-		$this->db->select('printer_damage.*, customers.origin_name, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust, type_printer.name_type');
-		$this->db->from('printer_damage');
-		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
-		$this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
-		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
-		$this->db->order_by('printer_damage.date_in', 'DESC');
-		$query = $this->db->get();
-		return $query->result();
+		return $this->db->order_by('date_in', 'DESC')->get('printer_damage')->result();
 	}
-
-	public function read_data_with_type()
-	{
-		// Ambil semua jenis printer
-		$printer_types = $this->type_printer();
-
-		// Pilih kolom yang diinginkan
-		$this->db->select('printer_damage.*, customers.origin_name, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust, type_printer.name_type');
-
-		// Tambahkan perhitungan total printer berdasarkan name_type
-		foreach ($printer_types as $type) {
-			$name_type = str_replace('-', '_', $type->name_type);
-			$this->db->select("SUM(CASE WHEN type_printer.name_type = '{$type->name_type}' THEN 1 ELSE 0 END) as total_{$name_type}");
-		}
-
-		// Query dari tabel printer_damage dengan join beberapa tabel terkait
-		$this->db->from('printer_damage');
-		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
-		$this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
-		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
-
-		// Group by berdasarkan jenis printer
-		$this->db->group_by('type_printer.name_type');
-
-		// Urutkan berdasarkan tanggal masuk
-		$this->db->order_by('printer_damage.date_in', 'DESC');
-
-		// Eksekusi query
-		$query = $this->db->get();
-		return $query->result();
-	}
-	public function type_printer()
-	{
-		return $this->db->order_by('created_at', 'DESC')->get('type_printer')->result();
-	}
-
-
+	// EDIT DI DAMAGE
 	public function read_data_by_id($id_damage)
 	{
-		$this->db->select('printer_damage.*, customers.origin_name, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust, type_printer.name_type');
-		$this->db->from('printer_damage');
-		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
-		$this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
-		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
-		$this->db->where('printer_damage.id_damage', $id_damage);
-		$this->db->order_by('printer_damage.date_in', 'DESC');
-		$query = $this->db->get();
+
+		$this->db->select('*');
+		$this->db->where('id_damage', $id_damage);
+		$query = $this->db->get('printer_damage');
 		return $query->row();
 	}
 
+	// READ DATA UNTUK MILIH NO DUMMY YANG MASIH KOSONG
 	public function read_data_nodummy()
 	{
-		$this->db->select('printer_damage.*, customers.origin_name, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust, type_printer.name_type');
-		$this->db->from('printer_damage');
-		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
-		$this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
-		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
-		$this->db->where('printer_damage.no_dummy', '-');
-		$this->db->order_by('printer_damage.date_in', 'DESC');
-		$query = $this->db->get();
-		return $query->result();
+		return $this->db->where('no_dummy', '-')->get('printer_damage')->result();
 	}
 
+		// READ DATA UNTUK MILIH NO DUMMY YANG TERSEDIA
 	public function read_data_dummy()
 	{
 		return $this->db->order_by('date_in', 'DESC')->where('no_dummy !=', '-')->group_by('no_dummy')->get('printer_damage')->result();
 	}
 
-	public function read_data_return_cgk()
-	{
-		$this->db->select('printer_damage.*, customers.origin_name, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust, type_printer.name_type');
-		$this->db->from('printer_damage');
-		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
-		$this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
-		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
-		$this->db->where('printer_damage.no_dummy !=', '-');
-		$this->db->where('printer_damage.return_cgk', '-');
-		$this->db->order_by('printer_damage.date_in', 'DESC');
-		$query = $this->db->get();
-		return $query->result();
-	}
-
+	// EXPORT BERDASARKAN DATA DARI NO DUMMY
 	public function export_excel_by_dummy($no_dummy)
 	{
-		$this->db->select('printer_damage.*, customers.origin_name, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust, type_printer.name_type');
-		$this->db->from('printer_damage');
-		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
-		$this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
-		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
-		$this->db->where('printer_damage.no_dummy', $no_dummy);
-		$this->db->order_by('printer_damage.date_in', 'DESC');
-		$query = $this->db->get();
+		$this->db->select('*');
+		$this->db->where('no_dummy', $no_dummy);
+		$this->db->order_by('date_in', 'DESC');
+		$query = $this->db->get('printer_damage');
 		return $query->result();
 	}
 
+	// EXPORT BERDASARKAN WAKTU
 	public function export_excel_by_date($from, $until)
 	{
-		$this->db->select('printer_damage.*, customers.origin_name, printer_backup.printer_sn, customers.cust_id, customers.cust_name, customers.type_cust, type_printer.name_type');
-		$this->db->from('printer_damage');
-		$this->db->join('printer_backup', 'printer_damage.id_printer = printer_backup.id_printer');
-		$this->db->join('customers', 'printer_damage.id_cust = customers.id_cust');
-		$this->db->join('type_printer', 'printer_backup.id_type = type_printer.id_type');
-		$this->db->where('printer_damage.no_dummy !=', '-');
-
-		$this->db->where('printer_damage.date_in >=', $from . ' 00:00:00');
-		$this->db->where('printer_damage.date_in <=', $until . ' 23:59:59');
-
-		$this->db->order_by('printer_damage.date_in', 'DESC');
-		$query = $this->db->get();
+		$this->db->select('*');
+		$this->db->where('no_dummy !=', '-');
+		$this->db->where('date_pengiriman >=', $from);
+		$this->db->where('date_pengiriman <=', $until);
+		$this->db->order_by('date_pengiriman', 'DESC');
+		$query = $this->db->get('printer_damage');
 		return $query->result();
 	}
 
-	public function add_nodummy($idprinter, $nodummy) // idprinter = array
+	public function add_nodummy($id_damage, $nodummy) // printersn = array
 	{
-		foreach ($idprinter as $id_prin) {
+		foreach ($id_damage as $prinsn) {
 			// Lakukan update untuk setiap printer yang dipilih
-			$this->db->where('id_printer', $id_prin);
+			$this->db->where('id_damage', $prinsn);
 			$this->db->update('printer_damage', ['no_dummy' => $nodummy, 'date_pengiriman' => date('d/m/y')]); // Sesuaikan nama tabel dan kolom
 		}
 	}
@@ -137,26 +62,40 @@ class PrinterDamage_Model extends CI_Model
 	public function add_damage()
 	{
 		// mengambil value
-		$id_printer_and_cust = $this->input->post('idprinter'); // isinya id printer dan cust
+		$id_printer_and_cust = $this->input->post('idprinter', true); // isinya id printer dan cust
 		$values = explode('|', $id_printer_and_cust);
 		$id_printer = $values[0];
 		$id_cust = $values[1];
+
+		// masuk idpinter
+		$printer_list = $this->db->where('id_printer', $id_printer)->get('printer_list_inagen')->row();
 
 		// update data printer
 		$status['status'] = 'DAMAGE';
 		$this->db->where('id_printer', $id_printer);
 		$this->db->update('printer_backup', $status);
-
 		// menyatukan array
-		$kelengkapan = $this->input->post('kelengkapan');
+		$kelengkapan = $this->input->post('kelengkapan', true);
 		$kelengkapan = implode(', ', $kelengkapan);
+
+		// masuk printer backup
+		$printer_backup = $this->db->select('printer_sn, name_type')->from('printer_backup')->join('type_printer', 'printer_backup.id_type = type_printer.id_type')->where('printer_backup.id_printer', $id_printer)->get()->row();
+
+		// update data printer
+		$customer = $this->db->where('id_cust', $id_cust)->get('customers')->row();
+
 		// kirim ke damage
 		$form_del = [
-			'id_printer'	=> 	$id_printer,
-			'id_cust'		=> 	$id_cust,
+			'type_printer'	=> $printer_backup->name_type,
+			'printer_sn'	=> $printer_backup->printer_sn,
+			'origin'		=> $customer->origin_name,
+			'type_cust'		=> $customer->type_cust,
+			'cust_id'		=> $customer->cust_id,
+			'cust_name'		=> $customer->cust_name,
 			'date_in'		=> date('d/m/Y H:i:s'), //sama kaya yang di log
 			'kelengkapan'	=> $kelengkapan,
-			'deskripsi'		=> strtoupper($this->input->post('deskripsi')),
+			'deskripsi'		=> strtoupper($this->input->post('deskripsi', true)),
+			'loan_file'		=> $printer_list->proof,
 		];
 		$this->db->insert('printer_damage', $form_del);
 
@@ -170,26 +109,36 @@ class PrinterDamage_Model extends CI_Model
 		$this->db->where('status', 'IN CUSTOMER');
 		$this->db->update('printer_log', $form_log);
 
-		// delete list
-		$this->db->delete('printer_list_inagen', ['id_printer' => $id_printer]);
+		$this->db->where('id_cust', $id_cust);
+		$customer = $this->db->get('customers')->row();
+
+		if ($customer->status == 'IN-ACTIVE') {
+			// delete list
+			$this->db->delete('printer_list_inagen', ['id_printer' => $id_printer]);
+			$this->db->delete('printer_summary', ['id_printer' => $id_printer]);
+		} else {
+			// delete list
+			$this->db->delete('printer_list_inagen', ['id_printer' => $id_printer]);
+		}
+
 	}
 
 	public function edit()
 	{
 		$form_data = [
-			'biaya_perbaikan'		=> $this->input->post('biaya'),
-			'status_pembayaran' => $this->input->post('status_pembayaran'),
+			'biaya_perbaikan'		=> $this->input->post('biaya', true),
+			'status_pembayaran' => $this->input->post('status_pembayaran',true),
 		];
-		$this->db->where('id_damage', $this->input->post('id_damage'));
+		$this->db->where('id_damage', $this->input->post('id_damage', true));
 		$this->db->update('printer_damage', $form_data);
 	}
 
 	public function edit_status()
 	{
 		$form_damage = [
-			'status' => strtoupper($this->input->post('return_cgk')),
+			'status' => strtoupper($this->input->post('return_cgk', true)),
 		];
-		$this->db->where('id_damage', $this->input->post('id_damage'));
+		$this->db->where('id_damage', $this->input->post('id_damage', true));
 		$this->db->update('printer_damage', $form_damage);
 	}
 

@@ -10,6 +10,7 @@
 <div class="row">
 	<div class="col-auto ms-auto me-5">
 		<form action="<?= site_url('printerlist/export_excel') ?>" method="POST">
+			<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
 			<button type="submit" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#modalInsert">
 				<i class="material-icons me-1">download</i>Download Report
 			</button>
@@ -59,6 +60,10 @@
 	</div>
 </div>
 
+<div id="modal-container">
+
+</div>
+
 <script src="<?= base_url('public/js/jquery.min.js') ?>"></script>
 
 <script type="text/javascript">
@@ -72,11 +77,17 @@
 			$.ajax({
 				url: "<?= base_url('printerlist/view_data_table_summary') ?>",
 				type: "POST",
+				data: {
+					'<?= $this->security->get_csrf_token_name() ?>': '<?= $this->security->get_csrf_hash() ?>'
+				},
 				dataType: "json",
 				success: function(response) {
 					const tableBody = $('#datatable tbody');
 					tableBody.empty(); // Kosongkan tabel 
 					tableBody.append(response.html);
+
+					// Update CSRF token setelah data dimuat
+					$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
 
 					const dataTable = new simpleDatatables.DataTable("#datatable", {
 						sortable: false,
@@ -92,6 +103,37 @@
 				}
 			});
 		}
+	});
+
+	$(document).ready(function() {
+		$(document).on('hidden.bs.modal', '#detail', function() {
+			$(this).remove();
+		});
+
+		$(document).on('click', '.btn-detail', function() {
+			var modalID = '#detail';
+
+			// AJAX request
+			$.ajax({
+				url: '<?= site_url('printerlist/modal_detail_summary') ?>',
+				type: 'POST',
+				data: {
+					modal: $(this).data('modal'),
+					'<?= $this->security->get_csrf_token_name() ?>': $('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val()
+				},
+				dataType: "json",
+				success: function(response) {
+					// Update CSRF token dan tampilkan modal
+					if (response.token) {
+						$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
+					}
+					$('#modal-container').html(response.html);
+					$(modalID).modal('show');
+					// Inisialisasi choices
+					const choices = new Choices($(modalID + ' .choices')[0]);
+				},
+			});
+		});
 	});
 </script>
 

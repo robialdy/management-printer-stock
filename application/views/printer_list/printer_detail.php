@@ -33,7 +33,7 @@
 
 	<div class="card w-30">
 		<div class="card-body text-center">
-			<h1 class="text-gradient text-info"><span id="status2" countto="<?= $jum_data ?>"><?= $jum_data ?></span> <span class="text-lg ms-n2">Pcs</span></h1>
+			<h1 class="text-gradient text-info"><?= $jum_data ?> <span class="text-lg ms-n2">Pcs</span></h1>
 			<h6 class="mb-0 font-weight-bolder">Printer List</h6>
 			<p class="opacity-8 mb-0 text-sm">
 				<?php if (empty($time->date_out) || $jum_data == 0): ?>
@@ -47,7 +47,7 @@
 
 	<div class="card w-30">
 		<div class="card-body text-center">
-			<h1 class="text-gradient text-info"><span id="status1" countto="<?= $jum_printer ?>"><?= $jum_printer ?></span> <span class="text-lg ms-n2">Pcs</span></h1>
+			<h1 class="text-gradient text-info"><?= $jum_printer ?> <span class="text-lg ms-n2">Pcs</span></h1>
 			<h6 class="mb-0 font-weight-bolder">Printer Backup</h6>
 			<p class="opacity-8 mb-0 text-sm">
 				<?php if (!empty($dateTimeP->created_at)): ?>
@@ -60,30 +60,10 @@
 	</div>
 </div>
 
-<!-- animasi count -->
-<script src="<?= base_url() ?>public/js/plugins/countup.min.js"></script>
-<script>
-	if (document.getElementById('status1')) {
-		const countUp = new CountUp('status1', document.getElementById("status1").getAttribute("countTo"));
-		if (!countUp.error) {
-			countUp.start();
-		} else {
-			console.error(countUp.error);
-		}
-	}
-	if (document.getElementById('status2')) {
-		const countUp = new CountUp('status2', document.getElementById("status2").getAttribute("countTo"));
-		if (!countUp.error) {
-			countUp.start();
-		} else {
-			console.error(countUp.error);
-		}
-	}
-</script>
-
 <div class="row justify-content-end">
 	<div class="col-auto">
 		<form action="<?= base_url('printerlist/import_excel') ?>" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
 			<label for="file">Pilih File Excel:</label>
 			<input type="file" name="excel_file" accept=".xlsx" required>
 			<input type="submit" value="Upload">
@@ -97,13 +77,6 @@
 </div>
 
 <?php $this->load->view('printer_list/printer_out'); ?>
-
-<style>
-	/* css di file sistem material-dashboard.css */
-	/* .dataTable-wrapper .dataTable-container .table tbody tr td {
-		padding: .75rem 1.5rem
-	} */
-</style>
 
 
 <div id="loading" style="display: none; position: absolute; top: 120%; left: 50%; transform: translate(-50%, -50%); z-index: 10;">
@@ -165,11 +138,18 @@
 			$.ajax({
 				url: "<?= base_url('printerlist/view_data_table') ?>",
 				type: "POST",
+				data: {
+					'<?= $this->security->get_csrf_token_name() ?>': '<?= $this->security->get_csrf_hash() ?>'
+				},
 				dataType: "json",
 				success: function(response) {
 					const tableBody = $('#datatable tbody');
 					tableBody.empty(); // Kosongkan tabel 
 					tableBody.append(response.html);
+
+					// Update CSRF token setelah data dimuat
+					$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
+
 
 					const dataTable = new simpleDatatables.DataTable("#datatable", {
 						sortable: false,
@@ -188,36 +168,6 @@
 	});
 </script>
 
-<!-- Modal kelengkapan-->
-<?php foreach ($printer_detail as $pd) : ?>
-	<div class="modal fade" id="kelengkapan-<?= $pd->id_printer_list ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" role="document">
-			<div class="modal-content">
-				<div class="text-end me-1">
-					<button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="text-start ms-3">
-					<h5 class="modal-title fw-bold" id="exampleModalLabel">KELENGKAPAN</h5>
-					<small>Detail Kelengkapan Printer Peminjaman</small>
-				</div>
-				<div class="modal-body">
-					<div class="mx-3 mt-2">
-						<h5 class="font-weight-normal text-info text-gradient">Printer SN <?= $pd->printer_sn; ?></h5>
-						<blockquote class="blockquote mb-0">
-							<p class="text-dark ms-3"><?= $pd->kelengkapan; ?></p>
-						</blockquote>
-					</div>
-
-					<div class="text-end mt-3">
-						<button type="button" class="btn bg-white shadow" data-bs-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-<?php endforeach; ?>
 
 <!-- Modal send printer-->
 <?php foreach ($printer_detail as $pd) : ?>
@@ -231,11 +181,12 @@
 				</div>
 				<div class="text-start ms-3">
 					<h5 class="modal-title fw-bold" id="exampleModalLabel">SEND TO PRINTER BACKUP</h5>
-					<small>Apakah Anda Yakin Ingin Memindahkan Printer Dengan SN <?= $pd->printer_sn ?> Ke Backup?</small>
+					<small>Cust <?= $pd->cust_name ?> Telah IN-ACTIVE Printer akan dipindahkan menuju (Printer Backup). Lakukan Penukaran Setelah Printer SN <?= $pd->printer_sn ?> dipindahkan!</small>
 				</div>
 				<div class="modal-body">
 
 					<form action="<?= site_url('printerlist/send_to_backup'); ?>" method="POST">
+						<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
 
 						<input type="hidden" name="id_printer" value="<?= $pd->id_printer; ?>">
 						<input type="hidden" name="printer_sn" value="<?= $pd->printer_sn; ?>">

@@ -42,6 +42,10 @@
 	</div>
 </div>
 
+<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>"
+	value="<?= $this->security->get_csrf_hash() ?>">
+
+
 <div id="modal-container">
 	<!-- modal dimuat -->
 </div>
@@ -59,11 +63,17 @@
 			$.ajax({
 				url: "<?= base_url('printerlog/view_data_table') ?>",
 				type: "POST",
+				data: {
+					'<?= $this->security->get_csrf_token_name() ?>': '<?= $this->security->get_csrf_hash() ?>'
+				},
 				dataType: "json",
 				success: function(response) {
 					const tableBody = $('#datatable tbody');
 					tableBody.empty(); // Kosongkan tabel 
 					tableBody.append(response.html);
+
+					// Update CSRF token setelah data dimuat
+					$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
 
 					const dataTable = new simpleDatatables.DataTable("#datatable", {
 						sortable: false,
@@ -96,9 +106,15 @@
 				type: 'POST',
 				data: {
 					modal: $(this).data('modal'),
+					'<?= $this->security->get_csrf_token_name() ?>': $('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val()
 				},
+				dataType: "json",
 				success: function(response) {
-					$('#modal-container').html(response);
+					// Update CSRF token dan tampilkan modal
+					if (response.token) {
+						$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
+					}
+					$('#modal-container').html(response.html);
 					$(modalID).modal('show');
 				},
 			});

@@ -16,7 +16,7 @@ class PrinterBackup_Model extends CI_Model
 	public function readData()
 	{
 		// Ambil semua jenis printer
-		$printer_types = $this->type_printer();
+		$printer_types = $this->_type_printer();
 
 		// Pilih kolom yang diinginkan
 		$this->db->select('printer_backup.*, type_printer.name_type');
@@ -38,8 +38,20 @@ class PrinterBackup_Model extends CI_Model
 		return $query->result_array();
 	}
 
+	// di backup ini
+	public function read_data_return_cgk()
+	{
 
-	public function type_printer()
+		$this->db->select('*');
+		$this->db->where('no_dummy !=', '-');
+		$this->db->where('return_cgk', '-');
+		$this->db->order_by('date_in', 'DESC');
+		$query = $this->db->get('printer_damage');
+		return $query->result();
+	}
+
+
+	private function _type_printer()
 	{
 		return $this->db->order_by('created_at', 'DESC')->get('type_printer')->result();
 	}
@@ -48,24 +60,23 @@ class PrinterBackup_Model extends CI_Model
 	public function insertData()
 	{
 		$printer_sn = strtoupper($this->input->post('printersn', true));
-		$return_cgk = $this->input->post('return_cgk', true); // isi valuue nya id
+		$sn_damage = $this->input->post('sn_damage', true); // isi valuue nya id
 
 		//update return_cgk damage
 		$form_data ['return_cgk'] = $printer_sn;
-		$this->db->where('id_printer', $return_cgk); //isinya id printer
+		$this->db->where('id_damage', $sn_damage); // id damage isinya
 		$this->db->update('printer_damage', $form_data);
 
-
+		// INSERT PRINTER BACKUP
 		$form_data = [
 			'printer_sn'	=> $printer_sn,
 			'id_type'	=> $this->input->post('typeprinter', true),
-			'origin'		=> 'BANDUNG',
 			'date_in'		=> date('d/m/Y H:i:s'),
 			'status'		=> 'READY',
 		];
 		$this->db->insert('printer_backup', $form_data);
 
-		// insert data baru di log
+		// INSERT LOG PRINTER
 		$form_log = [
 			'printer_sn'	=> $printer_sn,
 			'status'		=> 'IN BACKUP',
@@ -74,20 +85,18 @@ class PrinterBackup_Model extends CI_Model
 		$this->db->insert('printer_log', $form_log);
 	}
 
+	// UPDATE PRINTER KEMBALI KE BACKUP
 	public function update_printer_backup()
 	{
 		// UPDATE SN PRINTER
-		$printer_sn = $this->input->post('printer_sn');
-		$id_prin = $this->input->post('id_prin');
+		$printer_sn = $this->input->post('printer_sn', true);
+		$id_prin = $this->input->post('id_prin', true);
 		// baris di sn damage
-		$id_printer_cgk = $this->input->post('id_prin_cgk');
+		$sn_damage = $this->input->post('sn_damage', true);
 
-
-		// delete di damagenya
-		$this->db->delete('printer_damage', ['id_printer' => $id_prin]);
 		// update return cgk di damage
 		$cgk ['return_cgk'] = $printer_sn;
-		$this->db->where('id_printer', $id_printer_cgk);
+		$this->db->where('printer_sn', $sn_damage); //disimpan di printer sn
 		$this->db->update('printer_damage', $cgk);
 		// ubah backup dari damage jadi ready lagi
 		$printer_update = [
@@ -96,7 +105,6 @@ class PrinterBackup_Model extends CI_Model
 		];
 		$this->db->where('id_printer', $id_prin);
 		$this->db->update('printer_backup', $printer_update);
-
 
 		// UPDATE STATUS PRINTER LOG
 		$status_log ['status'] = null;
@@ -127,6 +135,7 @@ class PrinterBackup_Model extends CI_Model
 		return $this->db->count_all_results('printer_backup');
 	}
 
+	// KEPERLUAN DASHBOARD
 	public function jumlah_type()
 	{
 		// Menghitung jumlah printer berdasarkan status dan type
@@ -141,6 +150,7 @@ class PrinterBackup_Model extends CI_Model
 
 	}
 
+	// UPDATE WAKTU TERAKHIR
 	public function dateTime()
 	{
 		$this->db->order_by('date_in', 'DESC');

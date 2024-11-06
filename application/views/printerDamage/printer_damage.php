@@ -33,7 +33,7 @@
 
 	<div class="card w-30">
 		<div class="card-body text-center">
-			<h1 class="text-gradient text-info"><span id="status1" countto="<?= $sum_damage ?>"><?= $sum_damage ?></span> <span class="text-lg ms-n2">Pcs</span></h1>
+			<h1 class="text-gradient text-info"><?= $sum_damage ?> <span class="text-lg ms-n2">Pcs</span></h1>
 			<h6 class="mb-0 font-weight-bolder">Printer Damage</h6>
 			<p class="opacity-8 mb-0 text-sm">
 				<?php if (empty($date_time->date_in) || $sum_damage == 0): ?>
@@ -46,22 +46,10 @@
 	</div>
 </div>
 
-<!-- animasi count -->
-<script src="<?= base_url() ?>public/js/plugins/countup.min.js"></script>
-<script>
-	if (document.getElementById('status1')) {
-		const countUp = new CountUp('status1', document.getElementById("status1").getAttribute("countTo"));
-		if (!countUp.error) {
-			countUp.start();
-		} else {
-			console.error(countUp.error);
-		}
-	}
-</script>
-
 <div class="row justify-content-end">
 	<div class="col-auto">
 		<form action="<?= base_url('printerdamage/import_excel') ?>" method="post" enctype="multipart/form-data">
+			<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
 			<label for="file">Pilih File Excel:</label>
 			<input type="file" name="excel_file" accept=".xlsx" required>
 			<input type="submit" value="Upload">
@@ -79,17 +67,17 @@
 	</div>
 	<div class="col-auto ">
 		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#excel">
-			<i class="material-icons me-2">assignment</i>DOWNLOAD BY DUMMY
+			<i class="material-icons me-2">download</i>DOWNLOAD BY DUMMY
 		</button>
 	</div>
 	<div class="col-auto me-5">
 		<button type="button" class="btn bg-gradient-info text-white border-radius-sm" data-bs-toggle="modal" data-bs-target="#excel_all">
-			<i class="material-icons me-2">assignment</i>DOWNLOAD BY DATE
+			<i class="material-icons me-2">download</i>DOWNLOAD BY DATE
 		</button>
 	</div>
 </div>
 
-<!-- modal download excel -->
+<!-- modal download excel by date -->
 <div class="modal fade" id="excel_all" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-dialog-centered modal-" role="document">
 		<div class="modal-content">
@@ -99,11 +87,12 @@
 				</button>
 				<div class="text-start ms-3">
 					<h5 class="modal-title fw-bold" id="exampleModalLabel">DOWNLOAD EXCEL</h5>
-					<small>Pilih Range Tanggal</small>
+					<small>Pilih Range Tanggal Berdasarkan Tgl Pengiriman</small>
 				</div>
 			</div>
 			<div class="modal-body">
 				<form action="<?= base_url('printerdamage/export_excel') ?>" method="POST">
+					<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
 
 					<div class="input-group input-group-static">
 						<label for="from">From</label>
@@ -140,6 +129,7 @@
 			</div>
 			<div class="modal-body">
 				<form action="<?= base_url('printerdamage/export_excel') ?>" method="POST">
+					<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
 
 					<div class="row">
 						<div class="col-4 mt-2">
@@ -182,6 +172,7 @@
 			</div>
 			<div class="modal-body">
 				<form action="<?= base_url('printerdamage/add_damage') ?>" method="POST">
+					<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
 
 					<div class="row">
 						<div class="col-4 mt-2">
@@ -199,6 +190,7 @@
 						</div>
 					</div>
 
+					<!-- ini jalan ga eyy? ;( ) -->
 					<?php foreach ($printer_list as $pl) : ?>
 						<input type="hidden" value="<?= $pl->printer_sn ?>" name="_printer_sn">
 						<input type="hidden" value="<?= $pl->cust_id ?>" name="_cust_id">
@@ -209,7 +201,7 @@
 
 					<div class="row mb-2">
 						<div class="col-4 mt-2">
-							<label for="typep">DESKRIPSI</label>
+							<label for="typep">DESKRIPSI <span class="text-danger">*</span></label>
 						</div>
 						<div class="col">
 							<div class="input-group input-group-dynamic mb-4">
@@ -312,10 +304,10 @@
 					</div>
 					<div class="col">
 						<div class="input-group">
-							<select class="form-select" id="printersn" name="idprinter[]" multiple>
+							<select class="form-select" id="printersn" name="printersn[]" multiple>
 								<option value="" disabled>PILIH PRINTER</option>
 								<?php foreach ($no_dummy as $nd) : ?>
-									<option value="<?= $nd->id_printer; ?>"><?= $nd->printer_sn; ?></option>
+									<option value="<?= $nd->id_damage; ?>"><?= $nd->printer_sn; ?> - <?= $nd->cust_name; ?></option>
 								<?php endforeach; ?>
 							</select>
 						</div>
@@ -395,8 +387,9 @@
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">cust name</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">type cust</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">no dummy</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">delivery date</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">biaya</th>
-								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">payment status</th>
+								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">status payment</th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2">status </th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2"></th>
 								<th class="text-center text-uppercase text-info text-xs font-weight-bolder opacity-7 p-0 pb-2"></th>
@@ -425,6 +418,10 @@
 	<!-- modal kelengkapan -->
 </div>
 
+<div id="modal-loan-file">
+	<!-- modal loan file -->
+</div>
+
 <script src="<?= base_url('public/js/jquery.min.js') ?>"></script>
 
 <!-- Script untuk mengambil dan menampilkan data -->
@@ -439,11 +436,17 @@
 			$.ajax({
 				url: "<?= base_url('printerdamage/view_data_table') ?>",
 				type: "POST",
+				data: {
+					'<?= $this->security->get_csrf_token_name() ?>': '<?= $this->security->get_csrf_hash() ?>'
+				},
 				dataType: "json",
 				success: function(response) {
 					const tableBody = $('#datatable tbody');
 					tableBody.empty(); // Kosongkan tabel 
 					tableBody.append(response.html);
+
+					// Update CSRF token setelah data dimuat
+					$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
 
 					const dataTable = new simpleDatatables.DataTable("#datatable", {
 						sortable: false,
@@ -476,9 +479,15 @@
 				type: 'POST',
 				data: {
 					modal: $(this).data('modal'),
+					'<?= $this->security->get_csrf_token_name() ?>': $('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val()
 				},
+				dataType: "json",
 				success: function(response) {
-					$('#modal-container-edit').html(response);
+					// Update CSRF token dan tampilkan modal
+					if (response.token) {
+						$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
+					}
+					$('#modal-container-edit').html(response.html);
 					$(modalID).modal('show');
 					// Inisialisasi choices
 					const choices = new Choices($(modalID + ' .choices')[0]);
@@ -501,9 +510,15 @@
 				type: 'POST',
 				data: {
 					modal: $(this).data('modal'),
+					'<?= $this->security->get_csrf_token_name() ?>': $('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val()
 				},
+				dataType: "json",
 				success: function(response) {
-					$('#modal-container-file').html(response);
+					// Update CSRF token dan tampilkan modal
+					if (response.token) {
+						$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
+					}
+					$('#modal-container-file').html(response.html);
 					$(modalID).modal('show');
 					// Inisialisasi choices
 					const choices = new Choices($(modalID + ' .choices')[0]);
@@ -526,9 +541,46 @@
 				type: 'POST',
 				data: {
 					modal: $(this).data('modal'),
+					'<?= $this->security->get_csrf_token_name() ?>': $('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val()
 				},
+				dataType: "json",
 				success: function(response) {
-					$('#modal-container-kelengkapan').html(response);
+					// Update CSRF token dan tampilkan modal
+					if (response.token) {
+						$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
+					}
+					$('#modal-container-kelengkapan').html(response.html);
+					$(modalID).modal('show');
+					// Inisialisasi choices
+					const choices = new Choices($(modalID + ' .choices')[0]);
+				},
+			});
+		});
+	});
+
+	$(document).ready(function() {
+		$(document).on('hidden.bs.modal', '#loan_file', function() {
+			$(this).remove();
+		});
+
+		$(document).on('click', '.btn-loan-file', function() {
+			var modalID = '#loan_file';
+
+			// AJAX request
+			$.ajax({
+				url: '<?= site_url('printerdamage/modal_loan_file') ?>',
+				type: 'POST',
+				data: {
+					modal: $(this).data('modal'),
+					'<?= $this->security->get_csrf_token_name() ?>': $('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val()
+				},
+				dataType: "json",
+				success: function(response) {
+					// Update CSRF token dan tampilkan modal
+					if (response.token) {
+						$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
+					}
+					$('#modal-loan-file').html(response.html);
 					$(modalID).modal('show');
 					// Inisialisasi choices
 					const choices = new Choices($(modalID + ' .choices')[0]);

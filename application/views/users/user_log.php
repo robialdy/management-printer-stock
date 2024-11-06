@@ -72,45 +72,74 @@
 <script type="text/javascript">
 	const processingIndicator = document.getElementById("loading");
 
-	processingIndicator.style.display = "block";
-
 	$(document).ready(function() {
 		var dataTable;
+		// Simpan nama token CSRF dalam variabel
+		var csrfName = '<?= $this->security->get_csrf_token_name() ?>';
+		var csrfHash = '<?= $this->security->get_csrf_hash() ?>';
+
+		function updateCsrfToken(newToken) {
+			// Update token di variabel
+			csrfHash = newToken;
+			// Update token di form input hidden
+			$('input[name="' + csrfName + '"]').val(newToken);
+		}
 
 		function fetchData() {
+			processingIndicator.style.display = "block";
+
 			var from_date = $('#from_date').val();
 			var until_date = $('#until_date').val();
+
+			// Buat object untuk data
+			var postData = {
+				from_date: from_date,
+				until_date: until_date
+			};
+			// Tambahkan CSRF token ke data
+			postData[csrfName] = csrfHash;
 
 			$.ajax({
 				url: "<?= base_url('users/view_user_log') ?>",
 				method: "POST",
-				data: {
-					from_date: from_date,
-					until_date: until_date
-				},
+				data: postData,
+				dataType: "json",
 				success: function(data) {
-					// Destroy DataTable if it exists
+					// Update CSRF token dengan token baru dari response
+					if (data.token) {
+						updateCsrfToken(data.token);
+					}
+
+					// Destroy DataTable jika sudah ada
 					if (dataTable) {
 						dataTable.destroy();
 					}
+
 					processingIndicator.style.display = "none";
 
-					// Update table body with new data
-					$('#log_table_body').html(data);
+					// Update table body dengan data baru
+					$('#log_table_body').html(data.html);
 
-					// Re-initialize DataTable
 					dataTable = new simpleDatatables.DataTable("#datatable", {
 						sortable: false,
 					});
+				},
+				error: function(xhr, status, error) {
+					processingIndicator.style.display = "none";
+					console.error('Error:', error);
+					if (xhr.status === 403) {
+						alert('Sesi telah berakhir. Silakan muat ulang halaman.');
+					}
 				}
 			});
 		}
 
+		// Event handler untuk perubahan tanggal
 		$('#from_date, #until_date').on('change', function() {
 			fetchData();
 		});
 
-		// Fetch data on page load
+		// Fetch data saat halaman dimuat
 		fetchData();
 	});
 </script>

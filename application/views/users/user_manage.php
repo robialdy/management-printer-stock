@@ -32,30 +32,33 @@
 
 
 <div class="row">
-	<div class="col-lg-6 col-md-6 mt-3 mb-3">
-		<div class="card border-radius-md z-index-2" style="height: 200px;">
-			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-				<div class="bg-gradient-info shadow-info border-radius-sm py-3 pe-1 text-center">
-					<span class="text-white fs-1 fw-light"><?= $jumUsers ?></span>
-				</div>
-			</div>
-			<div class="card-body text-center">
-				<p class="text-md fw-normal">Total Users</p>
-				<hr class="dark horizontal">
-				<div class="d-flex ">
-					<i class="material-icons text-sm my-auto me-1">schedule</i>
-					<p class="mb-0 text-sm">
-						<?php if (!empty($dateTime->created_at)): ?>
-							<?= $dateTime->created_at ?>
-						<?php else: ?>
-							null
-						<?php endif; ?>
-					</p>
-				</div>
-			</div>
+	<div class="card w-30 ms-5">
+		<div class="card-body text-center">
+			<h1 class="text-gradient text-info"><span id="status1" countto="<?= $jumUsers ?>"><?= $jumUsers ?></span> <span class="text-lg ms-n2">Pcs</span></h1>
+			<h6 class="mb-0 font-weight-bolder">Users</h6>
+			<p class="opacity-8 mb-0 text-sm">
+				<?php if (!empty($dateTime->created_at)): ?>
+					<?= $dateTime->created_at ?>
+				<?php else: ?>
+					null
+				<?php endif; ?>
+			</p>
 		</div>
 	</div>
 </div>
+
+<!-- animasi count -->
+<script src="<?= base_url() ?>public/js/plugins/countup.min.js"></script>
+<script>
+	if (document.getElementById('status1')) {
+		const countUp = new CountUp('status1', document.getElementById("status1").getAttribute("countTo"));
+		if (!countUp.error) {
+			countUp.start();
+		} else {
+			console.error(countUp.error);
+		}
+	}
+</script>
 
 <!-- Button trigger modal -->
 <div class="text-end me-5">
@@ -190,11 +193,14 @@
 										<h6 class="mb-0 text-sm fw-normal"><?= $rd['created_at'] ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<form action="<?= site_url('delete/') . $rd['username'] ?>" method="post">
-											<button type="submit" class="btn p-0 mb-1" onclick="return confirm('Yakin ingin menghapus user ini?')">
-												<i class="material-icons text-secondary">delete</i>
-											</button>
-										</form>
+										<?php if ($data_user['username'] != $rd['username']) : ?>
+											<form action="<?= site_url('delete/') . $rd['username'] ?>" method="post">
+												<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
+												<button type="submit" class="btn p-0 mb-1" onclick="return confirm('Yakin ingin menghapus user ini?')">
+													<i class="material-icons text-secondary">delete</i>
+												</button>
+											</form>
+										<?php endif; ?>
 									</td>
 								</tr>
 								<?php $i++; ?>
@@ -210,7 +216,7 @@
 		<div class="card my-4 border-radius-md">
 			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
 				<div class="bg-gradient-info shadow-info border-radius-md pt-4 pb-3">
-					<h6 class="text-white ps-3 fw-light">User Account Moderator</h6>
+					<h6 class="text-white ps-3 fw-light">User Account Super Admin</h6>
 				</div>
 			</div>
 			<div class="card-body px-0 pb-2">
@@ -238,11 +244,13 @@
 										<h6 class="mb-0 text-sm fw-normal"><?= $rd['created_at'] ?></h6>
 									</td>
 									<td class="text-center text-uppercase">
-										<form action="<?= site_url('delete/') . $rd['username'] ?>" method="post">
-											<button type="submit" class="btn p-0 mb-1" onclick="return confirm('Yakin ingin menghapus user ini?')">
-												<i class="material-icons text-secondary">delete</i>
-											</button>
-										</form>
+										<?php if ($data_user['username'] != $rd['username']) : ?>
+											<form action="<?= site_url('delete/') . $rd['username'] ?>" method="post">
+												<button type="submit" class="btn p-0 mb-1" onclick="return confirm('Yakin ingin menghapus user ini?')">
+													<i class="material-icons text-secondary">delete</i>
+												</button>
+											</form>
+										<?php endif; ?>
 									</td>
 								</tr>
 								<?php $i++; ?>

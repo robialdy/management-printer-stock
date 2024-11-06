@@ -53,7 +53,7 @@ class TypePrinter extends CI_Controller
 				</td>
 				<td class="text-center text-uppercase">
 					<form action="'. site_url('typeprinter/delete/') . $al->id_type .'" method="post">
-						<button type="submit" class="btn p-0 mb-1" onclick="rconfirm(\'Yakin ingin menghapus ini?\')">
+						<button type="submit" class="btn p-0 mb-1" onclick="return confirm(\'Yakin ingin menghapus ini?\')">
 							<i class="material-icons text-secondary">delete</i>
 						</button>
 					</form>
@@ -62,13 +62,25 @@ class TypePrinter extends CI_Controller
 			}
 
 		header('Content-Type: application/json');
-		echo json_encode(['html' => $html]);
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash(),
+	]);
 		}
 
 	public function delete($id)
 	{
-		$this->Type_printer_Model->delete($id);
-		$this->session->set_flashdata('notifSuccess', 'Type Printer Berhasil Dihapus!');
-		redirect('type');
+		// printer backup
+		$printer_backup = $this->db->where('id_type', $id)->count_all_results('printer_backup') > 0;
+
+		// kalo ada datanya maka nampilkan eror
+		if ($printer_backup) {
+			$this->session->set_flashdata('notifError', 'Type Printer tidak bisa dihapus karena memiliki data terkait!');
+			redirect('type');
+		} else {		
+			$this->Type_printer_Model->delete($id);
+			$this->session->set_flashdata('notifSuccess', 'Type Printer Berhasil Dihapus!');
+			redirect('type');
+		}
 	}
 }

@@ -64,6 +64,7 @@ class Customers extends CI_Controller
 						<h6 class="mb-0 text-md fw-normal">' . $al->status . '</h6></td>
                     <td>	
                         <form action="' . site_url('customers/delete/' . $al->id_cust) . '" method="post">
+						<input type="hidden" name="'. $this->security->get_csrf_token_name() .'" value="'. $this->security->get_csrf_hash() .'">
                             <button type="submit" class="btn p-0 mb-1" onclick="return confirm(\'Yakin ingin menghapus ini?\')">
                                 <i class="material-icons text-dark">delete</i>
                             </button>
@@ -78,29 +79,43 @@ class Customers extends CI_Controller
 		}
 
 		header('Content-Type: application/json');
-		echo json_encode(['html' => $html]);
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash(),
+		]);
 	}
 
 	public function edit_status()
 	{
 		$this->db->where('id_cust', $this->input->post('id_cust'));
-		$this->db->update('customers', ['status' => $this->input->post('status')]);
+		$this->db->update('customers', ['status' => $this->input->post('status', true)]);
 
-		$this->session->set_flashdata('notifSuccess', $this->input->post('cust_name') . ' Sekarang ' . $this->input->post('status'));
+		$this->session->set_flashdata('notifSuccess', $this->input->post('cust_name', true) . ' Sekarang ' . $this->input->post('status', true));
 		redirect('customers');
 	}
 
 	public function delete($id)
 	{
+		// printer list
+		$printer_list = $this->db->where('id_cust', $id)->count_all_results('printer_list_inagen') > 0;
+		// printer summary
+		$printer_summary = $this->db->where('id_cust', $id)->count_all_results('printer_summary') > 0;
 
-		$this->Customers_Model->delete($id);
-		$this->session->set_flashdata('notifSuccess', 'Delete Customers Successfuly!');
-		redirect('customers');
+		// kalo ada datanya maka nampilkan eror
+		if ($printer_list || $printer_summary) {
+			$this->session->set_flashdata('notifError', 'Customer tidak bisa dihapus karena memiliki data terkait!');
+			redirect('customers');
+		} else {
+			$this->Customers_Model->delete($id);
+			$this->session->set_flashdata('notifSuccess', 'Delete Customers Successfuly!');
+			redirect('customers');
+		}
+
 	}
 
 	public function modal_edit()
 	{
-		$id_cust = $this->input->post('modal');
+		$id_cust = $this->input->post('modal', true);
 		$data = $this->Customers_Model->getCustomerById($id_cust);
 
 		// Menghasilkan HTML untuk modal
@@ -119,6 +134,7 @@ class Customers extends CI_Controller
                     </div>
                     <div class="modal-body">
                         <form action="' . site_url('customers/edit_status') . '" method="POST">
+						<input type="hidden" name="'. $this->security->get_csrf_token_name() .'" value="'. $this->security->get_csrf_hash() .'">
 
 						<input type="hidden" name="id_cust" value="' . $data->id_cust . '">
 						<input type="hidden" name="cust_name" value="' . $data->cust_name . '">
@@ -148,6 +164,10 @@ class Customers extends CI_Controller
             </div>
         </div>
     ';
-		echo $html; // Kirim HTML ke respons
+		header('Content-Type: application/json');
+		echo json_encode([
+			'html' => $html,
+			'token' => $this->security->get_csrf_hash(),
+		]);
 	}
 }

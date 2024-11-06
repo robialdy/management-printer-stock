@@ -99,6 +99,15 @@
 							</li>
 
 							<li class="nav-item">
+								<a class="nav-link text-white <?= ($this->uri->segment(1) == 'printerdetail') ? 'active bg-info' : ''; ?>" href="<?= site_url('printerdetail') ?>">
+									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
+										<i class="material-icons">description</i>
+									</div>
+									<span class="nav-link-text ms-1">Printer List</span>
+								</a>
+							</li>
+
+							<li class="nav-item">
 								<a class="nav-link text-white <?= ($this->uri->segment(1) == 'replacement') ? 'active bg-info' : ''; ?>" href="<?= site_url('replacement') ?>">
 									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
 										<i class="material-icons">autorenew</i>
@@ -113,15 +122,6 @@
 										<i class="material-icons">warning</i>
 									</div>
 									<span class="nav-link-text ms-1">Damage</span>
-								</a>
-							</li>
-
-							<li class="nav-item">
-								<a class="nav-link text-white <?= ($this->uri->segment(1) == 'printerdetail') ? 'active bg-info' : ''; ?>" href="<?= site_url('printerdetail') ?>">
-									<div class="text-white text-center me-2 ms-4 d-flex align-items-center justify-content-center">
-										<i class="material-icons">description</i>
-									</div>
-									<span class="nav-link-text ms-1">Printer List</span>
 								</a>
 							</li>
 

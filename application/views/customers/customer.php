@@ -36,51 +36,31 @@
 		};
 	</script>
 <?php endif; ?>
+
 <script>
 	function showErrorMessage() {
 		Swal.fire({
 			icon: 'error',
+			title: 'Oops...',
 			text: '<?= $this->session->flashdata('notifError') ?>',
-			toast: true,
-			position: 'top-end',
-			showConfirmButton: false,
-			timer: 3500,
-			timerProgressBar: true,
-			width: 450,
-			padding: '1em',
-			iconColor: '#4CAF50', // Warna ikon success yang lebih menonjol
-			didOpen: (toast) => {
-				toast.style.borderRadius = '8px'; // Membuat sudut lebih halus
-				toast.style.boxShadow = '0px 4px 15px rgba(0, 0, 0, 0.2)'; // Efek shadow untuk floating
-				document.querySelector('.swal2-container').style.pointerEvents = 'none'; // Menghindari block area di luar toast
-			}
+			confirmButtonText: 'OK'
 		});
 	}
 </script>
 
 
 <div class="row">
-	<div class="col-lg-6 col-md-6 mt-3 mb-3">
-		<div class="card border-radius-md z-index-2" style="height: 200px;">
-			<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-				<div class="bg-gradient-info shadow-info border-radius-sm py-3 pe-1 text-center">
-					<span class="text-white fs-1 fw-light"><?= $jumAgen ?></span>
-				</div>
-			</div>
-			<div class="card-body text-center">
-				<p class="text-md fw-normal">Total Master Data Customer</p>
-				<hr class="dark horizontal">
-				<div class="d-flex ">
-					<i class="material-icons text-sm my-auto me-1">schedule</i>
-					<p class="mb-0 text-sm">
-						<?php if (!empty($dateTime->created_at)): ?>
-							<?= $dateTime->created_at ?>
-						<?php else: ?>
-							null
-						<?php endif; ?>
-					</p>
-				</div>
-			</div>
+	<div class="card w-30 ms-5">
+		<div class="card-body text-center">
+			<h1 class="text-gradient text-info"><?= $jumAgen ?> <span class="text-lg ms-n2">Cust</span></h1>
+			<h6 class="mb-0 font-weight-bolder">Customers</h6>
+			<p class="opacity-8 mb-0 text-sm">
+				<?php if (!empty($dateTime->created_at)): ?>
+					<?= $dateTime->created_at ?>
+				<?php else: ?>
+					null
+				<?php endif; ?>
+			</p>
 		</div>
 	</div>
 </div>
@@ -185,7 +165,7 @@
 					</div>
 					<div class="col">
 						<div class="input-group input-group-dynamic mb-4">
-							<input type="text" class="form-control" aria-label="Username" placeholder="terisi otomatis!, silakan masukkan ID" aria-describedby="basic-addon1" id="origin_name" name="originname" style="text-transform: uppercase;" required>
+							<input type="text" class="form-control" aria-label="Username" placeholder="ENTER ORIGIN NAME" aria-describedby="basic-addon1" id="origin_name" name="originname" style="text-transform: uppercase;" required>
 						</div>
 					</div>
 				</div>
@@ -201,7 +181,6 @@
 							'bdo21000': 'BANDUNG BARAT KAB',
 							'bdo21200': 'CIANJUR',
 							'bdo21222': 'CIANJUR SELATAN',
-							// Tambahkan lebih banyak mapping sesuai kebutuhan
 						};
 
 						let originId = this.value.toLowerCase(); // Mengubah input menjadi huruf kecil agar sesuai dengan key di mapping
@@ -288,11 +267,17 @@
 			$.ajax({
 				url: "<?= base_url('customers/view_data_table') ?>",
 				type: "POST",
+				data: {
+					'<?= $this->security->get_csrf_token_name() ?>': '<?= $this->security->get_csrf_hash() ?>'
+				},
 				dataType: "json",
 				success: function(response) {
 					const tableBody = $('#datatable tbody');
 					tableBody.empty(); // Kosongkan tabel 
 					tableBody.append(response.html);
+
+					// Update CSRF token setelah data dimuat
+					$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
 
 					const dataTable = new simpleDatatables.DataTable("#datatable", {
 						sortable: false,
@@ -325,9 +310,15 @@
 				type: 'POST',
 				data: {
 					modal: $(this).data('modal'),
+					'<?= $this->security->get_csrf_token_name() ?>': $('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val()
 				},
+				dataType: "json",
 				success: function(response) {
-					$('#modal-container').html(response);
+					// Update CSRF token dan tampilkan modal
+					if (response.token) {
+						$('input[name="<?= $this->security->get_csrf_token_name() ?>"]').val(response.token);
+					}
+					$('#modal-container').html(response.html);
 					$(modalID).modal('show');
 					// Inisialisasi choices
 					const choices = new Choices($(modalID + ' .choices')[0]);

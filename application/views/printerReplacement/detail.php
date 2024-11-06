@@ -205,6 +205,7 @@
 					Pastikan Printer telah terhubung!
 				</p>
 				<form action="<?= site_url('formatprint/generate_format/' . $detail->printer_sn) ?>" target="_blank" method="POST">
+					<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
 					<button type="submit" class="btn bg-gradient-info">Cetak</button>
 				</form>
 			</div>
@@ -238,6 +239,13 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="imageModalLabel">Bukti Transaksi</h5>
+				<?php if (substr($detail->proof, -4) != '.pdf') : ?>
+					<form action="<?= site_url('printerlist/download_proof'); ?>" method="POST">
+						<input type="hidden" name="<?= $this->security->get_csrf_token_name() ?>" value="<?= $this->security->get_csrf_hash() ?>">
+						<input type="hidden" name="name_proof" value="<?= $detail->proof ?>">
+						<button type="submit" class="btn p-0 mb-1 text-dark"> <i class="material-icons ms-2">download</i></button>
+					</form>
+				<?php endif; ?>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body text-center">
