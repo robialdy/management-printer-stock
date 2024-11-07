@@ -16,6 +16,32 @@ class PrinterDamage_Model extends CI_Model
 		return $query->row();
 	}
 
+	public function read_data_with_type()
+	{
+		// Ambil semua jenis printer
+		$printer_types = $this->type_printer();
+		// Pilih kolom yang diinginkan
+		$this->db->select('printer_damage.*');
+		// Tambahkan perhitungan total printer berdasarkan name_type
+		foreach ($printer_types as $type) {
+			$name_type = str_replace('-', '_', $type->name_type);
+			$this->db->select("SUM(CASE WHEN type_printer = '{$type->name_type}' THEN 1 ELSE 0 END) as total_{$name_type}");
+		}
+		// Query dari tabel printer_damage dengan join beberapa tabel terkait
+		$this->db->from('printer_damage');
+		// Group by berdasarkan jenis printer
+		$this->db->group_by('type_printer');
+		// Urutkan berdasarkan tanggal masuk
+		$this->db->order_by('date_in', 'DESC');
+		// Eksekusi query
+		$query = $this->db->get();
+		return $query->result();
+	}
+	public function type_printer()
+	{
+		return $this->db->order_by('created_at', 'DESC')->get('type_printer')->result();
+	}
+
 	// READ DATA UNTUK MILIH NO DUMMY YANG MASIH KOSONG
 	public function read_data_nodummy()
 	{

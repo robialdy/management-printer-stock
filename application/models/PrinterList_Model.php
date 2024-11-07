@@ -120,6 +120,18 @@ class PrinterList_Model extends CI_Model
 
 	public function printer_out()
 	{
+
+		// UPDATE SUMMARY
+		$printer_summary = $this->db->where('id_cust', $this->input->post('agenname', true))->get('printer_summary')->result();
+		// JIKA ADA STATUS DAMAGE MAKA GANTI KAN DENGAN YANG BARU
+		foreach ($printer_summary as $ps) {
+			$printer_backup = $this->db->where('id_printer', $ps->id_printer)->get('printer_backup')->row();
+			if ($printer_backup->status == 'DAMAGE' || $printer_backup->status == 'READY') {
+				$this->db->delete('printer_summary', ['id_printer' => $ps->id_printer]);
+				break;
+			}
+		}
+
 		// update jadi sn normal jika ada penanda inactive
 		$get_idprinter = $this->input->post('printersn', true); //id isinya
 		$printer = $this->db->get_where('printer_backup', ['id_printer' => $get_idprinter])->row();
@@ -148,17 +160,6 @@ class PrinterList_Model extends CI_Model
 			'created_at'	=> date('d F Y H:i:s')
 		];
 		$this->db->insert('printer_list_inagen', $form_data_list);
-
-		// UPDATE SUMMARY
-		$printer_summary = $this->db->where('id_cust', $this->input->post('agenname', true))->get('printer_summary')->result();
-		// JIKA ADA STATUS DAMAGE MAKA GANTI KAN DENGAN YANG BARU
-		foreach ($printer_summary as $ps) {
-			$printer_backup = $this->db->where('id_printer', $ps->id_printer)->get('printer_backup')->row();
-			if ($printer_backup->status == 'DAMAGE') {
-				$this->db->delete('printer_summary', ['id_printer' => $ps->id_printer]);
-				break;
-			}
-		}
 		// DATA SAMA KAYA DI LIST
 		$this->db->insert('printer_summary', $form_data_list);
 

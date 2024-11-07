@@ -45,6 +45,7 @@ class PrinterBackup_Model extends CI_Model
 		$this->db->select('*');
 		$this->db->where('no_dummy !=', '-');
 		$this->db->where('return_cgk', '-');
+		$this->db->where_not_in('status', 'PEMBELIAN');
 		$this->db->order_by('date_in', 'DESC');
 		$query = $this->db->get('printer_damage');
 		return $query->result();

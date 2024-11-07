@@ -145,7 +145,7 @@
 					<!-- SN DAMAGE -->
 					<div class="row">
 						<div class="col-4 mt-2">
-							<label for="snDamage">SN DAMAGE <span class="text-danger">*</span></label>
+							<label for="snDamage">SN DAMAGE</label>
 						</div>
 						<div class="col">
 							<div class="input-group input-group-static mb-2">

@@ -53,7 +53,7 @@ class Customers extends CI_Controller
                     <td class="text-center text-uppercase">
 						<h6 class="mb-0 text-md fw-normal">' . $al->cust_id . '</h6></td>
                     <td class="text-center text-uppercase">
-						<h6 class="mb-0 text-md fw-normal">' . $al->cust_name . '</h6></td>
+						<h6 class="mb-0 text-md fw-normal text-wrap">' . $al->cust_name . '</h6></td>
                     <td class="text-center text-uppercase">
 						<h6 class="mb-0 text-md fw-normal">' . $al->type_cust . '</h6></td>
                     <td class="text-center text-uppercase">

@@ -78,7 +78,7 @@ class PrinterLog extends CI_Controller
                         </button>
                     </div>
                     <div class="text-start ms-3">
-                        <h5 class="modal-title fw-bold" id="exampleModalLabel">History Printer SN</h5>
+                        <h5 class="modal-title fw-bold" id="exampleModalLabel">History Printer </h5>
                         <small>Detail Tentang Printer, Pernah Digunakan Siapa Saja</small>';
 
 		// Ambil data pertama untuk mendapatkan printer_sn

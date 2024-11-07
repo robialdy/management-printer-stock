@@ -198,7 +198,7 @@ class PrinterList extends CI_Controller
                 <h6 class="mb-0 text-sm fw-normal">' . $al->cust_id . '</h6>
             </td>
             <td class="text-center text-uppercase py-3">
-                <h6 class="mb-0 text-sm fw-normal">' . $al->cust_name . '</h6>
+                <h6 class="mb-0 text-sm fw-normal text-wrap">' . $al->cust_name . '</h6>
             </td>
             <td class="text-center text-uppercase">
                 <h6 class="mb-0 text-sm fw-normal">' . $al->type_cust . '</h6>
@@ -267,7 +267,7 @@ class PrinterList extends CI_Controller
                     <h6 class="mb-0 text-md fw-normal">' . $pd->type_cust . '</h6>
                 </td>
                 <td class="text-center text-uppercase">
-                    <h6 class="mb-0 text-md fw-normal">' . $pd->cust_name . '</h6>
+                    <h6 class="mb-0 text-md fw-normal text-wrap">' . $pd->cust_name . '</h6>
                 </td>
                 <td class="text-center text-uppercase">
                     <h6 class="mb-0 text-md fw-normal">' . $pd->system . '</h6>
@@ -622,9 +622,9 @@ class PrinterList extends CI_Controller
 		$sheet->setCellValue('B' . $row, 'PRINTER DAMAGE');
 		$sheet->setCellValue('H' . $row, $total_damage);
 		foreach ($damages as $damage) {
-			$col = $printerColumnMap[$damage->name_type] ?? null;
+			$col = $printerColumnMap[$damage->type_printer] ?? null;
 			if ($col) {
-				$total_key = "total_" . str_replace('-', '_', $damage->name_type);
+				$total_key = "total_" . str_replace('-', '_', $damage->type_printer);
 				$sheet->setCellValue($col . $row, $damage->$total_key);
 			}
 		}

@@ -103,6 +103,6 @@ class PrinterBackup extends CI_Controller
 	{
 		$this->PrinterBackup_Model->update_printer_backup();
 		$this->session->set_flashdata('notifSuccess', 'Printer Sn ' . $this->input->post('printer_sn', true) . ' Berhasil Ditambahkan!');
-		redirect('printerbackup');
+		redirect('printer');
 	}
 }
