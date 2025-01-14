@@ -19,7 +19,7 @@ class Auth extends CI_Controller
 		$this->form_validation->set_rules('password', 'Password', 'required|trim');
 
 		if ($this->form_validation->run() == FALSE) {
-		$this->load->view('auth/login');
+			$this->load->view('auth/login');
 		} else {
 			$this->_login();
 		}
@@ -31,7 +31,7 @@ class Auth extends CI_Controller
 		$password = $this->input->post('password', true);
 		$user = $this->db->get_where('users', ['username' => $username])->row_array();
 
-		if($user != null && password_verify($password, $user['password'])) {
+		if ($user != null && password_verify($password, $user['password'])) {
 			$data = [
 				'id_user'	=> $user['id_user'],
 				'data_user'	=> $user["username"],
@@ -55,5 +55,4 @@ class Auth extends CI_Controller
 		$this->session->sess_destroy();
 		redirect('auth');
 	}
-
 }

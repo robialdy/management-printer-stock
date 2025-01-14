@@ -1,4 +1,4 @@
-<?php $this->load->view('components/header') ?>
+	<?php $this->load->view('components/header') ?>
 
 <!-- success -->
 <?php if ($this->session->flashdata('notifSuccess')) :  ?>
